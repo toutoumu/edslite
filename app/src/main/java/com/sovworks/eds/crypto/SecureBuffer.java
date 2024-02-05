@@ -10,283 +10,233 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-public class SecureBuffer implements Parcelable, CharSequence
-{
-    public static void eraseData(byte[] data)
-    {
-        if(data!=null)
+public class SecureBuffer implements Parcelable, CharSequence {
+    public static void eraseData(byte[] data) {
+        if (data != null)
             eraseData(data, 0, data.length);
     }
 
-    public static void eraseData(byte[] data, int offset, int count)
-    {
-        if(data!=null)
-        {
+    public static void eraseData(byte[] data, int offset, int count) {
+        if (data != null) {
             /*byte[] randomBytes = new byte[count];
             _secureRandom.nextBytes(randomBytes);
             System.arraycopy(randomBytes, 0, data, offset, count);*/
-            Arrays.fill(data, (byte)0);
+            Arrays.fill(data, (byte) 0);
         }
     }
 
-    public static void eraseData(char[] data)
-    {
-        if(data!=null)
-        {
-            //for(int i=0, l=data.length;i<l;i++)
+    public static void eraseData(char[] data) {
+        if (data != null) {
+            // for(int i=0, l=data.length;i<l;i++)
             //    data[i] = (char) _secureRandom.nextInt();
-            Arrays.fill(data, (char)0);
+            Arrays.fill(data, (char) 0);
         }
     }
 
-    public static synchronized void closeAll()
-    {
-        for(int i = 0, l = _data.size(); i<l; i++)
-        {
+    public static synchronized void closeAll() {
+        for (int i = 0, l = _data.size(); i < l; i++) {
             Buffer b = _data.valueAt(i);
             b.erase();
         }
         _data.clear();
     }
 
-    public static SecureBuffer reserveBytes(int capacity)
-    {
+    public static SecureBuffer reserveBytes(int capacity) {
         return new SecureBuffer(new byte[capacity], 0, 0);
     }
 
-    public static SecureBuffer reserveChars(int capacity)
-    {
+    public static SecureBuffer reserveChars(int capacity) {
         SecureBuffer sb = new SecureBuffer();
         sb.adoptData(new char[capacity], 0, 0);
         return sb;
     }
 
-    public SecureBuffer()
-    {
-        this((byte[])null, 0, 0);
+    public SecureBuffer() {
+        this((byte[]) null, 0, 0);
     }
 
-    public SecureBuffer(byte[] data)
-    {
-        this(data!=null ? data : null, 0, data!=null ? data.length : 0);
+    public SecureBuffer(byte[] data) {
+        this(data != null ? data : null, 0, data != null ? data.length : 0);
     }
 
-    public SecureBuffer(byte[] data, int offset, int count)
-    {
+    public SecureBuffer(byte[] data, int offset, int count) {
         _id = reserveNewId();
-        if(data!=null)
+        if (data != null)
             adoptData(data, offset, count);
     }
 
-    public SecureBuffer(char[] data)
-    {
-        this(data!=null ? data : null, 0, data!=null ? data.length : 0);
+    public SecureBuffer(char[] data) {
+        this(data != null ? data : null, 0, data != null ? data.length : 0);
     }
 
-    public SecureBuffer(char[] data, int offset, int count)
-    {
+    public SecureBuffer(char[] data, int offset, int count) {
         _id = reserveNewId();
-        if(data!=null)
+        if (data != null)
             adoptData(data, offset, count);
     }
 
     @Override
-    public int length()
-    {
+    public int length() {
         CharBuffer cb = getCharBuffer();
         return cb != null ? cb.length() : 0;
     }
 
     @Override
-    public char charAt(int index)
-    {
+    public char charAt(int index) {
         return getCharBuffer().charAt(index);
     }
 
     @Override
-    public CharSequence subSequence(int start, int end)
-    {
+    public CharSequence subSequence(int start, int end) {
         return getCharBuffer().subSequence(start, end);
     }
 
-    public CharBuffer getCharBuffer()
-    {
+    public CharBuffer getCharBuffer() {
         return getCharBuffer(_id);
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if(obj instanceof SecureBuffer)
-        {
+    public boolean equals(Object obj) {
+        if (obj instanceof SecureBuffer) {
             ByteBuffer d1 = getByteBuffer();
-            ByteBuffer d2 = ((SecureBuffer)obj).getByteBuffer();
+            ByteBuffer d2 = ((SecureBuffer) obj).getByteBuffer();
             return d1.equals(d2);
-        }
-        else
+        } else
             return super.equals(obj);
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         ByteBuffer d = getByteBuffer();
         return d != null ? d.hashCode() : 0;
     }
 
-    public void adoptData(CharBuffer cb)
-    {
-        if(cb.hasArray())
+    public void adoptData(CharBuffer cb) {
+        if (cb.hasArray())
             adoptData(cb.array(), cb.position(), cb.remaining());
-        else
-        {
+        else {
             char[] arr = new char[cb.length()];
             cb.get(arr);
             cb.rewind();
-            if(!cb.isReadOnly())
-            {
-                while(cb.hasRemaining())
+            if (!cb.isReadOnly()) {
+                while (cb.hasRemaining())
                     cb.put((char) _secureRandom.nextInt());
             }
             adoptData(arr, 0, arr.length);
         }
     }
 
-    private synchronized static int reserveNewId()
-    {
+    private synchronized static int reserveNewId() {
         return _counter++;
     }
 
-    private synchronized static void setData(int id, byte[] data, int offset, int count)
-    {
+    private synchronized static void setData(int id, byte[] data, int offset, int count) {
         Buffer b = _data.get(id);
-        if(b!=null)
+        if (b != null)
             b.setData(data, offset, count);
-        else
-        {
+        else {
             b = new Buffer();
             b.setData(data, offset, count);
             _data.put(id, b);
         }
     }
 
-    private synchronized static void setData(int id, char[] data, int offset, int count)
-    {
+    private synchronized static void setData(int id, char[] data, int offset, int count) {
         Buffer b = _data.get(id);
-        if(b!=null)
+        if (b != null)
             b.setData(data, offset, count);
-        else
-        {
+        else {
             b = new Buffer();
             b.setData(data, offset, count);
             _data.put(id, b);
         }
     }
 
-    private static synchronized ByteBuffer getByteBuffer(int id)
-    {
+    private static synchronized ByteBuffer getByteBuffer(int id) {
         Buffer b = _data.get(id);
         return b == null ? null : b.getByteData();
     }
 
-    private static synchronized CharBuffer getCharBuffer(int id)
-    {
+    private static synchronized CharBuffer getCharBuffer(int id) {
         Buffer b = _data.get(id);
         return b == null ? null : b.getCharData();
     }
 
-    private synchronized static void closeBuffer(int id)
-    {
+    private synchronized static void closeBuffer(int id) {
         Buffer b = _data.get(id);
-        if(b != null)
-        {
+        if (b != null) {
             b.erase();
             _data.remove(id);
         }
     }
 
-    public void close()
-    {
+    public void close() {
         closeBuffer(_id);
     }
 
-    public void adoptData(byte[] data)
-    {
-        adoptData(data, 0, data!=null ? data.length : 0);
+    public void adoptData(byte[] data) {
+        adoptData(data, 0, data != null ? data.length : 0);
     }
 
-    public void adoptData(char[] data)
-    {
-        adoptData(data, 0, data!=null ? data.length : 0);
+    public void adoptData(char[] data) {
+        adoptData(data, 0, data != null ? data.length : 0);
     }
 
-    public void adoptData(byte[] data, int offset, int count)
-    {
+    public void adoptData(byte[] data, int offset, int count) {
         setData(_id, data, offset, count);
     }
 
-    public void adoptData(char[] data, int offset, int count)
-    {
+    public void adoptData(char[] data, int offset, int count) {
         setData(_id, data, offset, count);
     }
 
-    public ByteBuffer getByteBuffer()
-    {
+    public ByteBuffer getByteBuffer() {
         return getByteBuffer(_id);
     }
 
-    public byte[] getDataArray()
-    {
+    public byte[] getDataArray() {
         ByteBuffer bb = getByteBuffer();
-        if(bb == null)
+        if (bb == null)
             return null;
         byte[] res = new byte[bb.remaining()];
         bb.get(res);
         return res;
     }
 
-    public static final Creator<SecureBuffer> CREATOR = new Creator<SecureBuffer>()
-    {
+    public static final Creator<SecureBuffer> CREATOR = new Creator<SecureBuffer>() {
         @Override
-        public SecureBuffer createFromParcel(Parcel in)
-        {
+        public SecureBuffer createFromParcel(Parcel in) {
             return new SecureBuffer(in);
         }
 
         @Override
-        public SecureBuffer[] newArray(int size)
-        {
+        public SecureBuffer[] newArray(int size) {
             return new SecureBuffer[size];
         }
     };
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i)
-    {
+    public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(_id);
     }
 
-    protected SecureBuffer(Parcel in)
-    {
+    protected SecureBuffer(Parcel in) {
         _id = in.readInt();
     }
 
-    protected static class Buffer
-    {
-        ByteBuffer getByteData()
-        {
-            if(_isByteDataValid)
+    protected static class Buffer {
+        ByteBuffer getByteData() {
+            if (_isByteDataValid)
                 return _isByteDataRO ? _byteData.asReadOnlyBuffer() : _byteData.duplicate();
 
-            if(_charData == null || !_isCharDataValid)
+            if (_charData == null || !_isCharDataValid)
                 return null;
-            if(_byteData != null)
+            if (_byteData != null)
                 eraseData(_byteData.array());
             _charData.mark();
             _byteData = _charset.encode(_charData);
@@ -295,14 +245,13 @@ public class SecureBuffer implements Parcelable, CharSequence
             return _byteData.asReadOnlyBuffer();
         }
 
-        CharBuffer getCharData()
-        {
-            if(_isCharDataValid)
+        CharBuffer getCharData() {
+            if (_isCharDataValid)
                 return _isCharDataRO ? _charData.asReadOnlyBuffer() : _charData.duplicate();
 
-            if(_byteData == null || !_isByteDataValid)
+            if (_byteData == null || !_isByteDataValid)
                 return null;
-            if(_charData != null)
+            if (_charData != null)
                 eraseData(_charData.array());
             _byteData.mark();
             _charData = _charset.decode(_byteData);
@@ -311,18 +260,14 @@ public class SecureBuffer implements Parcelable, CharSequence
             return _charData.asReadOnlyBuffer();
         }
 
-        void setData(byte[] newData, int offset, int count)
-        {
+        void setData(byte[] newData, int offset, int count) {
             _isCharDataValid = false;
-            if(_byteData == null)
-               _byteData = ByteBuffer.wrap(newData, offset, count);
-            else if(_byteData.capacity() <= newData.length)
-            {
+            if (_byteData == null)
+                _byteData = ByteBuffer.wrap(newData, offset, count);
+            else if (_byteData.capacity() <= newData.length) {
                 eraseData(_byteData.array());
                 _byteData = ByteBuffer.wrap(newData, offset, count);
-            }
-            else
-            {
+            } else {
                 _byteData.clear().mark();
                 _byteData.put(newData, offset, count).reset();
                 _byteData.limit(count);
@@ -331,18 +276,14 @@ public class SecureBuffer implements Parcelable, CharSequence
             _isByteDataValid = true;
         }
 
-        void setData(char[] newData, int offset, int count)
-        {
+        void setData(char[] newData, int offset, int count) {
             _isByteDataValid = false;
-            if(_charData == null)
+            if (_charData == null)
                 _charData = CharBuffer.wrap(newData, offset, count);
-            else if(_charData.capacity() <= newData.length)
-            {
+            else if (_charData.capacity() <= newData.length) {
                 eraseData(_charData.array());
                 _charData = CharBuffer.wrap(newData, offset, count);
-            }
-            else
-            {
+            } else {
                 _charData.clear().mark();
                 _charData.put(newData, offset, count).reset();
                 _charData.limit(count);
@@ -351,15 +292,12 @@ public class SecureBuffer implements Parcelable, CharSequence
             _isCharDataValid = true;
         }
 
-        void erase()
-        {
-            if(_charData!=null)
-            {
+        void erase() {
+            if (_charData != null) {
                 eraseData(_charData.array());
                 _charData = null;
             }
-            if(_byteData != null)
-            {
+            if (_byteData != null) {
                 eraseData(_byteData.array());
                 _byteData = null;
             }

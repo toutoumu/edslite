@@ -21,8 +21,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import static com.sovworks.eds.android.providers.ContainersDocumentProviderBase.getDocumentIdFromLocation;
 
-public abstract class FSCursorBase extends AbstractCursor
-{
+public abstract class FSCursorBase extends AbstractCursor {
     public static final String COLUMN_ID = BaseColumns._ID;
     public static final String COLUMN_NAME = OpenableColumns.DISPLAY_NAME;
     public static final String COLUMN_TITLE = MediaStore.MediaColumns.TITLE;
@@ -31,8 +30,7 @@ public abstract class FSCursorBase extends AbstractCursor
     public static final String COLUMN_IS_FOLDER = "is_folder";
     public static final String COLUMN_PATH = "path";
 
-    public FSCursorBase(Context context, Location location, @NotNull String[] projection, String selection, String[] selectionArgs, boolean listDir)
-    {
+    public FSCursorBase(Context context, Location location, @NotNull String[] projection, String selection, String[] selectionArgs, boolean listDir) {
         _context = context;
         _location = location;
         _selection = selection;
@@ -42,8 +40,7 @@ public abstract class FSCursorBase extends AbstractCursor
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         int[] res = new int[1];
         getObservable().
                 subscribeOn(Schedulers.io()).
@@ -52,65 +49,53 @@ public abstract class FSCursorBase extends AbstractCursor
     }
 
     @Override
-    public String[] getColumnNames()
-    {
+    public String[] getColumnNames() {
         return _projection;
     }
 
     @Override
-    public String getString(int column)
-    {
+    public String getString(int column) {
         return String.valueOf(getValueFromCurrentCPI(column));
     }
 
     @Override
-    public short getShort(int column)
-    {
+    public short getShort(int column) {
         return (short) getValueFromCurrentCPI(column);
     }
 
     @Override
-    public int getInt(int column)
-    {
+    public int getInt(int column) {
         return (int) getValueFromCurrentCPI(column);
     }
 
     @Override
-    public long getLong(int column)
-    {
-        return (long)getValueFromCurrentCPI(column);
+    public long getLong(int column) {
+        return (long) getValueFromCurrentCPI(column);
     }
 
     @Override
-    public float getFloat(int column)
-    {
+    public float getFloat(int column) {
         return (float) getValueFromCurrentCPI(column);
     }
 
     @Override
-    public double getDouble(int column)
-    {
+    public double getDouble(int column) {
         return (double) getValueFromCurrentCPI(column);
     }
 
     @Override
-    public boolean isNull(int column)
-    {
+    public boolean isNull(int column) {
         return getValueFromCurrentCPI(column) == null;
     }
 
     @Override
-    public boolean onMove(int oldPosition, int newPosition)
-    {
-        try
-        {
+    public boolean onMove(int oldPosition, int newPosition) {
+        try {
             _current = getObservable().
                     elementAt(newPosition).
                     subscribeOn(Schedulers.io()).
                     blockingGet();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Logger.log(e);
             _current = null;
         }
@@ -127,17 +112,12 @@ public abstract class FSCursorBase extends AbstractCursor
     private Observable<CachedPathInfo> _request;
     private CachedPathInfo _current;
 
-    private Observable<CachedPathInfo> getObservable()
-    {
-        synchronized (this)
-        {
-            if(_request == null)
-                try
-                {
+    private Observable<CachedPathInfo> getObservable() {
+        synchronized (this) {
+            if (_request == null)
+                try {
                     _request = createObservable();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             return _request;
@@ -146,20 +126,17 @@ public abstract class FSCursorBase extends AbstractCursor
 
     protected abstract Observable<CachedPathInfo> createObservable() throws Exception;
 
-    private Object getValueFromCurrentCPI(int column)
-    {
-        if(_current == null)
+    private Object getValueFromCurrentCPI(int column) {
+        if (_current == null)
             return null;
         return getValueFromCachedPathInfo(_current, _projection[column]);
     }
 
-    private Object getValueFromCachedPathInfo(CachedPathInfo cpi, String columnName)
-    {
-        switch (columnName)
-        {
+    private Object getValueFromCachedPathInfo(CachedPathInfo cpi, String columnName) {
+        switch (columnName) {
             case COLUMN_ID:
-                return (long)cpi.getPath().getPathString().hashCode();
-            case COLUMN_NAME: //equals to DocumentsContract.Document.COLUMN_DISPLAY_NAME
+                return (long) cpi.getPath().getPathString().hashCode();
+            case COLUMN_NAME: // equals to DocumentsContract.Document.COLUMN_DISPLAY_NAME
             case COLUMN_TITLE:
                 return cpi.getName();
             case COLUMN_IS_FOLDER:
@@ -171,17 +148,15 @@ public abstract class FSCursorBase extends AbstractCursor
             case COLUMN_PATH:
                 return cpi.getPath().getPathString();
             default:
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                     return getDocumentValue(cpi, columnName);
 
         }
         return null;
     }
 
-    private Object getDocumentValue(CachedPathInfo cpi, String columnName)
-    {
-        switch (columnName)
-        {
+    private Object getDocumentValue(CachedPathInfo cpi, String columnName) {
+        switch (columnName) {
             case DocumentsContract.Document.COLUMN_DISPLAY_NAME:
                 return cpi.getName();
             case DocumentsContract.Document.COLUMN_DOCUMENT_ID:
@@ -190,30 +165,28 @@ public abstract class FSCursorBase extends AbstractCursor
                 return getDocumentIdFromLocation(tmp);
             case DocumentsContract.Document.COLUMN_FLAGS:
                 return getDocumentFlags(cpi);
-            //icon is null
-            //case DocumentsContract.Document.COLUMN_ICON:
+            // icon is null
+            // case DocumentsContract.Document.COLUMN_ICON:
             case DocumentsContract.Document.COLUMN_LAST_MODIFIED:
                 return cpi.getModificationDate().getTime();
             case DocumentsContract.Document.COLUMN_MIME_TYPE:
                 return getDocumentMimeType(cpi);
             case DocumentsContract.Document.COLUMN_SIZE:
                 return cpi.getSize();
-            //summary is null
-            //case DocumentsContract.Document.COLUMN_SUMMARY:
+            // summary is null
+            // case DocumentsContract.Document.COLUMN_SUMMARY:
         }
         return null;
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private int getDocumentFlags(CachedPathInfo cpi)
-    {
+    private int getDocumentFlags(CachedPathInfo cpi) {
         boolean ro = _location.isReadOnly();
         int flags = 0;
-        if(!ro)
-        {
-            if(cpi.isFile())
+        if (!ro) {
+            if (cpi.isFile())
                 flags |= DocumentsContract.Document.FLAG_SUPPORTS_WRITE;
-            else if(cpi.isDirectory())
+            else if (cpi.isDirectory())
                 flags |= DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE;
             flags |= DocumentsContract.Document.FLAG_SUPPORTS_DELETE;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -226,8 +199,7 @@ public abstract class FSCursorBase extends AbstractCursor
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private String getDocumentMimeType(CachedPathInfo cpi)
-    {
+    private String getDocumentMimeType(CachedPathInfo cpi) {
         return cpi.isFile() ?
                 FileOpsService.getMimeTypeFromExtension(_context, new StringPathUtil(cpi.getName()).getFileExtension()) :
                 DocumentsContract.Document.MIME_TYPE_DIR;

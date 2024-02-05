@@ -12,35 +12,29 @@ import com.sovworks.eds.crypto.SecureBuffer;
 import com.sovworks.eds.locations.EDSLocation;
 import com.sovworks.eds.locations.Openable;
 
-public class SavePasswordPropertyEditorBase extends SwitchPropertyEditor implements PasswordDialog.PasswordReceiver
-{
-    public SavePasswordPropertyEditorBase(EDSLocationSettingsFragmentBase settingsFragment)
-    {
+public class SavePasswordPropertyEditorBase extends SwitchPropertyEditor implements PasswordDialog.PasswordReceiver {
+    public SavePasswordPropertyEditorBase(EDSLocationSettingsFragmentBase settingsFragment) {
         super(settingsFragment, R.string.save_password, R.string.save_password_desc);
     }
 
-	@Override
-	public EDSLocationSettingsFragment getHost()
-	{
-		return (EDSLocationSettingsFragment) super.getHost();
-	}
+    @Override
+    public EDSLocationSettingsFragment getHost() {
+        return (EDSLocationSettingsFragment) super.getHost();
+    }
 
     @Override
-    protected boolean loadValue()
-    {
+    protected boolean loadValue() {
         EDSLocation loc = getHost().getLocation();
         return !loc.requirePassword();
     }
 
     @Override
-    protected void saveValue(boolean value)
-    {
+    protected void saveValue(boolean value) {
 
     }
 
     @Override
-    public void onPasswordEntered(PasswordDialog dlg)
-    {
+    public void onPasswordEntered(PasswordDialog dlg) {
         EDSLocation.ExternalSettings settings = getHost().getLocation().getExternalSettings();
         SecureBuffer sb = new SecureBuffer(dlg.getPassword());
         byte[] data = sb.getDataArray();
@@ -51,17 +45,14 @@ public class SavePasswordPropertyEditorBase extends SwitchPropertyEditor impleme
     }
 
     @Override
-    public void onPasswordNotEntered(PasswordDialog dlg)
-    {
+    public void onPasswordNotEntered(PasswordDialog dlg) {
         _switchButton.setChecked(false);
     }
 
     @Override
-    protected boolean onChecked(boolean isChecked)
-    {
+    protected boolean onChecked(boolean isChecked) {
         Openable loc = getHost().getLocation();
-        if (isChecked)
-        {
+        if (isChecked) {
             Bundle args = new Bundle();
             args.putBoolean(PasswordDialog.ARG_HAS_PASSWORD, loc.hasPassword());
             args.putString(PasswordDialog.ARG_RECEIVER_FRAGMENT_TAG, getHost().getTag());
@@ -69,13 +60,11 @@ public class SavePasswordPropertyEditorBase extends SwitchPropertyEditor impleme
             PasswordDialog pd = new PasswordDialog();
             pd.setArguments(args);
             pd.show(getHost().getFragmentManager(), PasswordDialog.TAG);
-			return true;
-        }
-        else
-        {
+            return true;
+        } else {
             getHost().getLocation().getExternalSettings().setPassword(null);
             getHost().saveExternalSettings();
-			return true;
+            return true;
         }
     }
 }

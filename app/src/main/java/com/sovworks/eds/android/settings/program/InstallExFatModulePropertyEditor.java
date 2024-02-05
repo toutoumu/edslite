@@ -28,15 +28,12 @@ import java.io.IOException;
 
 import static com.sovworks.eds.locations.LocationsManagerBase.PARAM_LOCATION_URI;
 
-public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor
-{
+public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor {
 
-    public static class InstallExfatModuleTask extends TaskFragment
-    {
+    public static class InstallExfatModuleTask extends TaskFragment {
         public static final String TAG = "InstallExfatModuleTask";
 
-        public static InstallExfatModuleTask newInstance(Uri moduleLocationUri)
-        {
+        public static InstallExfatModuleTask newInstance(Uri moduleLocationUri) {
             Bundle args = new Bundle();
             args.putParcelable(PARAM_LOCATION_URI, moduleLocationUri);
             InstallExfatModuleTask f = new InstallExfatModuleTask();
@@ -45,17 +42,15 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor
         }
 
         @Override
-        protected void initTask(Activity activity)
-        {
+        protected void initTask(Activity activity) {
             _context = activity.getApplicationContext();
         }
 
         @Override
-        protected void doWork(TaskState uiUpdater) throws Exception
-        {
+        protected void doWork(TaskState uiUpdater) throws Exception {
 
             Location moduleLocation = LocationsManager.getLocationsManager(_context).getFromBundle(getArguments(), null);
-            if(!moduleLocation.getCurrentPath().isFile())
+            if (!moduleLocation.getCurrentPath().isFile())
                 throw new UserException(_context, R.string.file_not_found);
 
             File targetPath = ExFat.getModulePath();
@@ -67,33 +62,25 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor
                     moduleLocation.getCurrentPath().getFile(),
                     targetFolderPath.getDirectory(),
                     targetPath.getName());
-            if(!ExFat.isModuleInstalled() && !ExFat.isModuleIncompatible())
-            {
+            if (!ExFat.isModuleInstalled() && !ExFat.isModuleIncompatible()) {
                 ExFat.loadNativeLibrary();
                 uiUpdater.setResult(true);
-            }
-            else
+            } else
                 uiUpdater.setResult(false);
 
         }
 
         @Override
-        protected TaskCallbacks getTaskCallbacks(final Activity activity)
-        {
-            return new ProgressDialogTaskFragmentCallbacks(activity, R.string.loading)
-            {
+        protected TaskCallbacks getTaskCallbacks(final Activity activity) {
+            return new ProgressDialogTaskFragmentCallbacks(activity, R.string.loading) {
                 @Override
-                public void onCompleted(Bundle args, Result result)
-                {
-                    try
-                    {
-                        if((Boolean)result.getResult())
+                public void onCompleted(Bundle args, Result result) {
+                    try {
+                        if ((Boolean) result.getResult())
                             Toast.makeText(activity, R.string.module_has_been_installed, Toast.LENGTH_LONG).show();
                         else
                             Toast.makeText(activity, R.string.restart_application, Toast.LENGTH_LONG).show();
-                    }
-                    catch (Throwable e)
-                    {
+                    } catch (Throwable e) {
                         Logger.showAndLog(_context, e);
                     }
                 }
@@ -103,8 +90,7 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor
         private Context _context;
     }
 
-    public InstallExFatModulePropertyEditor(Host host)
-    {
+    public InstallExFatModulePropertyEditor(Host host) {
         super(host,
                 R.string.install_exfat_module,
                 host.getContext().getString(R.string.install_exfat_module),
@@ -113,27 +99,21 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor
     }
 
     @Override
-    protected void onButtonClick()
-    {
-        try
-        {
+    protected void onButtonClick() {
+        try {
             requestActivity(getSelectPathIntent(), SELECT_PATH_REQ_CODE);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Logger.showAndLog(getHost().getContext(), e);
         }
     }
 
     @Override
-    protected void onPropertyRequestResult(int propertyRequestCode, int resultCode, Intent data)
-    {
-        if(propertyRequestCode == SELECT_PATH_REQ_CODE && resultCode == Activity.RESULT_OK && data!=null)
+    protected void onPropertyRequestResult(int propertyRequestCode, int resultCode, Intent data) {
+        if (propertyRequestCode == SELECT_PATH_REQ_CODE && resultCode == Activity.RESULT_OK && data != null)
             onPathSelected(data);
     }
 
-    private Intent getSelectPathIntent() throws IOException
-    {
+    private Intent getSelectPathIntent() throws IOException {
         return FileManagerActivity.getSelectPathIntent(
                 getHost().getContext(),
                 null,
@@ -145,8 +125,7 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor
                 true);
     }
 
-    private void onPathSelected(Intent result)
-    {
+    private void onPathSelected(Intent result) {
         Uri uri = result.getData();
         getHost().
                 getFragmentManager().

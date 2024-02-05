@@ -34,10 +34,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-public class DocumentTreeFS implements FileSystem
-{
-    public DocumentTreeFS(Context context, Uri rootUri)
-    {
+public class DocumentTreeFS implements FileSystem {
+    public DocumentTreeFS(Context context, Uri rootUri) {
         _context = context;
         _rootPath = new DocumentPath(
                 DocumentsContract.buildDocumentUriUsingTree(
@@ -48,150 +46,126 @@ public class DocumentTreeFS implements FileSystem
     }
 
     @Override
-    public Path getPath(String pathString) throws IOException
-    {
+    public Path getPath(String pathString) throws IOException {
         if (pathString.isEmpty())
             return getRootPath();
         return getPath(Uri.parse(pathString));
     }
 
-    public Path getPath(Uri uri) throws IOException
-    {
+    public Path getPath(Uri uri) throws IOException {
         return new DocumentPath(uri);
     }
 
     @Override
-    public Path getRootPath()
-    {
+    public Path getRootPath() {
         return _rootPath;
     }
 
     @Override
-    public void close(boolean force) throws IOException
-    {
+    public void close(boolean force) throws IOException {
     }
 
     @Override
-    public boolean isClosed()
-    {
+    public boolean isClosed() {
         return false;
     }
 
-    public class File implements com.sovworks.eds.fs.File
-    {
-        public File(DocumentPath path)
-        {
+    public class File implements com.sovworks.eds.fs.File {
+        public File(DocumentPath path) {
             _path = path;
         }
 
         @Override
-        public Path getPath()
-        {
+        public Path getPath() {
             return _path;
         }
 
         @Override
-        public String getName() throws IOException
-        {
+        public String getName() throws IOException {
             return _path.getFileName();
         }
 
         @Override
-        public void rename(String newName) throws IOException
-        {
+        public void rename(String newName) throws IOException {
             _path = _path.rename(newName);
         }
 
         @Override
-        public Date getLastModified() throws IOException
-        {
+        public Date getLastModified() throws IOException {
             return _path.getLastModified();
         }
 
         @Override
-        public void setLastModified(Date dt) throws IOException
-        {
+        public void setLastModified(Date dt) throws IOException {
             _path.setLastModified(dt);
         }
 
         @Override
-        public void delete() throws IOException
-        {
+        public void delete() throws IOException {
             _path.delete();
         }
 
         @Override
-        public void moveTo(com.sovworks.eds.fs.Directory newParent) throws IOException
-        {
+        public void moveTo(com.sovworks.eds.fs.Directory newParent) throws IOException {
             Path np = Util.copyFile(this, newParent).getPath();
             delete();
             _path = (DocumentPath) np;
         }
 
         @Override
-        public InputStream getInputStream() throws IOException
-        {
+        public InputStream getInputStream() throws IOException {
             if (!_path.isFile())
                 throw new FileNotFoundException(_path.getPathString());
             return _context.getContentResolver().openInputStream(_path.getDocumentUri());
         }
 
         @Override
-        public OutputStream getOutputStream() throws IOException
-        {
+        public OutputStream getOutputStream() throws IOException {
             return _context.getContentResolver().openOutputStream(_path.getDocumentUri());
         }
 
         @Override
-        public RandomAccessIO getRandomAccessIO(File.AccessMode accessMode) throws IOException
-        {
+        public RandomAccessIO getRandomAccessIO(File.AccessMode accessMode) throws IOException {
             ParcelFileDescriptor pfd = getFileDescriptor(accessMode);
-            if(pfd == null)
+            if (pfd == null)
                 throw new UnsupportedOperationException();
             return new PFDRandomAccessIO(pfd);
         }
 
         @Override
-        public long getSize() throws IOException
-        {
+        public long getSize() throws IOException {
             return _path.getSize();
         }
 
         @Override
-        public ParcelFileDescriptor getFileDescriptor(File.AccessMode accessMode) throws IOException
-        {
-           return _context.getContentResolver().openFileDescriptor(
+        public ParcelFileDescriptor getFileDescriptor(File.AccessMode accessMode) throws IOException {
+            return _context.getContentResolver().openFileDescriptor(
                     _path.getDocumentUri(),
                     Util.getStringModeFromAccessMode(accessMode)
             );
         }
 
         @Override
-        public void copyToOutputStream(OutputStream output, long offset, long count, ProgressInfo progressInfo) throws IOException
-        {
+        public void copyToOutputStream(OutputStream output, long offset, long count, ProgressInfo progressInfo) throws IOException {
             Util.copyFileToOutputStream(output, this, offset, count, progressInfo);
         }
 
         @Override
-        public void copyFromInputStream(InputStream input, long offset, long count, ProgressInfo progressInfo) throws IOException
-        {
+        public void copyFromInputStream(InputStream input, long offset, long count, ProgressInfo progressInfo) throws IOException {
             Util.copyFileFromInputStream(input, this, offset, count, progressInfo);
         }
 
         private DocumentPath _path;
     }
 
-    public class Directory implements com.sovworks.eds.fs.Directory
-    {
-        public Directory(DocumentPath path)
-        {
+    public class Directory implements com.sovworks.eds.fs.Directory {
+        public Directory(DocumentPath path) {
             _path = path;
         }
 
         @Override
-        public void moveTo(com.sovworks.eds.fs.Directory newParent) throws IOException
-        {
-            if(PathUtil.isParentDirectory(_path, newParent.getPath()))
+        public void moveTo(com.sovworks.eds.fs.Directory newParent) throws IOException {
+            if (PathUtil.isParentDirectory(_path, newParent.getPath()))
                 throw new IOException("Can't move the folder to its sub-folder");
             Path np = Util.copyFiles(_path, newParent);
             Util.deleteFiles(_path);
@@ -199,73 +173,64 @@ public class DocumentTreeFS implements FileSystem
         }
 
         @Override
-        public void rename(String newName) throws IOException
-        {
+        public void rename(String newName) throws IOException {
             _path = _path.rename(newName);
         }
 
         @Override
-        public Path getPath()
-        {
+        public Path getPath() {
             return _path;
         }
 
         @Override
-        public String getName() throws IOException
-        {
+        public String getName() throws IOException {
             return _path.getFileName();
         }
 
 
         @Override
-        public Date getLastModified() throws IOException
-        {
+        public Date getLastModified() throws IOException {
             return _path.getLastModified();
         }
 
         @Override
-        public void setLastModified(Date dt) throws IOException
-        {
+        public void setLastModified(Date dt) throws IOException {
             _path.setLastModified(dt);
         }
 
         @Override
-        public void delete() throws IOException
-        {
+        public void delete() throws IOException {
             _path.delete();
         }
 
 
         @Override
-        public com.sovworks.eds.fs.Directory createDirectory(String name) throws IOException
-        {
+        public com.sovworks.eds.fs.Directory createDirectory(String name) throws IOException {
             Uri uri = DocumentsContract.createDocument(
                     _context.getContentResolver(),
                     _path.getDocumentUri(),
                     DocumentsContract.Document.MIME_TYPE_DIR,
                     name
             );
-            if(uri == null)
+            if (uri == null)
                 throw new IOException("Failed creating folder");
             return new Directory(new DocumentPath(uri));
         }
 
         @Override
-        public com.sovworks.eds.fs.File createFile(String name) throws IOException
-        {
+        public com.sovworks.eds.fs.File createFile(String name) throws IOException {
             String mimeType = FileOpsService.getMimeTypeFromExtension(_context, new StringPathUtil(name).getFileExtension());
             Uri uri = DocumentsContract.createDocument(
                     _context.getContentResolver(),
                     _path.getDocumentUri(),
                     mimeType, name);
-            if(uri == null)
+            if (uri == null)
                 throw new IOException("Failed creating file");
             return new File(new DocumentPath(uri));
         }
 
         @Override
-        public com.sovworks.eds.fs.Directory.Contents list() throws IOException
-        {
+        public com.sovworks.eds.fs.Directory.Contents list() throws IOException {
             final Uri uri = _path.getDocumentUri();
             final Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(uri,
                     DocumentsContract.getDocumentId(uri));
@@ -274,32 +239,26 @@ public class DocumentTreeFS implements FileSystem
                     childrenUri,
                     new String[]{DocumentsContract.Document.COLUMN_DOCUMENT_ID},
                     DocumentsContract.Document.COLUMN_DOCUMENT_ID + "!=?",
-                    new String[] { ".android_secure" },
+                    new String[]{".android_secure"},
                     null
             );
-            return new com.sovworks.eds.fs.Directory.Contents()
-            {
+            return new com.sovworks.eds.fs.Directory.Contents() {
                 @Override
-                public void close() throws IOException
-                {
+                public void close() throws IOException {
                     if (cursor != null)
                         cursor.close();
                 }
 
                 @Override
-                public Iterator<Path> iterator()
-                {
-                    return new Iterator<Path>()
-                    {
+                public Iterator<Path> iterator() {
+                    return new Iterator<Path>() {
                         @Override
-                        public void remove()
-                        {
+                        public void remove() {
 
                         }
 
                         @Override
-                        public Path next()
-                        {
+                        public Path next() {
                             if (cursor == null)
                                 throw new NoSuchElementException();
                             final String documentId = cursor.getString(0);
@@ -307,16 +266,14 @@ public class DocumentTreeFS implements FileSystem
                                     documentId);
                             _hasNext = cursor.moveToNext();
                             Path newPath = new DocumentPath(documentUri);
-                            synchronized (_parentsCache)
-                            {
+                            synchronized (_parentsCache) {
                                 _parentsCache.put(newPath, _path);
                             }
                             return newPath;
                         }
 
                         @Override
-                        public boolean hasNext()
-                        {
+                        public boolean hasNext() {
                             return _hasNext;
                         }
 
@@ -328,83 +285,67 @@ public class DocumentTreeFS implements FileSystem
         }
 
         @Override
-        public long getTotalSpace() throws IOException
-        {
+        public long getTotalSpace() throws IOException {
             return getFreeSpace();
         }
 
         @Override
-        public long getFreeSpace() throws IOException
-        {
+        public long getFreeSpace() throws IOException {
             return _rootPath.getBytesAvailable();
         }
 
         private DocumentPath _path;
     }
 
-    public class DocumentPath implements Path
-    {
-        public DocumentPath(Uri uri)
-        {
+    public class DocumentPath implements Path {
+        public DocumentPath(Uri uri) {
             _documentUri = uri;
         }
 
         @Override
-        public String getPathDesc()
-        {
+        public String getPathDesc() {
             return getFileName();
         }
 
-        public Date getLastModified() throws IOException
-        {
+        public Date getLastModified() throws IOException {
             return new Date(queryForLong(getDocumentUri(), DocumentsContract.Document.COLUMN_LAST_MODIFIED, 0));
         }
 
-        public void setLastModified(Date dt) throws IOException
-        {
+        public void setLastModified(Date dt) throws IOException {
             final ContentResolver resolver = _context.getContentResolver();
             ContentValues cv = new ContentValues();
             cv.put(DocumentsContract.Document.COLUMN_LAST_MODIFIED, dt.getTime());
-            try
-            {
+            try {
                 if (resolver.update(getDocumentUri(), cv, null, null) == 0)
                     throw new IOException("Failed setting last modified time");
-            }
-            catch (UnsupportedOperationException e)
-            {
+            } catch (UnsupportedOperationException e) {
                 throw new IOException("Failed setting last modified time", e);
             }
         }
 
-        public long getBytesAvailable() throws IOException
-        {
+        public long getBytesAvailable() throws IOException {
             return queryForLong(getDocumentUri(), DocumentsContract.Root.COLUMN_AVAILABLE_BYTES, 0);
         }
 
-        public long getSize() throws IOException
-        {
+        public long getSize() throws IOException {
             return queryForLong(getDocumentUri(), DocumentsContract.Document.COLUMN_SIZE, 0);
         }
 
-        public void delete() throws IOException
-        {
+        public void delete() throws IOException {
             if (!DocumentsContract.deleteDocument(_context.getContentResolver(), getDocumentUri()))
                 throw new IOException("Delete failed");
         }
 
-        public DocumentPath rename(String newName) throws IOException
-        {
-            try
-            {
+        public DocumentPath rename(String newName) throws IOException {
+            try {
                 Path p = getParentPath();
-                if(p!=null)
-                {
+                if (p != null) {
                     p = p.combine(newName);
-                    if(p.exists())
+                    if (p.exists())
                         p.getFile().delete();
                 }
+            } catch (IOException ignored) {
             }
-            catch (IOException ignored) {}
 
             final Uri newUri = DocumentsContract.renameDocument(_context.getContentResolver(), getDocumentUri(), newName);
             if (newUri == null)
@@ -414,12 +355,10 @@ public class DocumentTreeFS implements FileSystem
         }
 
         @Override
-        public boolean equals(Object other)
-        {
+        public boolean equals(Object other) {
             if (this == other)
                 return true;
-            if (other instanceof DocumentPath)
-            {
+            if (other instanceof DocumentPath) {
                 DocumentPath otherFP = (DocumentPath) other;
                 return _documentUri.equals(otherFP._documentUri);
             }
@@ -427,160 +366,125 @@ public class DocumentTreeFS implements FileSystem
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return _documentUri.hashCode();
         }
 
         @Override
-        public boolean exists() throws IOException
-        {
+        public boolean exists() throws IOException {
             Cursor c = null;
-            try
-            {
+            try {
                 c = _context.getContentResolver().query(_documentUri, new String[]{
                         DocumentsContract.Document.COLUMN_DOCUMENT_ID}, null, null, null);
                 return c != null && c.getCount() > 0;
-            }
-            catch (Exception e)
-            {
-                if(GlobalConfig.isDebug())
+            } catch (Exception e) {
+                if (GlobalConfig.isDebug())
                     Logger.log(e);
-            }
-            finally
-            {
+            } finally {
                 closeQuietly(c);
             }
             return false;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return getPathString();
         }
 
         @Override
-        public boolean isFile() throws IOException
-        {
-            try
-            {
+        public boolean isFile() throws IOException {
+            try {
                 final String type = getRawType();
                 return !(DocumentsContract.Document.MIME_TYPE_DIR.equals(type) || TextUtils.isEmpty(type));
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return false;
             }
         }
 
         @Override
-        public boolean isDirectory() throws IOException
-        {
-            try
-            {
+        public boolean isDirectory() throws IOException {
+            try {
                 return isRootDirectory() || DocumentsContract.Document.MIME_TYPE_DIR.equals(getRawType());
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 return false;
             }
         }
 
         @Override
-        public FileSystem getFileSystem()
-        {
+        public FileSystem getFileSystem() {
             return DocumentTreeFS.this;
         }
 
         @Override
-        public String getPathString()
-        {
+        public String getPathString() {
             return getPathUri().toString();
         }
 
-        public Uri getPathUri()
-        {
+        public Uri getPathUri() {
             return _documentUri;
         }
 
-        public String getFileName()
-        {
-            try
-            {
+        public String getFileName() {
+            try {
                 return queryForString(getDocumentUri(), DocumentsContract.Document.COLUMN_DISPLAY_NAME, "unknown");
-            }
-            catch (IOException e)
-            {
-                if(GlobalConfig.isDebug())
+            } catch (IOException e) {
+                if (GlobalConfig.isDebug())
                     Logger.log(e);
                 return getPathString();
             }
         }
 
         @Override
-        public Path getParentPath() throws IOException
-        {
+        public Path getParentPath() throws IOException {
             return DocumentTreeFS.this.getParentPath(this);
         }
 
         @Override
-        public boolean isRootDirectory() throws IOException
-        {
+        public boolean isRootDirectory() throws IOException {
             return _rootPath._documentUri.equals(_documentUri);
         }
 
         @Override
-        public Path combine(String part) throws IOException
-        {
+        public Path combine(String part) throws IOException {
             Uri childUri = resolveDocumentUri(part);
-            if(childUri == null)
+            if (childUri == null)
                 throw new FileNotFoundException();
             Path newPath = new DocumentPath(childUri);
-            synchronized (_parentsCache)
-            {
+            synchronized (_parentsCache) {
                 _parentsCache.put(newPath, this);
             }
             return newPath;
         }
 
         @Override
-        public com.sovworks.eds.fs.Directory getDirectory() throws IOException
-        {
+        public com.sovworks.eds.fs.Directory getDirectory() throws IOException {
             return new Directory(this);
         }
 
         @Override
-        public com.sovworks.eds.fs.File getFile() throws IOException
-        {
+        public com.sovworks.eds.fs.File getFile() throws IOException {
             return new File(this);
         }
 
-        public Uri getDocumentUri() throws IOException
-        {
+        public Uri getDocumentUri() throws IOException {
             return _documentUri;
         }
 
         @Override
-        public int compareTo(@NonNull Path another)
-        {
-            return _documentUri.compareTo(((DocumentPath)another)._documentUri);
+        public int compareTo(@NonNull Path another) {
+            return _documentUri.compareTo(((DocumentPath) another)._documentUri);
         }
 
         private Uri _documentUri;
 
-        private class ChildUriReceiver implements ResultReceiver
-        {
-            public ChildUriReceiver(String childName)
-            {
+        private class ChildUriReceiver implements ResultReceiver {
+            public ChildUriReceiver(String childName) {
                 _childName = childName;
             }
 
             @Override
-            public boolean nextResult(Cursor c)
-            {
-                if (!c.isNull(1) && _childName.equals(c.getString(1)))
-                {
+            public boolean nextResult(Cursor c) {
+                if (!c.isNull(1) && _childName.equals(c.getString(1))) {
                     final String documentId = c.getString(0);
                     _uri = DocumentsContract.buildDocumentUriUsingTree(_documentUri,
                             documentId);
@@ -589,8 +493,7 @@ public class DocumentTreeFS implements FileSystem
                 return true;
             }
 
-            public Uri getChildUri()
-            {
+            public Uri getChildUri() {
                 return _uri;
             }
 
@@ -598,8 +501,7 @@ public class DocumentTreeFS implements FileSystem
             private Uri _uri;
         }
 
-        private synchronized Uri resolveDocumentUri(final String childName)
-        {
+        private synchronized Uri resolveDocumentUri(final String childName) {
             ChildUriReceiver rec = new ChildUriReceiver(childName);
             listChildren(rec,
                     _documentUri,
@@ -609,93 +511,70 @@ public class DocumentTreeFS implements FileSystem
             return rec.getChildUri();
         }
 
-        private void listChildren(ResultReceiver res, Uri uri, String... columns)
-        {
+        private void listChildren(ResultReceiver res, Uri uri, String... columns) {
             final ContentResolver resolver = _context.getContentResolver();
             final Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(uri,
                     DocumentsContract.getDocumentId(uri));
             Cursor c = null;
-            try
-            {
+            try {
                 c = resolver.query(childrenUri, columns, null, null, null);
                 if (c != null)
-                    while (c.moveToNext())
-                    {
+                    while (c.moveToNext()) {
                         if (!res.nextResult(c))
                             break;
                     }
-            }
-            catch (Exception e)
-            {
-                if(GlobalConfig.isDebug())
+            } catch (Exception e) {
+                if (GlobalConfig.isDebug())
                     Logger.log(e);
-            }
-            finally
-            {
+            } finally {
                 closeQuietly(c);
             }
         }
 
-        private String getRawType() throws IOException
-        {
+        private String getRawType() throws IOException {
             return queryForString(getDocumentUri(), DocumentsContract.Document.COLUMN_MIME_TYPE, null);
         }
 
-        private long queryForLong(Uri uri, String column, long defaultValue)
-        {
+        private long queryForLong(Uri uri, String column, long defaultValue) {
             final ContentResolver resolver = _context.getContentResolver();
             Cursor c = null;
-            try
-            {
+            try {
                 c = resolver.query(uri, new String[]{column}, null, null, null);
                 if (c != null && c.moveToFirst() && !c.isNull(0))
                     return c.getLong(0);
                 else
                     return defaultValue;
-            }
-            catch (Exception e)
-            {
-                if(GlobalConfig.isDebug())
+            } catch (Exception e) {
+                if (GlobalConfig.isDebug())
                     Logger.log(e);
                 return defaultValue;
-            }
-            finally
-            {
+            } finally {
                 closeQuietly(c);
             }
         }
 
-        private String queryForString(Uri uri, String column, String defaultValue)
-        {
+        private String queryForString(Uri uri, String column, String defaultValue) {
             final ContentResolver resolver = _context.getContentResolver();
             Cursor c = null;
-            try
-            {
+            try {
                 c = resolver.query(uri, new String[]{column}, null, null, null);
-                if (c != null && c.moveToFirst() && !c.isNull(0))
-                {
+                if (c != null && c.moveToFirst() && !c.isNull(0)) {
                     return c.getString(0);
-                } else
-                {
+                } else {
                     return defaultValue;
                 }
-            }
-            catch (Exception e)
-            {
-                if(GlobalConfig.isDebug())
+            } catch (Exception e) {
+                if (GlobalConfig.isDebug())
                     Logger.log(e);
                 return defaultValue;
-            }
-            finally
-            {
+            } finally {
                 closeQuietly(c);
             }
         }
 
     }
 
-    private interface ResultReceiver
-    {
+    private interface ResultReceiver {
         boolean nextResult(Cursor c);
     }
 
@@ -703,17 +582,14 @@ public class DocumentTreeFS implements FileSystem
     private final DocumentPath _rootPath;
     private final Map<Path, Path> _parentsCache = new HashMap<>();
 
-    private Path getParentPath(Path path) throws IOException
-    {
-        if(path.isRootDirectory())
+    private Path getParentPath(Path path) throws IOException {
+        if (path.isRootDirectory())
             return null;
-        synchronized (_parentsCache)
-        {
+        synchronized (_parentsCache) {
             Path parentPath = _parentsCache.get(path);
-            if(parentPath == null)
-            {
+            if (parentPath == null) {
                 parentPath = findParentPath(_rootPath, path);
-                if(parentPath == null)
+                if (parentPath == null)
                     throw new IOException("Couldn't find parent path for " + path.getPathString());
                 _parentsCache.put(path, parentPath);
             }
@@ -721,46 +597,33 @@ public class DocumentTreeFS implements FileSystem
         }
     }
 
-    private Path findParentPath(Path startSearchPath, Path targetPath) throws IOException
-    {
-        if(!startSearchPath.isDirectory())
+    private Path findParentPath(Path startSearchPath, Path targetPath) throws IOException {
+        if (!startSearchPath.isDirectory())
             return null;
         com.sovworks.eds.fs.Directory.Contents dc = startSearchPath.getDirectory().list();
-        try
-        {
-            for(Path p: dc)
-            {
-                if(p.equals(targetPath))
+        try {
+            for (Path p : dc) {
+                if (p.equals(targetPath))
                     return startSearchPath;
-                if(p.isDirectory())
-                {
+                if (p.isDirectory()) {
                     Path res = findParentPath(p, targetPath);
-                    if(res!=null)
+                    if (res != null)
                         return res;
                 }
             }
-        }
-        finally
-        {
+        } finally {
             dc.close();
         }
         return null;
     }
 
-    private static void closeQuietly(AutoCloseable closeable)
-    {
-        if (closeable != null)
-        {
-            try
-            {
+    private static void closeQuietly(AutoCloseable closeable) {
+        if (closeable != null) {
+            try {
                 closeable.close();
-            }
-            catch (RuntimeException rethrown)
-            {
+            } catch (RuntimeException rethrown) {
                 throw rethrown;
-            }
-            catch (Exception ignored)
-            {
+            } catch (Exception ignored) {
             }
         }
     }

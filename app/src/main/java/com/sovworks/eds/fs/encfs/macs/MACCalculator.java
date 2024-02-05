@@ -3,54 +3,45 @@ package com.sovworks.eds.fs.encfs.macs;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public abstract class MACCalculator
-{
-    public void setChainedIV(byte[] iv)
-    {
+public abstract class MACCalculator {
+    public void setChainedIV(byte[] iv) {
         _chainedIV = iv;
         _useChainedIV = iv != null;
     }
 
-    public boolean isChainedIVEnabled()
-    {
+    public boolean isChainedIVEnabled() {
         return _useChainedIV;
     }
 
-    public void init(byte[] key)
-    {
+    public void init(byte[] key) {
 
     }
 
-    public byte[] getChainedIV()
-    {
+    public byte[] getChainedIV() {
         return _chainedIV;
     }
 
-    public long calc64(byte[] buf, int offset, int count)
-    {
+    public long calc64(byte[] buf, int offset, int count) {
         return ByteBuffer.wrap(calcChecksum(buf, offset, count)).order(ByteOrder.BIG_ENDIAN).getLong();
     }
 
-    public int calc32(byte[] buf, int offset, int count)
-    {
+    public int calc32(byte[] buf, int offset, int count) {
         byte[] cs = calcChecksum(buf, offset, count);
-        for(int i=0;i<4;i++)
-            cs[i] ^= cs[i+4];
+        for (int i = 0; i < 4; i++)
+            cs[i] ^= cs[i + 4];
         return ByteBuffer.wrap(cs).order(ByteOrder.BIG_ENDIAN).getInt();
     }
 
-    public short calc16(byte[] buf, int offset, int count)
-    {
+    public short calc16(byte[] buf, int offset, int count) {
         byte[] cs = calcChecksum(buf, offset, count);
-        for(int i=0;i<4;i++)
-            cs[i] ^= cs[i+4];
-        for(int i=0;i<2;i++)
-            cs[i] ^= cs[i+2];
+        for (int i = 0; i < 4; i++)
+            cs[i] ^= cs[i + 4];
+        for (int i = 0; i < 2; i++)
+            cs[i] ^= cs[i + 2];
         return ByteBuffer.wrap(cs).order(ByteOrder.BIG_ENDIAN).getShort();
     }
 
-    public void close()
-    {
+    public void close() {
 
     }
 

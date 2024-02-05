@@ -12,15 +12,12 @@ import java.util.concurrent.CancellationException;
 
 import io.reactivex.CompletableEmitter;
 
-public class AppInitHelper extends AppInitHelperBase
-{
-    AppInitHelper(RxActivity activity, CompletableEmitter emitter)
-    {
+public class AppInitHelper extends AppInitHelperBase {
+    AppInitHelper(RxActivity activity, CompletableEmitter emitter) {
         super(activity, emitter);
     }
 
-    void startInitSequence()
-    {
+    void startInitSequence() {
         MasterPasswordDialog.getObservable(_activity).
                 flatMapCompletable(isValidPassword ->
                 {
@@ -35,7 +32,7 @@ public class AppInitHelper extends AppInitHelperBase
                     _initFinished.onComplete();
                 }, err ->
                 {
-                    if(!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException))
                         Logger.log(err);
                 });
     }

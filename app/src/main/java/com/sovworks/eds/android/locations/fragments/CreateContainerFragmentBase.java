@@ -41,29 +41,24 @@ import com.sovworks.eds.container.VolumeLayout;
 
 import java.io.File;
 
-public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragment implements PasswordDialogBase.PasswordReceiver
-{
-    public void changeUniqueIVDependentOptions()
-    {
+public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragment implements PasswordDialogBase.PasswordReceiver {
+    public void changeUniqueIVDependentOptions() {
         boolean show = isEncFsFormat() && !_state.getBoolean(ARG_ADD_EXISTING_LOCATION, false) && _state.getBoolean(CreateEncFsTaskFragment.ARG_UNIQUE_IV, true) &&
                 _state.getBoolean(CreateEncFsTaskFragment.ARG_CHAINED_NAME_IV, true);
         _propertiesView.setPropertyState(R.string.enable_filename_to_file_iv_chain, show);
     }
 
-    public boolean isEncFsFormat()
-    {
+    public boolean isEncFsFormat() {
         return EDSLocationFormatter.FORMAT_ENCFS.equals(_state.getString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT));
     }
 
-    public VolumeLayout getSelectedVolumeLayout()
-    {
+    public VolumeLayout getSelectedVolumeLayout() {
         ContainerFormatInfo info = getCurrentContainerFormatInfo();
         return info == null ? null : info.getVolumeLayout();
     }
 
     @Override
-    protected TaskFragment createAddExistingLocationTask()
-    {
+    protected TaskFragment createAddExistingLocationTask() {
         return AddExistingContainerTaskFragment.newInstance(
                 (Uri) _state.getParcelable(CreateContainerTaskFragmentBase.ARG_LOCATION),
                 !UserSettings.getSettings(getActivity()).neverSaveHistory(),
@@ -72,17 +67,14 @@ public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragm
     }
 
     @Override
-    protected TaskFragment createCreateLocationTask()
-    {
+    protected TaskFragment createCreateLocationTask() {
         return isEncFsFormat() ? new CreateEncFsTaskFragment() : new CreateContainerTaskFragment();
     }
 
     @Override
-    public void showCreateNewLocationProperties()
-    {
+    public void showCreateNewLocationProperties() {
         Uri uri = _state.getParcelable(CreateContainerTaskFragmentBase.ARG_LOCATION);
-        if(uri == null)
-        {
+        if (uri == null) {
             File path;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
                 path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
@@ -92,8 +84,7 @@ public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragm
                 path = getContext().getFilesDir();
             if (path != null)
                 path = new File(path, "new container.eds");
-            if(path!=null)
-            {
+            if (path != null) {
                 _state.putParcelable(CreateContainerTaskFragmentBase.ARG_LOCATION, Uri.parse(path.getPath()));
                 getActivity().invalidateOptionsMenu();
             }
@@ -105,34 +96,30 @@ public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragm
     }
 
     @Override
-    public void onPasswordEntered(PasswordDialog dlg)
-    {
+    public void onPasswordEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if(pr!=null)
+        if (pr != null)
             pr.onPasswordEntered(dlg);
     }
 
     @Override
-    public void onPasswordNotEntered(PasswordDialog dlg)
-    {
+    public void onPasswordNotEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if(pr!=null)
+        if (pr != null)
             pr.onPasswordNotEntered(dlg);
     }
 
     @Override
-    protected void createProperties()
-    {
+    protected void createProperties() {
         super.createProperties();
-        if(!_state.containsKey(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT))
+        if (!_state.containsKey(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT))
             _state.putString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT, EdsContainer.getSupportedFormats().get(0).getFormatName());
     }
 
     @Override
-    protected void createNewLocationProperties()
-    {
+    protected void createNewLocationProperties() {
         _propertiesView.addProperty(new ContainerFormatPropertyEditor(this));
         _propertiesView.addProperty(new PathToContainerPropertyEditor(this));
         _propertiesView.addProperty(new ContainerPasswordPropertyEditor(this));
@@ -140,13 +127,11 @@ public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragm
         createEncFsProperties();
     }
 
-    protected ContainerFormatInfo getCurrentContainerFormatInfo()
-    {
+    protected ContainerFormatInfo getCurrentContainerFormatInfo() {
         return EdsContainer.findFormatByName(_state.getString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT));
     }
 
-    protected void createContainerProperties()
-    {
+    protected void createContainerProperties() {
         _propertiesView.addProperty(new PIMPropertyEditor(this));
         _propertiesView.addProperty(new ContainerSizePropertyEditor(this));
         _propertiesView.addProperty(new EncryptionAlgorithmPropertyEditor(this));
@@ -155,8 +140,7 @@ public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragm
         _propertiesView.addProperty(new FillFreeSpacePropertyEditor(this));
     }
 
-    private void createEncFsProperties()
-    {
+    private void createEncFsProperties() {
         _propertiesView.addProperty(new DataCodecPropertyEditor(this));
         _propertiesView.addProperty(new NameCodecPropertyEditor(this));
         _propertiesView.addProperty(new KeySizePropertyEditor(this));

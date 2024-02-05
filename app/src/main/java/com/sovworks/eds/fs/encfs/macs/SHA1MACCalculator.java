@@ -8,69 +8,52 @@ import java.security.DigestException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class SHA1MACCalculator extends MACCalculator
-{
-    public SHA1MACCalculator(int keySize)
-    {
+public class SHA1MACCalculator extends MACCalculator {
+    public SHA1MACCalculator(int keySize) {
         _keySize = keySize;
     }
 
     @Override
-    public void init(byte[] key)
-    {
+    public void init(byte[] key) {
         byte[] k = CipherBase.getKeyFromBuf(key, _keySize);
-        try
-        {
+        try {
             _hmac = new HMACSHA1(k);
-        }
-        catch (NoSuchAlgorithmException e)
-        {
+        } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            Arrays.fill(k, (byte)0);
+        } finally {
+            Arrays.fill(k, (byte) 0);
         }
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
         _hmac.close();
     }
 
     @Override
-    public byte[] calcChecksum(byte[] buf, int offset, int count)
-    {
+    public byte[] calcChecksum(byte[] buf, int offset, int count) {
         byte[] data;
-        if(isChainedIVEnabled())
-        {
+        if (isChainedIVEnabled()) {
             byte[] iv = getChainedIV();
             data = new byte[count + 8];
             System.arraycopy(buf, offset, data, 0, count);
-            for(int i=0;i<8;i++)
-                data[count + i] = iv[7-i];
-        }
-        else
+            for (int i = 0; i < 8; i++)
+                data[count + i] = iv[7 - i];
+        } else
             data = Arrays.copyOfRange(buf, offset, offset + count);
-        try
-        {
+        try {
             byte[] mac = new byte[_hmac.getDigestLength()];
             _hmac.calcHMAC(data, 0, data.length, mac);
             byte[] cut = new byte[8];
-            for(int i=0; i<mac.length - 1;i++)
+            for (int i = 0; i < mac.length - 1; i++)
                 cut[i % cut.length] ^= mac[i];
-            if(isChainedIVEnabled())
+            if (isChainedIVEnabled())
                 setChainedIV(cut.clone());
             return cut;
-        }
-        catch (DigestException | EncryptionEngineException e)
-        {
+        } catch (DigestException | EncryptionEngineException e) {
             throw new RuntimeException(e);
-        }
-        finally
-        {
-            Arrays.fill(data, (byte)0);
+        } finally {
+            Arrays.fill(data, (byte) 0);
         }
     }
 

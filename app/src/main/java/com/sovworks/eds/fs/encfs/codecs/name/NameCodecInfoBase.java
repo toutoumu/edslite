@@ -7,24 +7,20 @@ import com.sovworks.eds.fs.encfs.NameCodec;
 import com.sovworks.eds.fs.encfs.NameCodecInfo;
 import com.sovworks.eds.fs.encfs.ciphers.BlockNameCipher;
 
-public abstract class NameCodecInfoBase implements NameCodecInfo
-{
+public abstract class NameCodecInfoBase implements NameCodecInfo {
     @Override
-    public boolean useChainedNamingIV()
-    {
+    public boolean useChainedNamingIV() {
         return _config.useChainedNameIV();
     }
 
     @Override
-    public AlgInfo select(Config config)
-    {
+    public AlgInfo select(Config config) {
         NameCodecInfoBase info = createNew();
         info._config = config;
         return info;
     }
 
-    public Config getConfig()
-    {
+    public Config getConfig() {
         return _config;
     }
 

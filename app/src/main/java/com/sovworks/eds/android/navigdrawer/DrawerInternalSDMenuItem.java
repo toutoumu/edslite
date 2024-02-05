@@ -8,26 +8,21 @@ import android.util.TypedValue;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.locations.Location;
 
-public class DrawerInternalSDMenuItem extends DrawerLocationMenuItem
-{
-    public DrawerInternalSDMenuItem(Location location, DrawerControllerBase drawerController)
-    {
+public class DrawerInternalSDMenuItem extends DrawerLocationMenuItem {
+    public DrawerInternalSDMenuItem(Location location, DrawerControllerBase drawerController) {
         super(location, drawerController);
     }
 
     @Override
-    public Drawable getIcon()
-    {
+    public Drawable getIcon() {
         return getIcon(getDrawerController().getMainActivity());
     }
 
-    private synchronized static Drawable getIcon(Context context)
-    {
-        if(_icon == null)
-        {
+    private synchronized static Drawable getIcon(Context context) {
+        if (_icon == null) {
             TypedValue typedValue = new TypedValue();
             context.getTheme().resolveAttribute(R.attr.deviceMemoryIcon, typedValue, true);
-            //noinspection deprecation
+            // noinspection deprecation
             _icon = context.getResources().getDrawable(typedValue.resourceId);
         }
         return _icon;

@@ -57,33 +57,30 @@ import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
 
 @SuppressLint({"CommitPrefEdits", "ApplySharedPref"})
-public abstract class FileManagerActivityBase extends RxActivity implements PreviewFragment.Host
-{
+public abstract class FileManagerActivityBase extends RxActivity implements PreviewFragment.Host {
     public static final String TAG = "FileManagerActivity";
     public static final String ACTION_ASK_OVERWRITE = "com.sovworks.eds.android.ACTION_ASK_OVERWRITE";
 
-    static
-    {
-        if(GlobalConfig.isTest())
+    static {
+        if (GlobalConfig.isTest())
             TEST_INIT_OBSERVABLE = BehaviorSubject.createDefault(false);
 
     }
+
     public static Subject<Boolean> TEST_INIT_OBSERVABLE;
 
-    public static Location getStartLocation(Context context)
-    {
+    public static Location getStartLocation(Context context) {
         return LocationsManager.getLocationsManager(context, true).getDefaultDeviceLocation();
     }
 
     public static Intent getOverwriteRequestIntent(
             Context context,
             boolean move,
-            SrcDstCollection records)
-    {
+            SrcDstCollection records) {
         Intent i = new Intent(context, FileManagerActivity.class);
         i.setAction(ACTION_ASK_OVERWRITE);
         i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        //i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        // i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         i.putExtra(AskOverwriteDialog.ARG_MOVE, move);
         i.putExtra(AskOverwriteDialog.ARG_PATHS, records);
         return i;
@@ -97,11 +94,10 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
             boolean allowDirSelect,
             boolean allowCreateNew,
             boolean allowBrowseDevice,
-            boolean allowBrowseContainer)
-    {
+            boolean allowBrowseContainer) {
         Intent intent = new Intent(context, FileManagerActivity.class);
         intent.setAction(Intent.ACTION_PICK);
-        if(startPath == null)
+        if (startPath == null)
             startPath = getStartLocation(context).getLocationUri();
 
         intent.setData(startPath);
@@ -135,8 +131,7 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
             boolean allowDirSelect,
             boolean allowCreateNew,
             boolean allowBrowseDevice,
-            boolean allowBrowseContainer)
-    {
+            boolean allowBrowseContainer) {
         Intent i = getSelectPathIntent(
                 context,
                 null,
@@ -157,8 +152,7 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
             boolean allowMultiSelect,
             boolean allowFileSelect,
             boolean allowDirSelect,
-            boolean allowCreateNew)
-    {
+            boolean allowCreateNew) {
         selectPath(
                 context,
                 f,
@@ -186,140 +180,118 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
     public static final String EXTRA_ALLOW_SELECT_FROM_CONTENT_PROVIDERS = "com.sovworks.eds.android.ALLOW_SELECT_FROM_CONTENT_PROVIDERS";
     public static final String EXTRA_ALLOW_SELECT_ROOT_FOLDER = "com.sovworks.eds.android.ALLOW_SELECT_ROOT_FOLDER";
 
-    public static Location getRealLocation(Location loc)
-    {
+    public static Location getRealLocation(Location loc) {
         return loc;
     }
-    public boolean isSelectAction()
-    {
+
+    public boolean isSelectAction() {
         String action = getIntent().getAction();
         return Intent.ACTION_PICK.equals(action) || Intent.ACTION_GET_CONTENT.equals(action);
     }
 
-    public boolean isSingleSelectionMode()
-    {
+    public boolean isSingleSelectionMode() {
         return !getIntent().getBooleanExtra(EXTRA_ALLOW_MULTIPLE, false);
     }
 
-    public boolean allowFileSelect()
-    {
+    public boolean allowFileSelect() {
         return getIntent().getBooleanExtra(EXTRA_ALLOW_FILE_SELECT, true);
     }
 
-    public boolean allowFolderSelect()
-    {
+    public boolean allowFolderSelect() {
         return getIntent().getBooleanExtra(EXTRA_ALLOW_FOLDER_SELECT, true);
     }
 
-    public void goTo(Location location)
-    {
+    public void goTo(Location location) {
         goTo(location, 0);
     }
 
-    public void goTo(Location location, int scrollPosition)
-    {
+    public void goTo(Location location, int scrollPosition) {
         Logger.debug(TAG + ": goTo");
         closeIntegratedViewer();
         FileListViewFragment f = getFileListViewFragment();
-        if(f!=null)
+        if (f != null)
             f.goTo(location, scrollPosition, true);
     }
 
-    public void goTo(Path path)
-    {
-		Location prevLocation = getLocation();
-        if(prevLocation != null)
-        {
+    public void goTo(Path path) {
+        Location prevLocation = getLocation();
+        if (prevLocation != null) {
             Location newLocation = prevLocation.copy();
             newLocation.setCurrentPath(path);
             goTo(newLocation, 0);
         }
-	}
+    }
 
-    public void rereadCurrentLocation()
-    {
+    public void rereadCurrentLocation() {
         FileListViewFragment f = getFileListViewFragment();
-        if(f!=null)
+        if (f != null)
             f.rereadCurrentLocation();
     }
 
-	public boolean isWideScreenLayout()
-	{
-		return _isLargeScreenLayout;
-	}
-
-    @Override
-    public NavigableSet<? extends CachedPathInfo> getCurrentFiles()
-    {
-        FileListDataFragment f = getFileListDataFragment();
-        return f!=null ? f.getFileList() : new TreeSet<>();
+    public boolean isWideScreenLayout() {
+        return _isLargeScreenLayout;
     }
 
     @Override
-    public Object getFilesListSync()
-    {
+    public NavigableSet<? extends CachedPathInfo> getCurrentFiles() {
         FileListDataFragment f = getFileListDataFragment();
-        return f!=null ? f.getFilesListSync() : new Object();
+        return f != null ? f.getFileList() : new TreeSet<>();
     }
 
-    public Location getLocation()
-    {
+    @Override
+    public Object getFilesListSync() {
+        FileListDataFragment f = getFileListDataFragment();
+        return f != null ? f.getFilesListSync() : new Object();
+    }
+
+    public Location getLocation() {
         FileListDataFragment f = (FileListDataFragment) getFragmentManager().findFragmentByTag(FileListDataFragment.TAG);
         return f == null ? null : f.getLocation();
     }
 
-    public Location getRealLocation()
-    {
+    public Location getRealLocation() {
         return getRealLocation(getLocation());
     }
 
-    public boolean hasSelectedFiles()
-    {
+    public boolean hasSelectedFiles() {
         FileListDataFragment f = getFileListDataFragment();
         return f != null && f.hasSelectedFiles();
     }
 
-    public void showProperties(BrowserRecord currentFile, boolean allowInplace)
-	{
-        if(!hasSelectedFiles() && currentFile == null)
-        {
+    public void showProperties(BrowserRecord currentFile, boolean allowInplace) {
+        if (!hasSelectedFiles() && currentFile == null) {
             Logger.debug(TAG + ": showProperties (hide)");
-            if(getFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG)!=null)
+            if (getFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG) != null)
                 hideSecondaryFragment();
-        }
-        else if(_isLargeScreenLayout || !allowInplace)
-        {
+        } else if (_isLargeScreenLayout || !allowInplace) {
             Logger.debug(TAG + ": showProperties");
             showPropertiesFragment(currentFile);
         }
-	}
+    }
 
-	public void showPhoto(BrowserRecord currentFile, boolean allowInplace)
-	{
-	    Logger.debug(TAG + ": showPhoto");
-		Path contextPath = currentFile == null ? null : currentFile.getPath();
-        if(!hasSelectedFiles() && contextPath == null)
+    public void showPhoto(BrowserRecord currentFile, boolean allowInplace) {
+        Logger.debug(TAG + ": showPhoto");
+        Path contextPath = currentFile == null ? null : currentFile.getPath();
+        if (!hasSelectedFiles() && contextPath == null)
             hideSecondaryFragment();
-        else if(_isLargeScreenLayout || !allowInplace)
+        else if (_isLargeScreenLayout || !allowInplace)
             showPreviewFragment(contextPath);
-	}
+    }
 
     @Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-	    if(GlobalConfig.isTest())
-	        TEST_INIT_OBSERVABLE.onNext(false);
+    public void onCreate(Bundle savedInstanceState) {
+        if (GlobalConfig.isTest())
+            TEST_INIT_OBSERVABLE.onNext(false);
         Util.setTheme(this);
-	    super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);
         Logger.debug("fm start intent: " + getIntent());
         _settings = UserSettings.getSettings(this);
-        if(_settings.isFlagSecureEnabled())
+        if (_settings.isFlagSecureEnabled())
             CompatHelper.setWindowFlagSecure(this);
-	    _isLargeScreenLayout = UserSettings.isWideScreenLayout(_settings, this);
-	    setContentView(R.layout.main_activity);
-	    Fragment f = getFragmentManager().findFragmentById(R.id.fragment2);
-	    if(f!=null)
-        {
+        _isLargeScreenLayout = UserSettings.isWideScreenLayout(_settings, this);
+        setContentView(R.layout.main_activity);
+        Fragment f = getFragmentManager().findFragmentById(R.id.fragment2);
+        if (f != null) {
             View panel = findViewById(R.id.fragment2);
             if (panel != null)
                 panel.setVisibility(View.VISIBLE);
@@ -327,7 +299,7 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
             if (panel != null)
                 panel.setVisibility(View.GONE);
         }
-	    LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(_exitBroadcastReceiver, new IntentFilter(EdsApplication.BROADCAST_EXIT));
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(_exitBroadcastReceiver, new IntentFilter(EdsApplication.BROADCAST_EXIT));
         registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationAddedIntentFilter());
         registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationRemovedIntentFilter());
         registerReceiver(_locationChangedReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED));
@@ -341,15 +313,14 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
                     startAction(savedInstanceState);
                     addFileListFragments();
                 }, err -> {
-                        if(!(err instanceof CancellationException))
-                            Logger.showAndLog(getApplicationContext(), err);
+                    if (!(err instanceof CancellationException))
+                        Logger.showAndLog(getApplicationContext(), err);
                 });
 
-	}
+    }
 
     @Override
-    protected void onNewIntent(Intent intent)
-    {
+    protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
         lifecycle().
@@ -357,41 +328,34 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
                 firstElement().
                 subscribe(res -> startAction(null), err ->
                 {
-                    if(!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException))
                         Logger.log(err);
                 });
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus)
-    {
+    public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus)
-        {
+        if (hasFocus) {
             PreviewFragment pf = (PreviewFragment) getFragmentManager().findFragmentByTag(PreviewFragment.TAG);
-            if(pf!=null)
+            if (pf != null)
                 pf.updateImageViewFullScreen();
         }
     }
 
     @Override
-    public void onToggleFullScreen()
-    {
+    public void onToggleFullScreen() {
 
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event)
-    {
+    public boolean dispatchKeyEvent(KeyEvent event) {
         Logger.debug(TAG + ": dispatchKeyEvent");
-        //Prevent selection clearing when back button is pressed while properties fragment is active
-        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP)
-        {
-            if (!_isLargeScreenLayout && hasSelectedFiles())
-            {
+        // Prevent selection clearing when back button is pressed while properties fragment is active
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            if (!_isLargeScreenLayout && hasSelectedFiles()) {
                 Fragment f = getFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG);
-                if (f != null)
-                {
+                if (f != null) {
                     hideSecondaryFragment();
                     return true;
                 }
@@ -401,80 +365,66 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem)
-    {
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
         return _drawer.onOptionsItemSelected(menuItem) || super.onOptionsItemSelected(menuItem);
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         Logger.debug(TAG + ": onBackPressed");
 
-        if(_drawer.onBackPressed())
+        if (_drawer.onBackPressed())
             return;
 
         Fragment f = getFragmentManager().findFragmentById(R.id.fragment2);
-        if(f!=null && ((FileManagerFragment) f).onBackPressed())
+        if (f != null && ((FileManagerFragment) f).onBackPressed())
             return;
 
-        if(hideSecondaryFragment())
+        if (hideSecondaryFragment())
             return;
 
         f = getFragmentManager().findFragmentById(R.id.fragment1);
-        if(f!=null && ((FileManagerFragment) f).onBackPressed())
+        if (f != null && ((FileManagerFragment) f).onBackPressed())
             return;
 
         super.onBackPressed();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         _drawer.onConfigurationChanged(newConfig);
     }
 
-    public FileListDataFragment getFileListDataFragment()
-    {
+    public FileListDataFragment getFileListDataFragment() {
         FileListDataFragment f = (FileListDataFragment) getFragmentManager().findFragmentByTag(FileListDataFragment.TAG);
         return f != null && f.isAdded() ? f : null;
     }
 
-    public FileListViewFragment getFileListViewFragment()
-    {
+    public FileListViewFragment getFileListViewFragment() {
         FileListViewFragment f = (FileListViewFragment) getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
         return f != null && f.isAdded() ? f : null;
     }
 
-    public DrawerController getDrawerController()
-    {
+    public DrawerController getDrawerController() {
         return _drawer;
     }
 
 
-    public TaskFragment.TaskCallbacks getCheckStartPathCallbacks()
-    {
-        return new ProgressDialogTaskFragmentCallbacks(this, R.string.loading)
-        {
+    public TaskFragment.TaskCallbacks getCheckStartPathCallbacks() {
+        return new ProgressDialogTaskFragmentCallbacks(this, R.string.loading) {
             @Override
-            public void onCompleted(Bundle args, TaskFragment.Result result)
-            {
-                try
-                {
+            public void onCompleted(Bundle args, TaskFragment.Result result) {
+                try {
                     Location locToOpen = (Location) result.getResult();
-                    if(locToOpen != null)
-                    {
+                    if (locToOpen != null) {
                         setIntent(new Intent(Intent.ACTION_MAIN, locToOpen.getLocationUri()));
                         FileListDataFragment df = getFileListDataFragment();
-                        if(df!=null)
+                        if (df != null)
                             df.loadLocation(null, true);
-                    }
-                    else
+                    } else
                         setIntent(new Intent());
-                }
-                catch (Throwable e)
-                {
+                } catch (Throwable e) {
                     Logger.showAndLog(_context, e);
                     setIntent(new Intent());
                 }
@@ -483,24 +433,20 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState)
-    {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         _drawer.onSaveInstanceState(outState);
     }
 
     @Override
-    protected void onPostCreate(Bundle state)
-    {
+    protected void onPostCreate(Bundle state) {
         super.onPostCreate(state);
         _drawer.onPostCreate();
     }
 
 
-
     @Override
-    protected void onStart()
-    {
+    protected void onStart() {
         super.onStart();
         checkIfCurrentLocationIsStillOpen();
         getDrawerController().updateMenuItemViews();
@@ -511,24 +457,20 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
     }
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         unregisterReceiver(_closeAllReceiver);
         unregisterReceiver(_updatePathReceiver);
         super.onStop();
         Logger.debug("FileManagerActivity has stopped");
     }
 
-    protected void startAction(Bundle savedState)
-    {
+    protected void startAction(Bundle savedState) {
         String action = getIntent().getAction();
-        if(action == null)
+        if (action == null)
             action = "";
         Logger.log("FileManagerActivity action is " + action);
-        try
-        {
-            switch (action)
-            {
+        try {
+            switch (action) {
                 case Intent.ACTION_VIEW:
                     actionView(savedState);
                     break;
@@ -542,9 +484,7 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
                     actionMain(savedState);
                     break;
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Logger.showAndLog(this, e);
             finish();
         }
@@ -552,16 +492,14 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
-        if(GlobalConfig.isTest())
+        if (GlobalConfig.isTest())
             TEST_INIT_OBSERVABLE.onNext(true);
     }
 
     @Override
-	protected void onDestroy ()
-	{
+    protected void onDestroy() {
         unregisterReceiver(_locationAddedOrRemovedReceiver);
         unregisterReceiver(_locationChangedReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(_exitBroadcastReceiver);
@@ -576,85 +514,66 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
     protected boolean _isLargeScreenLayout;
     protected UserSettings _settings;
 
-    private final BroadcastReceiver _updatePathReceiver = new BroadcastReceiver()
-	{
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
+    private final BroadcastReceiver _updatePathReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             rereadCurrentLocation();
-		}
-	};
+        }
+    };
 
-    private final BroadcastReceiver _closeAllReceiver = new BroadcastReceiver()
-	{
-		@Override
-		public void onReceive(Context context, Intent intent)
-		{
+    private final BroadcastReceiver _closeAllReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             checkIfCurrentLocationIsStillOpen();
             getDrawerController().updateMenuItemViews();
         }
-	};
+    };
 
 
-    private final BroadcastReceiver _locationChangedReceiver = new BroadcastReceiver()
-    {
+    private final BroadcastReceiver _locationChangedReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            if(isFinishing())
+        public void onReceive(Context context, Intent intent) {
+            if (isFinishing())
                 return;
 
-            try
-            {
+            try {
                 Uri locUri = intent.getParcelableExtra(LocationsManager.PARAM_LOCATION_URI);
-                if(locUri!=null)
-                {
+                if (locUri != null) {
                     Location changedLocation = LocationsManager.getLocationsManager(getApplicationContext()).getLocation(locUri);
-                    if(changedLocation!=null)
-                    {
+                    if (changedLocation != null) {
                         Location loc = getRealLocation();
-                        if(loc!=null && changedLocation.getId().equals(loc.getId()))
+                        if (loc != null && changedLocation.getId().equals(loc.getId()))
                             checkIfCurrentLocationIsStillOpen();
 
                         FileListDataFragment f = getFileListDataFragment();
-                        if(f!=null && !LocationsManager.isOpen(changedLocation))
+                        if (f != null && !LocationsManager.isOpen(changedLocation))
                             f.removeLocationFromHistory(changedLocation);
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 Logger.showAndLog(context, e);
                 finish();
             }
         }
     };
 
-    private final BroadcastReceiver _locationAddedOrRemovedReceiver = new BroadcastReceiver()
-    {
+    private final BroadcastReceiver _locationAddedOrRemovedReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            if(isFinishing())
+        public void onReceive(Context context, Intent intent) {
+            if (isFinishing())
                 return;
-            if(LocationsManager.BROADCAST_LOCATION_REMOVED.equals(intent.getAction()))
-            {
-                try
-                {
+            if (LocationsManager.BROADCAST_LOCATION_REMOVED.equals(intent.getAction())) {
+                try {
                     Uri locUri = intent.getParcelableExtra(LocationsManager.PARAM_LOCATION_URI);
-                    if(locUri!=null)
-                    {
+                    if (locUri != null) {
                         Location changedLocation = LocationsManager.getLocationsManager(getApplicationContext()).getLocation(locUri);
-                        if(changedLocation!=null)
-                        {
+                        if (changedLocation != null) {
                             FileListDataFragment f = getFileListDataFragment();
-                            if(f!=null)
+                            if (f != null)
                                 f.removeLocationFromHistory(changedLocation);
                         }
                     }
-                }
-                catch(Exception e)
-                {
+                } catch (Exception e) {
                     Logger.showAndLog(context, e);
                 }
             }
@@ -662,35 +581,27 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
         }
     };
 
-    private final BroadcastReceiver _exitBroadcastReceiver = new BroadcastReceiver()
-    {
+    private final BroadcastReceiver _exitBroadcastReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             finish();
         }
     };
 
-    protected void actionMain(Bundle savedState) throws Exception
-    {
-        if(savedState == null)
-        {
-            if(getIntent().getData() == null)
+    protected void actionMain(Bundle savedState) throws Exception {
+        if (savedState == null) {
+            if (getIntent().getData() == null)
                 _drawer.showContainers();
             showPromoDialogIfNeeded();
         }
     }
 
-    private void actionView(Bundle savedState)
-    {
-        if(savedState == null)
-        {
+    private void actionView(Bundle savedState) {
+        if (savedState == null) {
             Uri dataUri = getIntent().getData();
-            if(dataUri!=null)
-            {
+            if (dataUri != null) {
                 String mime = getIntent().getType();
-                if(!FOLDER_MIME_TYPE.equalsIgnoreCase(mime))
-                {
+                if (!FOLDER_MIME_TYPE.equalsIgnoreCase(mime)) {
                     getFragmentManager().
                             beginTransaction().
                             add(
@@ -704,8 +615,7 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
         }
     }
 
-    private void actionAskOverwrite()
-    {
+    private void actionAskOverwrite() {
         AskOverwriteDialog.showDialog(
                 getFragmentManager(),
                 getIntent().getExtras()
@@ -713,11 +623,9 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
         setIntent(new Intent());
     }
 
-    protected void addFileListFragments()
-    {
+    protected void addFileListFragments() {
         FragmentManager fm = getFragmentManager();
-        if(fm.findFragmentByTag(FileListDataFragment.TAG) == null)
-        {
+        if (fm.findFragmentByTag(FileListDataFragment.TAG) == null) {
             FragmentTransaction trans = getFragmentManager().beginTransaction();
             trans.add(FileListDataFragment.newInstance(), FileListDataFragment.TAG);
             trans.add(R.id.fragment1, FileListViewFragment.newInstance(), FileListViewFragment.TAG);
@@ -725,40 +633,35 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
         }
     }
 
-    protected void showSecondaryFragment(Fragment f, String tag)
-	{
+    protected void showSecondaryFragment(Fragment f, String tag) {
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment2, f, tag);
         View panel = findViewById(R.id.fragment2);
-        if(panel!=null)
+        if (panel != null)
             panel.setVisibility(View.VISIBLE);
-        if(!_isLargeScreenLayout)
-        {
+        if (!_isLargeScreenLayout) {
             panel = findViewById(R.id.fragment1);
-            if(panel!=null)
+            if (panel != null)
                 panel.setVisibility(View.GONE);
         }
         trans.disallowAddToBackStack();
         trans.commit();
     }
 
-    protected boolean hideSecondaryFragment()
-    {
+    protected boolean hideSecondaryFragment() {
         Logger.debug(TAG + ": hideSecondaryFragment");
         FragmentManager fm = getFragmentManager();
         Fragment f = fm.findFragmentById(R.id.fragment2);
-        if(f!=null)
-        {
+        if (f != null) {
             FragmentTransaction trans = fm.beginTransaction();
             trans.remove(f);
             trans.commit();
             View panel = findViewById(R.id.fragment1);
-            if(panel!=null)
+            if (panel != null)
                 panel.setVisibility(View.VISIBLE);
-            if(!_isLargeScreenLayout)
-            {
+            if (!_isLargeScreenLayout) {
                 panel = findViewById(R.id.fragment2);
-                if(panel!=null)
+                if (panel != null)
                     panel.setVisibility(View.GONE);
             }
             invalidateOptionsMenu();
@@ -767,39 +670,33 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
         return false;
     }
 
-    protected void checkIfCurrentLocationIsStillOpen()
-    {
+    protected void checkIfCurrentLocationIsStillOpen() {
         Location loc = getRealLocation();
         if (!isFinishing() &&
                 loc instanceof Openable && !LocationsManager.isOpen(loc) &&
                 (getIntent().getData() == null || !getIntent().getData().equals(loc.getLocationUri()))
-                )
-        {
-            //closeIntegratedViewer();
+        ) {
+            // closeIntegratedViewer();
             goTo(getStartLocation(this));
         }
     }
 
-    protected void showPromoDialogIfNeeded()
-    {
-        if(!GlobalConfig.isDebug())
+    protected void showPromoDialogIfNeeded() {
+        if (!GlobalConfig.isDebug())
             startActivity(new Intent(this, VersionHistory.class));
     }
 
-    private void showPropertiesFragment(BrowserRecord currentFile)
-	{
-		FilePropertiesFragment f = FilePropertiesFragment.newInstance(currentFile == null ? null : currentFile.getPath());
-		showSecondaryFragment(f, FilePropertiesFragment.TAG);
+    private void showPropertiesFragment(BrowserRecord currentFile) {
+        FilePropertiesFragment f = FilePropertiesFragment.newInstance(currentFile == null ? null : currentFile.getPath());
+        showSecondaryFragment(f, FilePropertiesFragment.TAG);
     }
 
-    private void showPreviewFragment(Path currentImage)
-    {
+    private void showPreviewFragment(Path currentImage) {
         PreviewFragment f = PreviewFragment.newInstance(currentImage);
         showSecondaryFragment(f, PreviewFragment.TAG);
     }
 
-    private void closeIntegratedViewer()
-    {
+    private void closeIntegratedViewer() {
         Logger.debug(TAG + ": closeIntegratedViewer");
         hideSecondaryFragment();
     }

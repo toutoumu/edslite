@@ -16,15 +16,12 @@ import com.sovworks.eds.settings.SettingsCommon;
 
 import java.io.IOException;
 
-public class Util extends UtilBase
-{
-    public static SecureBuffer getPassword(Bundle args, @SuppressWarnings("UnusedParameters") LocationsManager lm) throws IOException
-    {
+public class Util extends UtilBase {
+    public static SecureBuffer getPassword(Bundle args, @SuppressWarnings("UnusedParameters") LocationsManager lm) throws IOException {
         return args.getParcelable(Openable.PARAM_PASSWORD);
     }
 
-    public static void setTheme(Activity act)
-    {
+    public static void setTheme(Activity act) {
         int theme = UserSettings.getSettings(act.getApplicationContext()).getCurrentTheme();
         act.setTheme(theme == SettingsCommon.THEME_DARK ?
                 R.style.Theme_EDS_Dark :
@@ -32,14 +29,10 @@ public class Util extends UtilBase
         );
     }
 
-    public static String getDefaultSettingsPassword(Context context)
-    {
-        try
-        {
+    public static String getDefaultSettingsPassword(Context context) {
+        try {
             return SimpleCrypto.calcStringMD5(Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID));
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Logger.log(e);
         }
         return "";

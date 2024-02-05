@@ -30,8 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.SecureRandom;
 
-public class File extends FileWrapper
-{
+public class File extends FileWrapper {
     public File(
             Path path,
             com.sovworks.eds.fs.File realFile,
@@ -44,8 +43,7 @@ public class File extends FileWrapper
             int macBytes,
             int randBytes,
             boolean forceDecode
-    ) throws IOException
-    {
+    ) throws IOException {
         super(path, realFile);
         _enableIVHeader = enableHeader;
         _encryptionInfo = encryptionInfo;
@@ -59,33 +57,26 @@ public class File extends FileWrapper
     }
 
     @Override
-    public Path getPath()
-    {
+    public Path getPath() {
         return (Path) super.getPath();
     }
 
     @Override
-    public String getName() throws IOException
-    {
+    public String getName() throws IOException {
         return getPath().getDecodedPath().getFileName();
     }
 
     @Override
-    public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode)
-    {
+    public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) {
         return null;
     }
 
     @Override
-    public RandomAccessIO getRandomAccessIO(AccessMode accessMode) throws IOException
-    {
+    public RandomAccessIO getRandomAccessIO(AccessMode accessMode) throws IOException {
         RandomAccessIO base = super.getRandomAccessIO(accessMode);
-        try
-        {
-            switch (accessMode)
-            {
-                case Read:
-                {
+        try {
+            switch (accessMode) {
+                case Read: {
                     if (_enableIVHeader && getBase().getSize() < Header.SIZE)
                         return base;
                     return initEncryptedFile(
@@ -106,34 +97,29 @@ public class File extends FileWrapper
                             initFileLayout(_enableIVHeader ? new RandomAccessOutputStream(base) : null)
                     );
                 case WriteAppend:
-                    if(_enableIVHeader)
+                    if (_enableIVHeader)
                         throw new IllegalArgumentException("Can't write header in WriteAppend mode");
                     return initEncryptedFile(
                             base,
-                            initFileLayout((RandomAccessOutputStream)null)
+                            initFileLayout((RandomAccessOutputStream) null)
                     );
                 default:
                     throw new IllegalArgumentException("Wrong access mode");
             }
-        }
-        catch(Throwable e)
-        {
+        } catch (Throwable e) {
             base.close();
             throw new IOException(e);
         }
     }
 
     @Override
-    public OutputStream getOutputStream() throws IOException
-    {
+    public OutputStream getOutputStream() throws IOException {
         OutputStream base = super.getOutputStream();
-        try
-        {
+        try {
             FileLayout fl = initFileLayout(base);
             EncryptedOutputStream out = new EncryptedOutputStream(base, fl);
             out.setAllowEmptyParts(_allowEmptyParts);
-            if(_macBytes > 0 || _randBytes > 0)
-            {
+            if (_macBytes > 0 || _randBytes > 0) {
                 MACCalculator mac = _encryptionInfo.getChecksumCalculator();
                 mac.init(_encryptionKey);
                 return new MACOutputStream(
@@ -145,25 +131,20 @@ public class File extends FileWrapper
                 );
             }
             return out;
-        }
-        catch(Throwable e)
-        {
+        } catch (Throwable e) {
             base.close();
             throw new IOException(e);
         }
     }
 
     @Override
-    public InputStream getInputStream() throws IOException
-    {
+    public InputStream getInputStream() throws IOException {
         InputStream base = super.getInputStream();
-        try
-        {
+        try {
             FileLayout fl = initFileLayout(base);
             EncryptedInputStream inp = new EncryptedInputStream(base, fl);
             inp.setAllowEmptyParts(_allowEmptyParts);
-            if(_macBytes > 0 || _randBytes > 0)
-            {
+            if (_macBytes > 0 || _randBytes > 0) {
                 MACCalculator mac = _encryptionInfo.getChecksumCalculator();
                 mac.init(_encryptionKey);
                 MACInputStream minp = new MACInputStream(
@@ -178,97 +159,74 @@ public class File extends FileWrapper
                 return minp;
             }
             return inp;
-        }
-        catch(Throwable e)
-        {
+        } catch (Throwable e) {
             base.close();
             throw new IOException(e);
         }
     }
 
     @Override
-    public long getSize() throws IOException
-    {
+    public long getSize() throws IOException {
         long size = super.getSize();
-        if(_enableIVHeader && size >= Header.SIZE)
+        if (_enableIVHeader && size >= Header.SIZE)
             size -= Header.SIZE;
-        if(_randBytes > 0 || _macBytes > 0)
+        if (_randBytes > 0 || _macBytes > 0)
             size = MACFile.calcVirtPosition(size, _fileBlockSize - _randBytes - _macBytes, _randBytes + _macBytes);
 
         return size;
     }
 
     @Override
-    public void rename(String newName) throws IOException
-    {
+    public void rename(String newName) throws IOException {
         StringPathUtil newEncodedPath = getPath().getParentPath().calcCombinedEncodedParts(newName);
-        if(_externalIV!=null || getPath().getNamingCodecInfo().useChainedNamingIV())
-        {
+        if (_externalIV != null || getPath().getNamingCodecInfo().useChainedNamingIV()) {
             com.sovworks.eds.fs.File newFile = getPath().getParentPath().getDirectory().createFile(newName);
             OutputStream out = newFile.getOutputStream();
-            try
-            {
+            try {
                 copyToOutputStream(out, 0, 0, null);
-            }
-            finally
-            {
+            } finally {
                 out.close();
             }
             delete();
             setPath(newFile.getPath());
-        }
-        else
+        } else
             super.rename(newEncodedPath.getFileName());
     }
 
     @Override
-    public void moveTo(com.sovworks.eds.fs.Directory newParent) throws IOException
-    {
-        if(_externalIV!=null || getPath().getNamingCodecInfo().useChainedNamingIV())
-        {
+    public void moveTo(com.sovworks.eds.fs.Directory newParent) throws IOException {
+        if (_externalIV != null || getPath().getNamingCodecInfo().useChainedNamingIV()) {
             com.sovworks.eds.fs.File newFile = newParent.createFile(getName());
             OutputStream out = newFile.getOutputStream();
-            try
-            {
+            try {
                 copyToOutputStream(out, 0, 0, null);
-            }
-            finally
-            {
+            } finally {
                 out.close();
             }
             delete();
             setPath(newFile.getPath());
-        }
-        else
+        } else
             super.moveTo(newParent);
     }
 
     @Override
-    protected com.sovworks.eds.fs.Path getPathFromBasePath(com.sovworks.eds.fs.Path basePath) throws IOException
-    {
+    protected com.sovworks.eds.fs.Path getPathFromBasePath(com.sovworks.eds.fs.Path basePath) throws IOException {
         return getPath().getFileSystem().getPathFromRealPath(basePath);
     }
 
-    protected RandomAccessIO initEncryptedFile(RandomAccessIO base, EncryptedFileLayout fl) throws FileNotFoundException
-    {
-        EncryptedFile ef = new EncryptedFile(base,fl, 1)
-        {
+    protected RandomAccessIO initEncryptedFile(RandomAccessIO base, EncryptedFileLayout fl) throws FileNotFoundException {
+        EncryptedFile ef = new EncryptedFile(base, fl, 1) {
             @Override
-            public synchronized void close(boolean closeBase) throws IOException
-            {
-                try
-                {
+            public synchronized void close(boolean closeBase) throws IOException {
+                try {
                     super.close(closeBase);
-                }
-                finally
-                {
+                } finally {
                     _layout.close();
                 }
             }
         };
         ef.setAllowSkip(_allowEmptyParts);
-        if(_macBytes > 0 || _randBytes > 0)
-        {
+        if (_macBytes > 0 || _randBytes > 0) {
             MACCalculator mac = _encryptionInfo.getChecksumCalculator();
             mac.init(_encryptionKey);
             MACFile mf = new MACFile(
@@ -278,7 +236,7 @@ public class File extends FileWrapper
                     _macBytes,
                     _randBytes,
                     _forceDecode
-                    );
+            );
             mf.setAllowSkip(_allowEmptyParts);
             return mf;
         }
@@ -286,81 +244,68 @@ public class File extends FileWrapper
     }
 
 
-    private static class Header
-    {
+    private static class Header {
         static final int SIZE = 8;
 
-        public void load(byte[] data)
-        {
+        public void load(byte[] data) {
             _iv = data;
         }
 
-        public byte[] save()
-        {
+        public byte[] save() {
             return _iv.clone();
         }
 
-        public void initNew()
-        {
+        public void initNew() {
             _iv = new byte[8];
             SecureRandom sr = new SecureRandom();
             sr.nextBytes(_iv);
         }
 
-        public byte[] getIV()
-        {
+        public byte[] getIV() {
             return _iv;
         }
 
-        public void setIV(byte[] iv)
-        {
+        public void setIV(byte[] iv) {
             _iv = iv;
         }
 
         private byte[] _iv;
     }
 
-    private static class FileLayout implements EncryptedFileLayout
-    {
-        public FileLayout(FileEncryptionEngine dataEncDec, int encryptedDataOffset, byte[] fileIV)
-        {
+    private static class FileLayout implements EncryptedFileLayout {
+        public FileLayout(FileEncryptionEngine dataEncDec, int encryptedDataOffset, byte[] fileIV) {
             _encryptedDataOffset = encryptedDataOffset;
             _dataEncDec = dataEncDec;
             _fileIV = fileIV;
         }
 
         @Override
-        public long getEncryptedDataOffset()
-        {
+        public long getEncryptedDataOffset() {
             return _encryptedDataOffset;
         }
 
         @Override
-        public long getEncryptedDataSize(long fileSize)
-        {
+        public long getEncryptedDataSize(long fileSize) {
             return fileSize - _encryptedDataOffset;
         }
 
         @Override
-        public FileEncryptionEngine getEngine()
-        {
+        public FileEncryptionEngine getEngine() {
             return _dataEncDec;
         }
 
         @Override
-        public void setEncryptionEngineIV(FileEncryptionEngine eng, long decryptedVolumeOffset)
-        {
+        public void setEncryptionEngineIV(FileEncryptionEngine eng, long decryptedVolumeOffset) {
             byte[] iv = new byte[eng.getIVSize()];
-            ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).putLong(decryptedVolumeOffset/_dataEncDec.getFileBlockSize());
-            if(_fileIV!=null)
-                for(int i = 0;i < _fileIV.length;i++)
+            ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).putLong(decryptedVolumeOffset / _dataEncDec.getFileBlockSize());
+            if (_fileIV != null)
+                for (int i = 0; i < _fileIV.length; i++)
                     iv[i] ^= _fileIV[i];
             eng.setIV(iv);
         }
 
         @Override
-        public void close() throws IOException
-        {
+        public void close() throws IOException {
             _dataEncDec.close();
         }
 
@@ -375,26 +320,21 @@ public class File extends FileWrapper
     private final int _macBytes, _randBytes, _fileBlockSize;
 
 
-    private FileLayout initFileLayout(OutputStream out) throws IOException, ApplicationException
-    {
+    private FileLayout initFileLayout(OutputStream out) throws IOException, ApplicationException {
         Header h;
-        if(_enableIVHeader)
-        {
+        if (_enableIVHeader) {
             h = initNewHeader();
             writeHeader(out, h);
-        }
-        else
+        } else
             h = null;
         return initFileLayout(h);
     }
 
-    private FileLayout initFileLayout(InputStream inp) throws IOException, EncryptionEngineException
-    {
+    private FileLayout initFileLayout(InputStream inp) throws IOException, EncryptionEngineException {
         return initFileLayout(_enableIVHeader ? readHeader(inp) : null);
     }
 
-    private FileLayout initFileLayout(Header h) throws EncryptionEngineException
-    {
+    private FileLayout initFileLayout(Header h) throws EncryptionEngineException {
         FileEncryptionEngine ee = new BlockAndStreamCipher(
                 _encryptionInfo.getFileEncDec(),
                 _encryptionInfo.getStreamEncDec()
@@ -404,32 +344,25 @@ public class File extends FileWrapper
         return h == null ? new FileLayout(ee, 0, null) : new FileLayout(ee, Header.SIZE, h.getIV());
     }
 
-    private Header initNewHeader()
-    {
+    private Header initNewHeader() {
         Header header = new Header();
         header.initNew();
         return header;
     }
 
-    public Header readHeader(InputStream input) throws IOException
-    {
+    public Header readHeader(InputStream input) throws IOException {
         byte[] buf = new byte[Header.SIZE];
-        if(Util.readBytes(input, buf)!=Header.SIZE)
+        if (Util.readBytes(input, buf) != Header.SIZE)
             throw new IOException("Failed reading header");
         EncryptionEngine ee = _encryptionInfo.getStreamEncDec();
-        try
-        {
+        try {
             ee.setKey(_encryptionKey);
             ee.init();
             ee.setIV(_externalIV);
             ee.decrypt(buf, 0, buf.length);
-        }
-        catch (EncryptionEngineException e)
-        {
+        } catch (EncryptionEngineException e) {
             throw new IOException(e);
-        }
-        finally
-        {
+        } finally {
             ee.close();
         }
         Header header = new Header();
@@ -437,23 +370,17 @@ public class File extends FileWrapper
         return header;
     }
 
-    public void writeHeader(OutputStream output, Header header) throws IOException
-    {
+    public void writeHeader(OutputStream output, Header header) throws IOException {
         byte[] data = header.save();
         EncryptionEngine ee = _encryptionInfo.getStreamEncDec();
-        try
-        {
+        try {
             ee.setKey(_encryptionKey);
             ee.init();
             ee.setIV(_externalIV);
             ee.encrypt(data, 0, data.length);
-        }
-        catch (EncryptionEngineException e)
-        {
+        } catch (EncryptionEngineException e) {
             throw new IOException(e);
-        }
-        finally
-        {
+        } finally {
             ee.close();
         }
         output.write(data);

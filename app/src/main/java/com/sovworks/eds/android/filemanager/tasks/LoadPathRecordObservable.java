@@ -9,10 +9,8 @@ import com.sovworks.eds.locations.Location;
 
 import io.reactivex.Single;
 
-public class LoadPathRecordObservable
-{
-    public static Single<BrowserRecord> create(Context context, Location targetLocation, DirectorySettings dirSettings)
-    {
+public class LoadPathRecordObservable {
+    public static Single<BrowserRecord> create(Context context, Location targetLocation, DirectorySettings dirSettings) {
         return Single.create(s -> {
             Path p = targetLocation.getCurrentPath();
             s.onSuccess(ReadDir.getBrowserRecordFromFsRecord(context, targetLocation, p, dirSettings));

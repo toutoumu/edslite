@@ -10,29 +10,24 @@ import com.sovworks.eds.crypto.SecureBuffer;
 
 import java.nio.CharBuffer;
 
-public class EditSB extends AppCompatEditText
-{
-    public EditSB(Context context)
-    {
+public class EditSB extends AppCompatEditText {
+    public EditSB(Context context) {
         this(context, null);
     }
 
-    public EditSB(Context context, AttributeSet attrs)
-    {
+    public EditSB(Context context, AttributeSet attrs) {
         this(context, attrs, android.R.attr.editTextStyle);
     }
 
-    public EditSB(Context context, AttributeSet attrs, int defStyleAttr)
-    {
+    public EditSB(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setSaveEnabled(false);
     }
 
     @Override
-    public void setText(CharSequence text, BufferType type)
-    {
+    public void setText(CharSequence text, BufferType type) {
         Editable et = getEditableText();
-        if(et != null)
+        if (et != null)
             et.clear();
         super.setText(text, type);
     }
@@ -102,15 +97,11 @@ public class EditSB extends AppCompatEditText
         private SecureBuffer _buf;
     }
 */
-    public void setSecureBuffer(final SecureBuffer sb)
-    {
-        setEditableFactory(new Editable.Factory()
-        {
+    public void setSecureBuffer(final SecureBuffer sb) {
+        setEditableFactory(new Editable.Factory() {
             @Override
-            public Editable newEditable(CharSequence source)
-            {
-                if(sb != null)
-                {
+            public Editable newEditable(CharSequence source) {
+                if (sb != null) {
                     sb.adoptData(CharBuffer.wrap(source));
                     return new EditableSecureBuffer(sb);
                 }
@@ -120,9 +111,8 @@ public class EditSB extends AppCompatEditText
     }
 
 
-    public EditableSecureBuffer getEditableSB()
-    {
+    public EditableSecureBuffer getEditableSB() {
         Editable et = getEditableText();
-        return et instanceof EditableSecureBuffer ? ((EditableSecureBuffer)et) : null;
+        return et instanceof EditableSecureBuffer ? ((EditableSecureBuffer) et) : null;
     }
 }

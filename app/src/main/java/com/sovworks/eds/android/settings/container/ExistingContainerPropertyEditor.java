@@ -8,10 +8,8 @@ import com.sovworks.eds.android.locations.fragments.CreateEDSLocationFragment;
 import com.sovworks.eds.android.locations.fragments.CreateEDSLocationFragmentBase;
 import com.sovworks.eds.android.settings.PropertyEditorBase;
 
-public class ExistingContainerPropertyEditor extends PropertyEditorBase
-{
-    public ExistingContainerPropertyEditor(CreateEDSLocationFragmentBase createEDSLocationFragment)
-    {
+public class ExistingContainerPropertyEditor extends PropertyEditorBase {
+    public ExistingContainerPropertyEditor(CreateEDSLocationFragmentBase createEDSLocationFragment) {
         super(
                 createEDSLocationFragment,
                 R.layout.settings_create_new_or_existing_container,
@@ -20,23 +18,18 @@ public class ExistingContainerPropertyEditor extends PropertyEditorBase
     }
 
     @Override
-    protected View createView(ViewGroup parent)
-    {
+    protected View createView(ViewGroup parent) {
         View view = super.createView(parent);
-        view.findViewById(R.id.create_new_container_button).setOnClickListener(new View.OnClickListener()
-        {
+        view.findViewById(R.id.create_new_container_button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 getHostFragment().showCreateNewLocationProperties();
                 getHostFragment().getPropertiesView().loadProperties();
             }
         });
-        view.findViewById(R.id.add_existing_container_button).setOnClickListener(new View.OnClickListener()
-        {
+        view.findViewById(R.id.add_existing_container_button).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 getHostFragment().showAddExistingLocationProperties();
                 getHost().getPropertiesView().loadProperties();
             }
@@ -44,8 +37,7 @@ public class ExistingContainerPropertyEditor extends PropertyEditorBase
         return view;
     }
 
-    protected CreateEDSLocationFragment getHostFragment()
-    {
+    protected CreateEDSLocationFragment getHostFragment() {
         return (CreateEDSLocationFragment) getHost();
     }
 }

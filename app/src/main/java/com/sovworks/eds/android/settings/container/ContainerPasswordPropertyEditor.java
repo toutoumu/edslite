@@ -10,10 +10,8 @@ import com.sovworks.eds.android.settings.PropertyEditor;
 import com.sovworks.eds.crypto.SecureBuffer;
 import com.sovworks.eds.locations.Openable;
 
-public class ContainerPasswordPropertyEditor extends ButtonPropertyEditor implements PasswordDialog.PasswordReceiver
-{
-    public ContainerPasswordPropertyEditor(CreateEDSLocationFragment createEDSLocationFragment)
-    {
+public class ContainerPasswordPropertyEditor extends ButtonPropertyEditor implements PasswordDialog.PasswordReceiver {
+    public ContainerPasswordPropertyEditor(CreateEDSLocationFragment createEDSLocationFragment) {
         super(createEDSLocationFragment,
                 R.string.container_password,
                 0,
@@ -22,17 +20,16 @@ public class ContainerPasswordPropertyEditor extends ButtonPropertyEditor implem
     }
 
     @Override
-    public void onPasswordEntered(PasswordDialog dlg)
-    {
+    public void onPasswordEntered(PasswordDialog dlg) {
         getHostFragment().getState().putParcelable(Openable.PARAM_PASSWORD, new SecureBuffer(dlg.getPassword()));
     }
 
     @Override
-    public void onPasswordNotEntered(PasswordDialog dlg){}
+    public void onPasswordNotEntered(PasswordDialog dlg) {
+    }
 
     @Override
-    protected void onButtonClick()
-    {
+    protected void onButtonClick() {
         Bundle args = new Bundle();
         args.putBoolean(PasswordDialog.ARG_HAS_PASSWORD, true);
         args.putBoolean(PasswordDialog.ARG_VERIFY_PASSWORD, true);
@@ -43,8 +40,7 @@ public class ContainerPasswordPropertyEditor extends ButtonPropertyEditor implem
         pd.show(getHost().getFragmentManager(), PasswordDialog.TAG);
     }
 
-    CreateEDSLocationFragment getHostFragment()
-    {
-        return (CreateEDSLocationFragment)getHost();
+    CreateEDSLocationFragment getHostFragment() {
+        return (CreateEDSLocationFragment) getHost();
     }
 }

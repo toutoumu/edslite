@@ -14,35 +14,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-class ExFatFile extends ExFatRecord implements File
-{
-    ExFatFile(ExFat exFat, ExFatPath path)
-    {
+class ExFatFile extends ExFatRecord implements File {
+    ExFatFile(ExFat exFat, ExFatPath path) {
         super(exFat, path);
     }
 
     @Override
-    public InputStream getInputStream() throws IOException
-    {
+    public InputStream getInputStream() throws IOException {
         return new RandomAccessInputStream(getRandomAccessIO(AccessMode.Read));
     }
 
     @Override
-    public OutputStream getOutputStream() throws IOException
-    {
+    public OutputStream getOutputStream() throws IOException {
         return new RandomAccessOutputStream(getRandomAccessIO(AccessMode.Write));
     }
 
     @Override
-    public synchronized RandomAccessIO getRandomAccessIO(AccessMode accessMode) throws IOException
-    {
-        synchronized (_exFat._sync)
-        {
+    public synchronized RandomAccessIO getRandomAccessIO(AccessMode accessMode) throws IOException {
+        synchronized (_exFat._sync) {
             FileStat fs = _path.getAttr();
             if (accessMode == AccessMode.Read && (fs == null || fs.isDir))
                 throw new FileNotFoundException();
-            if (fs == null)
-            {
+            if (fs == null) {
                 int res = _exFat.makeFile(_path.getPathString());
                 if (res != 0)
                     throw new IOException("Failed creating file. Error code = " + res);
@@ -57,11 +50,9 @@ class ExFatFile extends ExFatRecord implements File
             long handle = _exFat.openFile(_path.getPathString());
             if (handle == 0)
                 throw new IOException("Failed getting file handle");
-            if (accessMode == AccessMode.Write || accessMode == AccessMode.ReadWriteTruncate)
-            {
+            if (accessMode == AccessMode.Write || accessMode == AccessMode.ReadWriteTruncate) {
                 int res = _exFat.truncate(handle, 0);
-                if (res != 0)
-                {
+                if (res != 0) {
                     _exFat.closeFile(res);
                     throw new IOException("Failed truncating file. Error code = " + res);
                 }
@@ -71,10 +62,8 @@ class ExFatFile extends ExFatRecord implements File
     }
 
     @Override
-    public void delete() throws IOException
-    {
-        synchronized (_exFat._sync)
-        {
+    public void delete() throws IOException {
+        synchronized (_exFat._sync) {
             int res = _exFat.delete(_path.getPathString());
             if (res != 0)
                 throw new IOException("Delete failed. Error code = " + res);
@@ -82,27 +71,23 @@ class ExFatFile extends ExFatRecord implements File
     }
 
     @Override
-    public long getSize() throws IOException
-    {
+    public long getSize() throws IOException {
         return _path.getAttr().size;
 
     }
 
     @Override
-    public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) throws IOException
-    {
+    public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) throws IOException {
         return null;
     }
 
     @Override
-    public void copyToOutputStream(OutputStream output, long offset, long count, ProgressInfo progressInfo) throws IOException
-    {
+    public void copyToOutputStream(OutputStream output, long offset, long count, ProgressInfo progressInfo) throws IOException {
         Util.copyFileToOutputStream(output, this, offset, count, progressInfo);
     }
 
     @Override
-    public void copyFromInputStream(InputStream input, long offset, long count, ProgressInfo progressInfo) throws IOException
-    {
+    public void copyFromInputStream(InputStream input, long offset, long count, ProgressInfo progressInfo) throws IOException {
         Util.copyFileFromInputStream(input, this, offset, count, progressInfo);
     }
 }

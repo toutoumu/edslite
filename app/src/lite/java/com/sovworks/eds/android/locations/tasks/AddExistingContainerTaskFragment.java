@@ -5,10 +5,8 @@ import android.os.Bundle;
 
 import com.sovworks.eds.locations.LocationsManager;
 
-public class AddExistingContainerTaskFragment extends AddExistingContainerTaskFragmentBase
-{
-	public static AddExistingContainerTaskFragment newInstance(Uri containerLocationUri, boolean storeLink, String containerFormatName)
-    {
+public class AddExistingContainerTaskFragment extends AddExistingContainerTaskFragmentBase {
+    public static AddExistingContainerTaskFragment newInstance(Uri containerLocationUri, boolean storeLink, String containerFormatName) {
         Bundle args = new Bundle();
         args.putBoolean(ARG_STORE_LINK, storeLink);
         args.putParcelable(LocationsManager.PARAM_LOCATION_URI, containerLocationUri);

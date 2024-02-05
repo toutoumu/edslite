@@ -15,43 +15,36 @@ import com.sovworks.eds.locations.LocationsManager;
 
 import java.util.Iterator;
 
-public class DrawerExitMenuItem extends DrawerMenuItemBase
-{
+public class DrawerExitMenuItem extends DrawerMenuItemBase {
 
-    public static class ExitFragment extends Fragment implements LocationCloserBaseFragment.CloseLocationReceiver
-    {
+    public static class ExitFragment extends Fragment implements LocationCloserBaseFragment.CloseLocationReceiver {
         public static final String TAG = "com.sovworks.eds.android.ExitFragment";
 
         @Override
-        public void onCreate(Bundle savedInstanceState)
-        {
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             closeNextOrExit();
         }
 
         @Override
-        public void onTargetLocationClosed(Location location, Bundle closeTaskArgs)
-        {
+        public void onTargetLocationClosed(Location location, Bundle closeTaskArgs) {
             closeNextOrExit();
         }
 
         @Override
-        public void onTargetLocationNotClosed(Location location, Bundle closeTaskArgs)
-        {
+        public void onTargetLocationNotClosed(Location location, Bundle closeTaskArgs) {
 
         }
 
-        private void closeNextOrExit()
-        {
+        private void closeNextOrExit() {
             Iterator<Location> it = LocationsManager.getLocationsManager(getActivity()).getLocationsClosingOrder().iterator();
-            if(it.hasNext())
+            if (it.hasNext())
                 launchCloser(it.next());
             else
                 exit();
         }
 
-        private void launchCloser(Location loc)
-        {
+        private void launchCloser(Location loc) {
             Bundle args = new Bundle();
             args.putString(LocationCloserBaseFragment.PARAM_RECEIVER_FRAGMENT_TAG, TAG);
             LocationsManager.storePathsInBundle(args, loc, null);
@@ -62,27 +55,23 @@ public class DrawerExitMenuItem extends DrawerMenuItemBase
                     LocationCloserBaseFragment.getCloserTag(loc)).commit();
         }
 
-        private void exit()
-        {
+        private void exit() {
             FileOpsService.clearTempFolder(getActivity().getApplicationContext(), true);
             getActivity().finish();
         }
     }
 
-    public DrawerExitMenuItem(DrawerControllerBase drawerController)
-    {
+    public DrawerExitMenuItem(DrawerControllerBase drawerController) {
         super(drawerController);
     }
 
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return getDrawerController().getMainActivity().getString(R.string.stop_service_and_exit);
     }
 
     @Override
-    public void onClick(View view, int position)
-    {
+    public void onClick(View view, int position) {
         super.onClick(view, position);
         getDrawerController().
                 getMainActivity().
@@ -93,18 +82,15 @@ public class DrawerExitMenuItem extends DrawerMenuItemBase
     }
 
     @Override
-    public Drawable getIcon()
-    {
+    public Drawable getIcon() {
         return getIcon(getDrawerController().getMainActivity());
     }
 
-    private synchronized static Drawable getIcon(Context context)
-    {
-        if(_icon == null)
-        {
+    private synchronized static Drawable getIcon(Context context) {
+        if (_icon == null) {
             TypedValue typedValue = new TypedValue();
             context.getTheme().resolveAttribute(R.attr.exitIcon, typedValue, true);
-            //noinspection deprecation
+            // noinspection deprecation
             _icon = context.getResources().getDrawable(typedValue.resourceId);
         }
         return _icon;

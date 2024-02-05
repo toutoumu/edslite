@@ -13,8 +13,7 @@ import com.sovworks.eds.fs.util.PathUtil;
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.Openable;
 
-public class CreateEncFsTaskFragment extends CreateEDSLocationTaskFragment
-{
+public class CreateEncFsTaskFragment extends CreateEDSLocationTaskFragment {
     public static final String TAG = "com.sovworks.eds.android.locations.tasks.CreateEncFsTaskFragment";
 
     public static final String ARG_NAME_CIPHER_NAME = "com.sovworks.eds.android.NAME_CIPHER_NAME";
@@ -28,17 +27,15 @@ public class CreateEncFsTaskFragment extends CreateEDSLocationTaskFragment
     public static final String ARG_ALLOW_EMPTY_BLOCKS = "com.sovworks.eds.android.ALLOW_EMPTY_BLOCKS";
 
     @Override
-    protected EDSLocationFormatter createFormatter()
-    {
+    protected EDSLocationFormatter createFormatter() {
         return new EncFsFormatter();
     }
 
     @Override
-    protected void initFormatter(TaskState state, EDSLocationFormatter formatter, SecureBuffer password) throws Exception
-    {
+    protected void initFormatter(TaskState state, EDSLocationFormatter formatter, SecureBuffer password) throws Exception {
         super.initFormatter(state, formatter, password);
         Bundle args = getArguments();
-        EncFsFormatter cf = (EncFsFormatter)formatter;
+        EncFsFormatter cf = (EncFsFormatter) formatter;
         cf.setDataCodecName(args.getString(ARG_CIPHER_NAME));
         cf.setNameCodecName(args.getString(ARG_NAME_CIPHER_NAME));
         Config c = cf.getConfig();
@@ -54,21 +51,18 @@ public class CreateEncFsTaskFragment extends CreateEDSLocationTaskFragment
     }
 
     @Override
-    protected boolean checkParams(TaskState state, Location locationLocation) throws Exception
-    {
+    protected boolean checkParams(TaskState state, Location locationLocation) throws Exception {
         Bundle args = getArguments();
         Path path = locationLocation.getCurrentPath();
-        if(path.isFile())
+        if (path.isFile())
             path = path.getParentPath();
         if (path == null || !path.isDirectory())
             throw new UserException(_context,
                     R.string.wrong_encfs_root_path);
-        if (!args.getBoolean(ARG_OVERWRITE, false))
-        {
+        if (!args.getBoolean(ARG_OVERWRITE, false)) {
             Path cfgPath = PathUtil.buildPath(path, Config.CONFIG_FILENAME);
-            if (cfgPath!=null && cfgPath.isFile()
-                    && cfgPath.getFile().getSize() > 0)
-            {
+            if (cfgPath != null && cfgPath.isFile()
+                    && cfgPath.getFile().getSize() > 0) {
                 state.setResult(RESULT_REQUEST_OVERWRITE);
                 return false;
             }

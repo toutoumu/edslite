@@ -7,22 +7,18 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
-public class StreamCipherBase extends CipherBase
-{
-    public StreamCipherBase(EncryptionEngine base)
-    {
+public class StreamCipherBase extends CipherBase {
+    public StreamCipherBase(EncryptionEngine base) {
         super(base);
     }
 
     @Override
-    public void setIV(byte[] iv)
-    {
+    public void setIV(byte[] iv) {
         _iv = iv == null ? 0 : ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).getLong();
     }
 
     @Override
-    public void encrypt(byte[] data, int offset, int len) throws EncryptionEngineException
-    {
+    public void encrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
         shuffleBytes(data, offset, len);
         byte[] iv = new byte[getIVSize()];
         ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).putLong(_iv);
@@ -36,8 +32,7 @@ public class StreamCipherBase extends CipherBase
     }
 
     @Override
-    public void decrypt(byte[] data, int offset, int len) throws EncryptionEngineException
-    {
+    public void decrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
         byte[] iv = new byte[getIVSize()];
         ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).putLong(_iv + 1);
         super.setIV(iv);
@@ -50,23 +45,19 @@ public class StreamCipherBase extends CipherBase
         unshuffleBytes(data, offset, len);
     }
 
-    private static void shuffleBytes(byte[] buf, int offset, int count)
-    {
+    private static void shuffleBytes(byte[] buf, int offset, int count) {
         for (int i = 0; i < count - 1; ++i) buf[i + offset + 1] ^= buf[i + offset];
     }
 
-    private static void unshuffleBytes(byte[] buf, int offset, int count)
-    {
+    private static void unshuffleBytes(byte[] buf, int offset, int count) {
         for (int i = count - 1; i > 0; --i) buf[i + offset] ^= buf[i + offset - 1];
     }
 
-    private static void flipBytes(byte[] buf, int offset, int count)
-    {
+    private static void flipBytes(byte[] buf, int offset, int count) {
         byte[] revBuf = new byte[64];
 
         int bytesLeft = count;
-        while (bytesLeft > 0)
-        {
+        while (bytesLeft > 0) {
             int toFlip = Math.min(revBuf.length, bytesLeft);
 
             for (int i = 0; i < toFlip; ++i) revBuf[i] = buf[toFlip + offset - (i + 1)];
@@ -74,7 +65,7 @@ public class StreamCipherBase extends CipherBase
             bytesLeft -= toFlip;
             offset += toFlip;
         }
-        Arrays.fill(revBuf, (byte)0);
+        Arrays.fill(revBuf, (byte) 0);
     }
 
     private long _iv;

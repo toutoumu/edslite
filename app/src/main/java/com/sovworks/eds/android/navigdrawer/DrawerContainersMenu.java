@@ -9,29 +9,24 @@ import com.sovworks.eds.locations.EDSLocation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class DrawerContainersMenu extends DrawerSubMenuBase
-{
+public class DrawerContainersMenu extends DrawerSubMenuBase {
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return getContext().getString(R.string.containers);
     }
 
-    public DrawerContainersMenu(DrawerControllerBase drawerController)
-    {
+    public DrawerContainersMenu(DrawerControllerBase drawerController) {
         super(drawerController);
     }
 
     @Override
-    protected Collection<DrawerMenuItemBase> getSubItems()
-    {
+    protected Collection<DrawerMenuItemBase> getSubItems() {
         LocationsManager lm = LocationsManager.getLocationsManager(getContext());
         ArrayList<DrawerMenuItemBase> res = new ArrayList<>();
-        for(EDSLocation loc: lm.getLoadedEDSLocations(true))
-        {
-            if(loc instanceof ContainerLocation)
+        for (EDSLocation loc : lm.getLoadedEDSLocations(true)) {
+            if (loc instanceof ContainerLocation)
                 res.add(new DrawerContainerMenuItem(loc, getDrawerController()));
-            else if(loc instanceof EncFsLocationBase)
+            else if (loc instanceof EncFsLocationBase)
                 res.add(new DrawerEncFsMenuItem(loc, getDrawerController()));
         }
         res.add(new DrawerManageContainersMenuItem(getDrawerController()));

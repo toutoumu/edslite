@@ -4,16 +4,14 @@ import android.content.Context;
 
 import com.sovworks.eds.android.R;
 
-public class WrongPasswordOrBadContainerException extends UserException
-{
+public class WrongPasswordOrBadContainerException extends UserException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-	public WrongPasswordOrBadContainerException(Context context)
-	{
-		super(context,R.string.bad_container_file_or_wrong_password);
-	}
+    public WrongPasswordOrBadContainerException(Context context) {
+        super(context, R.string.bad_container_file_or_wrong_password);
+    }
 }

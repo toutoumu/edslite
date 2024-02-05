@@ -25,22 +25,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class FS extends FileSystemWrapper
-{
-    public static Iterable<DataCodecInfo> getSupportedDataCodecs()
-    {
+public class FS extends FileSystemWrapper {
+    public static Iterable<DataCodecInfo> getSupportedDataCodecs() {
         return Arrays.asList(_supportedDataCodecs);
     }
 
-    public static Iterable<NameCodecInfo> getSupportedNameCodecs()
-    {
+    public static Iterable<NameCodecInfo> getSupportedNameCodecs() {
         return Arrays.asList(_supportedNameCodecs);
     }
 
     public static final int KEY_CHECKSUM_BYTES = 4;
 
-    public static byte[] deriveKey(byte[] password, byte[] salt, int numIterations, int keySize, int ivSize, ProgressReporter pr) throws EncryptionEngineException, DigestException
-    {
+    public static byte[] deriveKey(byte[] password, byte[] salt, int numIterations, int keySize, int ivSize, ProgressReporter pr) throws EncryptionEngineException, DigestException {
         HMACSHA1KDF kdf = new HMACSHA1KDF();
         kdf.setProgressReporter(pr);
         return kdf.deriveKey(
@@ -51,8 +47,7 @@ public class FS extends FileSystemWrapper
         );
     }
 
-    public FS(Path rootPath, Config config, byte[] password) throws ApplicationException, IOException
-    {
+    public FS(Path rootPath, Config config, byte[] password) throws ApplicationException, IOException {
         super(rootPath.getFileSystem());
         _config = config;
         _rootRealPath = rootPath;
@@ -63,97 +58,76 @@ public class FS extends FileSystemWrapper
         _rootPath = new RootPath();
     }
 
-    public FS(Path rootPath, byte[] password) throws IOException, ApplicationException
-    {
+    public FS(Path rootPath, byte[] password) throws IOException, ApplicationException {
         this(rootPath, password, null);
     }
 
-    public FS(Path rootPath, byte[] password, ContainerOpeningProgressReporter progressReporter) throws IOException, ApplicationException
-    {
+    public FS(Path rootPath, byte[] password, ContainerOpeningProgressReporter progressReporter) throws IOException, ApplicationException {
         super(rootPath.getFileSystem());
         setOpeningProgressReporter(progressReporter);
         _config = readConfig(rootPath);
         _rootRealPath = rootPath;
         byte[] derivedKey = null;
-        try
-        {
-            if(_progressReporter!=null)
-            {
+        try {
+            if (_progressReporter != null) {
                 _progressReporter.setCurrentEncryptionAlgName(_config.getDataCodecInfo().getName());
                 _progressReporter.setCurrentKDFName("SHA1");
             }
             derivedKey = deriveKey(password);
             _encryptionKey = decryptVolumeKey(derivedKey);
             _rootPath = new RootPath();
-        }
-        catch (DigestException e)
-        {
+        } catch (DigestException e) {
             throw new ApplicationException("Failed deriving the key", e);
-        }
-        finally
-        {
-            if(derivedKey!=null)
-                Arrays.fill(derivedKey, (byte)0);
+        } finally {
+            if (derivedKey != null)
+                Arrays.fill(derivedKey, (byte) 0);
         }
     }
 
-    public Config getConfig()
-    {
+    public Config getConfig() {
         return _config;
     }
 
-    public void setOpeningProgressReporter(ContainerOpeningProgressReporter r)
-    {
+    public void setOpeningProgressReporter(ContainerOpeningProgressReporter r) {
         _progressReporter = r;
     }
 
 
-    public void encryptVolumeKeyAndWriteConfig(byte[] password) throws ApplicationException, IOException
-    {
+    public void encryptVolumeKeyAndWriteConfig(byte[] password) throws ApplicationException, IOException {
         SecureRandom sr = new SecureRandom();
         byte[] salt = new byte[20];
         sr.nextBytes(salt);
         _config.setSalt(salt);
         byte[] derivedKey = null;
-        try
-        {
+        try {
             derivedKey = deriveKey(password);
             _config.setEncryptedVolumeKey(encryptVolumeKey(derivedKey));
-        }
-        catch (DigestException e)
-        {
+        } catch (DigestException e) {
             throw new ApplicationException("Failed deriving the key", e);
-        }
-        finally
-        {
-            if(derivedKey!=null)
-                Arrays.fill(derivedKey, (byte)0);
+        } finally {
+            if (derivedKey != null)
+                Arrays.fill(derivedKey, (byte) 0);
         }
         _config.write(_rootRealPath);
     }
 
     @Override
-    public com.sovworks.eds.fs.encfs.Path getRootPath()
-    {
+    public com.sovworks.eds.fs.encfs.Path getRootPath() {
         return _rootPath;
     }
 
     @Override
-    public synchronized com.sovworks.eds.fs.encfs.Path getPath(String pathString) throws IOException
-    {
+    public synchronized com.sovworks.eds.fs.encfs.Path getPath(String pathString) throws IOException {
         return getPathFromRealPath(getBase().getPath(pathString));
     }
 
-    public Path getEncFSRootPath()
-    {
+    public Path getEncFSRootPath() {
         return _rootRealPath;
     }
 
     @Override
-    public void close(boolean force) throws IOException
-    {
-        if(_encryptionKey!=null)
-        {
+    public void close(boolean force) throws IOException {
+        if (_encryptionKey != null) {
             Arrays.fill(_encryptionKey, (byte) 0);
             _encryptionKey = null;
         }
@@ -172,15 +146,13 @@ public class FS extends FileSystemWrapper
         }*/
     }
 
-    synchronized com.sovworks.eds.fs.encfs.Path getPathFromRealPath(Path realPath) throws IOException
-    {
-        if(realPath == null)
+    synchronized com.sovworks.eds.fs.encfs.Path getPathFromRealPath(Path realPath) throws IOException {
+        if (realPath == null)
             return null;
-        if(realPath.equals(_rootRealPath))
+        if (realPath.equals(_rootRealPath))
             return _rootPath;
         com.sovworks.eds.fs.encfs.Path p = getCachedPath(realPath);
-        if(p==null)
-        {
+        if (p == null) {
             p = new com.sovworks.eds.fs.encfs.Path(
                     this,
                     realPath,
@@ -192,40 +164,35 @@ public class FS extends FileSystemWrapper
         return p;
     }
 
-    com.sovworks.eds.fs.encfs.Path getCachedPath(Path realPath) throws IOException
-    {
+    com.sovworks.eds.fs.encfs.Path getCachedPath(Path realPath) throws IOException {
         return _cache.get(realPath);
     }
 
-    private class RootPath extends com.sovworks.eds.fs.encfs.Path
-    {
-        public RootPath()
-        {
+    private class RootPath extends com.sovworks.eds.fs.encfs.Path {
+        public RootPath() {
             super(FS.this, _rootRealPath, getConfig().getNameCodecInfo(), _encryptionKey);
             setDecodedPath(new StringPathUtil());
             setEncodedPath(new StringPathUtil());
         }
 
         @Override
-        public boolean isRootDirectory() throws IOException
-        {
+        public boolean isRootDirectory() throws IOException {
             return true;
         }
 
         @Override
-        public synchronized byte[] getChainedIV()
-        {
+        public synchronized byte[] getChainedIV() {
             return new byte[getNamingCodecInfo().getEncDec().getIVSize()];
         }
 
         @Override
-        public com.sovworks.eds.fs.encfs.Path getParentPath() throws IOException
-        {
+        public com.sovworks.eds.fs.encfs.Path getParentPath() throws IOException {
             return null;
         }
     }
-    private static final DataCodecInfo[] _supportedDataCodecs = new DataCodecInfo[] { new AESDataCodecInfo() };
-    private static final NameCodecInfo[] _supportedNameCodecs = new NameCodecInfo[] {
+
+    private static final DataCodecInfo[] _supportedDataCodecs = new DataCodecInfo[]{new AESDataCodecInfo()};
+    private static final NameCodecInfo[] _supportedNameCodecs = new NameCodecInfo[]{
             new BlockNameCodecInfo(),
             new BlockCSNameCodecInfo(),
             new StreamNameCodecInfo(),
@@ -239,8 +206,7 @@ public class FS extends FileSystemWrapper
     private Config _config;
     private ContainerOpeningProgressReporter _progressReporter;
 
-    private byte[] deriveKey(byte[] password) throws EncryptionEngineException, DigestException
-    {
+    private byte[] deriveKey(byte[] password) throws EncryptionEngineException, DigestException {
         return deriveKey(
                 password,
                 getConfig().getSalt(),
@@ -251,54 +217,43 @@ public class FS extends FileSystemWrapper
         );
     }
 
-    private byte[] decryptVolumeKey(byte[] derivedKey) throws EncryptionEngineException, WrongPasswordException
-    {
+    private byte[] decryptVolumeKey(byte[] derivedKey) throws EncryptionEngineException, WrongPasswordException {
         byte[] encryptedVolumeKey = getConfig().getEncryptedVolumeKey();
         int checksum = 0;
-        for(int i=0;i<KEY_CHECKSUM_BYTES;i++)
+        for (int i = 0; i < KEY_CHECKSUM_BYTES; i++)
             checksum = (checksum << 8) | (encryptedVolumeKey[i] & 0xFF);
         byte[] volumeKey = Arrays.copyOfRange(encryptedVolumeKey, KEY_CHECKSUM_BYTES, encryptedVolumeKey.length);
         EncryptionEngine ee = getConfig().getDataCodecInfo().getStreamEncDec();
-        try
-        {
+        try {
             ee.setKey(derivedKey);
             ee.init();
             ee.setIV(ByteBuffer.allocate(ee.getIVSize()).putLong(checksum & 0xFFFFFFFFL).array());
             ee.decrypt(volumeKey, 0, volumeKey.length);
-        }
-        finally
-        {
+        } finally {
             ee.close();
         }
 
         MACCalculator cc = getConfig().getDataCodecInfo().getChecksumCalculator();
-        try
-        {
+        try {
             cc.init(derivedKey);
             int checksum2 = cc.calc32(volumeKey, 0, volumeKey.length);
             if (checksum2 != checksum)
                 throw new WrongPasswordException();
-        }
-        finally
-        {
+        } finally {
             cc.close();
         }
         return volumeKey;
     }
 
-    private byte[] encryptVolumeKey(byte[] derivedKey) throws EncryptionEngineException
-    {
+    private byte[] encryptVolumeKey(byte[] derivedKey) throws EncryptionEngineException {
         DataCodecInfo dataCodec = _config.getDataCodecInfo();
         byte[] volumeKey = _encryptionKey;
         int checksum;
         MACCalculator cc = dataCodec.getChecksumCalculator();
-        try
-        {
+        try {
             cc.init(derivedKey);
             checksum = cc.calc32(volumeKey, 0, volumeKey.length);
-        }
-        finally
-        {
+        } finally {
             cc.close();
         }
 
@@ -306,28 +261,23 @@ public class FS extends FileSystemWrapper
         System.arraycopy(volumeKey, 0, res, FS.KEY_CHECKSUM_BYTES, volumeKey.length);
 
         EncryptionEngine ee = dataCodec.getStreamEncDec();
-        try
-        {
+        try {
             ee.setKey(derivedKey);
             ee.init();
             ee.setIV(ByteBuffer.allocate(ee.getIVSize()).putLong(checksum & 0xFFFFFFFFL).array());
             ee.encrypt(res, FS.KEY_CHECKSUM_BYTES, volumeKey.length);
-        }
-        finally
-        {
+        } finally {
             ee.close();
         }
 
-        for (int i = 1; i <= FS.KEY_CHECKSUM_BYTES; ++i)
-        {
-            res[FS.KEY_CHECKSUM_BYTES - i] = (byte)checksum;
+        for (int i = 1; i <= FS.KEY_CHECKSUM_BYTES; ++i) {
+            res[FS.KEY_CHECKSUM_BYTES - i] = (byte) checksum;
             checksum >>= 8;
         }
         return res;
     }
 
-    private Config readConfig(Path rootFolderPath) throws IOException, ApplicationException
-    {
+    private Config readConfig(Path rootFolderPath) throws IOException, ApplicationException {
         Config cfg = new Config();
         cfg.read(rootFolderPath);
         return cfg;

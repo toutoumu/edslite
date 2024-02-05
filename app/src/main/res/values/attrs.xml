@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <attr name="mainTextColor" format="reference"/>
-    <attr name="secTextColor" format="reference"/>
+    <attr name="mainTextColor" format="reference" />
+    <attr name="secTextColor" format="reference" />
     <attr name="leftDrawerStyle" format="reference" />
-    <attr name="drawerRowBackground" format="reference"/>
-    <attr name="drawerBackground" format="reference"/>
+    <attr name="drawerRowBackground" format="reference" />
+    <attr name="drawerBackground" format="reference" />
     <attr name="drawerMenuTitleTextColor" format="reference" />
     <attr name="drawerMenuItemTextColor" format="reference" />
     <attr name="dialogStyle" format="reference" />

@@ -11,16 +11,15 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.List;
 
-public interface VolumeLayout extends EncryptedFileLayout
-{
+public interface VolumeLayout extends EncryptedFileLayout {
 
     void initNew();
 
     boolean readHeader(RandomAccessIO input) throws IOException, ApplicationException;
 
-    void writeHeader(RandomAccessIO output) throws  IOException, ApplicationException;
+    void writeHeader(RandomAccessIO output) throws IOException, ApplicationException;
 
-	void formatFS(RandomAccessIO output, FileSystemInfo fsInfo) throws ApplicationException, IOException;
+    void formatFS(RandomAccessIO output, FileSystemInfo fsInfo) throws ApplicationException, IOException;
 
     void setEngine(FileEncryptionEngine enc);
 

@@ -12,22 +12,18 @@ import com.sovworks.eds.android.locations.VeraCryptLocation;
 import com.sovworks.eds.android.locations.fragments.ContainerSettingsFragment;
 import com.sovworks.eds.android.locations.fragments.EncFsSettingsFragment;
 
-public class LocationSettingsActivity extends SettingsBaseActivity
-{
+public class LocationSettingsActivity extends SettingsBaseActivity {
 
     @Override
-    protected Fragment getSettingsFragment()
-    {
+    protected Fragment getSettingsFragment() {
         return getCreateLocationFragment();
     }
 
-    private Fragment getCreateLocationFragment()
-    {
+    private Fragment getCreateLocationFragment() {
         Uri uri = getIntent().getData();
-        if(uri == null || uri.getScheme() == null)
+        if (uri == null || uri.getScheme() == null)
             throw new RuntimeException("Location uri is not set");
-        switch (uri.getScheme())
-        {
+        switch (uri.getScheme()) {
             case EncFsLocationBase.URI_SCHEME:
                 return new EncFsSettingsFragment();
             case VeraCryptLocation.URI_SCHEME:

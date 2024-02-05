@@ -3,33 +3,33 @@
     android:id="@+id/viewSwitcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
-    	<com.sovworks.eds.android.views.GestureImageViewWithFullScreenMode
-		    android:id="@+id/imageView"
-		    android:contentDescription="@string/eds"
-		    android:layout_width="match_parent"
-		    android:layout_height="match_parent" />
 
-		<RelativeLayout
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:layout_gravity="center" >
+    <com.sovworks.eds.android.views.GestureImageViewWithFullScreenMode
+        android:id="@+id/imageView"
+        android:contentDescription="@string/eds"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-		    <ProgressBar
-		        android:id="@+id/progressbar"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_centerVertical="true" />
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
 
-		    <TextView
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_centerVertical="true"
-		        android:layout_toRightOf="@+id/progressbar"
-		        android:gravity="center"
-		        android:paddingLeft="5dp"
-		        android:text="@string/loading" />
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true" />
 
-		</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/progressbar"
+            android:gravity="center"
+            android:paddingLeft="5dp"
+            android:text="@string/loading" />
+
+    </RelativeLayout>
 
 </ViewSwitcher> 

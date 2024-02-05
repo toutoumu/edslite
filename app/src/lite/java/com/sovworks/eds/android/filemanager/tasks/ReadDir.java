@@ -15,23 +15,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class ReadDir extends ReadDirBase
-{
-    static BrowserRecord createBrowserRecordFromFile(Context context, @SuppressWarnings("UnusedParameters") Location loc, Path path, DirectorySettings directorySettings) throws IOException
-    {
-        if (directorySettings != null)
-        {
+public class ReadDir extends ReadDirBase {
+    static BrowserRecord createBrowserRecordFromFile(Context context, @SuppressWarnings("UnusedParameters") Location loc, Path path, DirectorySettings directorySettings) throws IOException {
+        if (directorySettings != null) {
             StringPathUtil pu;
-            if(path.isFile())
+            if (path.isFile())
                 pu = new StringPathUtil(path.getFile().getName());
-            else if(path.isDirectory())
+            else if (path.isDirectory())
                 pu = new StringPathUtil(path.getDirectory().getName());
             else
                 pu = new StringPathUtil(path.getPathString());
             ArrayList<String> masks = directorySettings.getHiddenFilesMasks();
-            if(masks != null)
-                for (String mask : masks)
-                {
+            if (masks != null)
+                for (String mask : masks) {
                     if (pu.getFileName().matches(mask))
                         return null;
                 }
@@ -43,8 +39,7 @@ public class ReadDir extends ReadDirBase
                 new ExecutableFileRecord(context);
     }
 
-    ReadDir(Context context, Location targetLocation, Collection<Path> selectedFiles, DirectorySettings dirSettings, boolean showRootFolderLink)
-    {
+    ReadDir(Context context, Location targetLocation, Collection<Path> selectedFiles, DirectorySettings dirSettings, boolean showRootFolderLink) {
         super(context, targetLocation, selectedFiles, dirSettings, showRootFolderLink);
     }
 }

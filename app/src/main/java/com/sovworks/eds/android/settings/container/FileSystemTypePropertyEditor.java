@@ -10,11 +10,9 @@ import com.sovworks.eds.settings.GlobalConfig;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileSystemTypePropertyEditor extends ChoiceDialogPropertyEditor
-{
+public class FileSystemTypePropertyEditor extends ChoiceDialogPropertyEditor {
 
-    public FileSystemTypePropertyEditor(CreateContainerFragmentBase createContainerFragment)
-    {
+    public FileSystemTypePropertyEditor(CreateContainerFragmentBase createContainerFragment) {
         super(createContainerFragment,
                 R.string.file_system_type,
                 createContainerFragment.getString(R.string.file_system_type),
@@ -23,8 +21,7 @@ public class FileSystemTypePropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected int loadValue()
-    {
+    protected int loadValue() {
         List<String> names = getEntries();
         FileSystemInfo cur = getHostFragment().
                 getState().
@@ -38,8 +35,7 @@ public class FileSystemTypePropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected void saveValue(int value)
-    {
+    protected void saveValue(int value) {
         List<FileSystemInfo> fs = FileSystemInfo.getSupportedFileSystems();
         FileSystemInfo selected = fs.get(value);
         getHostFragment().
@@ -48,20 +44,17 @@ public class FileSystemTypePropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected ArrayList<String> getEntries()
-    {
+    protected ArrayList<String> getEntries() {
         ArrayList<String> res = new ArrayList<>();
         List<FileSystemInfo> supportedFS = FileSystemInfo.getSupportedFileSystems();
-        if (supportedFS != null)
-        {
-            for (FileSystemInfo fsInfo: supportedFS)
+        if (supportedFS != null) {
+            for (FileSystemInfo fsInfo : supportedFS)
                 res.add(fsInfo.getFileSystemName());
         }
         return res;
     }
 
-    protected CreateContainerFragmentBase getHostFragment()
-    {
+    protected CreateContainerFragmentBase getHostFragment() {
         return (CreateContainerFragmentBase) getHost();
     }
 }

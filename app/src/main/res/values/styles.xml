@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="NewApi">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="NewApi">
+
     <style name="Theme.EDS" parent="android:Theme.Holo.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/ActionBar</item>
         <item name="android:buttonStyle">@style/Button</item>
@@ -50,6 +49,7 @@
         <item name="widgetUnlockedAllIcon">@drawable/widget_unlocked_all</item>
         <item name="collapseIcon">@drawable/ic_action_collapse</item>
     </style>
+
     <style name="Theme.EDS.Dark" parent="android:Theme.Holo">
         <item name="android:actionBarStyle">@style/ActionBar.Dark</item>
         <item name="android:buttonStyle">@style/Button.Dark</item>
@@ -98,6 +98,7 @@
         <item name="widgetUnlockedAllIcon">@drawable/widget_unlocked_all_dark</item>
         <item name="collapseIcon">@drawable/ic_action_collapse_dark</item>
     </style>
+
     <style name="Dialog" parent="Theme.EDS">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:colorBackground">?attr/colorBackgroundFloating</item>
@@ -118,6 +119,7 @@
         <item name="android:listDivider">@null</item>
         <item name="android:windowCloseOnTouchOutside">@bool/abc_config_closeDialogWhenTouchOutside</item>
     </style>
+
     <style name="Dialog.Dark" parent="Theme.EDS.Dark">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>
@@ -139,55 +141,68 @@
         <item name="android:listPreferredItemPaddingEnd">16dip</item>
         <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
     </style>
+
     <style name="ActionBar" parent="android:Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@android:color/black</item>
         <item name="android:backgroundStacked" tools:ignore="NewApi">@android:color/black</item>
     </style>
-    <style name="ActionBar.Dark" parent="android:Widget.Holo.ActionBar.Solid">
-    </style>
+
+    <style name="ActionBar.Dark" parent="android:Widget.Holo.ActionBar.Solid"></style>
+
     <style name="ActionMode" parent="android:Widget.Holo.Light.ActionMode.Inverse">
         <item name="android:background">@android:color/black</item>
     </style>
-    <style name="ActionMode.Dark" parent="android:Widget.Holo.ActionMode">
-    </style>
+
+    <style name="ActionMode.Dark" parent="android:Widget.Holo.ActionMode"></style>
+
     <style name="OverflowButtonStyle" parent="android:Widget.Holo.Light.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_menu_more</item>
     </style>
+
     <style name="OverflowButtonStyle.Dark" parent="android:Widget.Holo.ActionButton.Overflow">
         <item name="android:src">@drawable/ic_menu_more</item>
     </style>
+
     <style name="ActionBarTitleTextStyle" parent="android:TextAppearance.Holo.Widget.ActionBar.Title.Inverse">
-        <item name="android:textSize">14sp</item>        
+        <item name="android:textSize">14sp</item>
     </style>
+
     <style name="ActionBarTitleTextStyle.Dark" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textSize">14sp</item>
     </style>
-    <style name="Button"  parent="android:Widget.Holo.Light.Button">
+
+    <style name="Button" parent="android:Widget.Holo.Light.Button">
         <item name="android:background">@drawable/button</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minWidth">20dp</item>
         <item name="android:minHeight">20dp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
-    <style name="Button.Dark"  parent="android:Widget.Holo.Button">
+
+    <style name="Button.Dark" parent="android:Widget.Holo.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:minWidth">20dp</item>
         <item name="android:minHeight">20dp</item>
     </style>
+
     <style name="CheckboxStyle" parent="android:Widget.Holo.Light.CompoundButton.CheckBox">
         <item name="android:button">@drawable/checkbox</item>
         <item name="android:textColor">?attr/mainTextColor</item>
     </style>
+
     <style name="CheckboxStyle.Dark" parent="android:Widget.Holo.CompoundButton.CheckBox">
         <item name="android:textColor">?attr/mainTextColor</item>
     </style>
+
     <style name="RadioButtonStyle" parent="android:Widget.Holo.Light.CompoundButton.RadioButton">
         <item name="android:button">@drawable/radio</item>
         <item name="android:textColor">?attr/mainTextColor</item>
     </style>
+
     <style name="RadioButtonStyle.Dark" parent="android:Widget.Holo.CompoundButton.RadioButton">
         <item name="android:textColor">?attr/mainTextColor</item>
     </style>
+
     <style name="LeftDrawer" parent="android:Widget.Holo.Light.ListView">
         <item name="android:layout_width">240dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -195,6 +210,7 @@
         <item name="android:choiceMode">singleChoice</item>
         <item name="android:background">?attr/drawerBackground</item>
     </style>
+
     <style name="LeftDrawer.Dark" parent="android:Widget.Holo.ListView">
         <item name="android:layout_width">240dp</item>
         <item name="android:layout_height">match_parent</item>
@@ -202,6 +218,7 @@
         <item name="android:choiceMode">singleChoice</item>
         <item name="android:background">?attr/drawerBackground</item>
     </style>
+
     <style name="DrawerRow">
         <item name="android:background">?attr/drawerRowBackground</item>
         <item name="android:layout_width">match_parent</item>
@@ -209,26 +226,32 @@
         <item name="android:padding">5dp</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
     </style>
+
     <style name="DrawerMainIcon">
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_margin">2dp</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
+
     <style name="DrawerMainTitle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?attr/drawerMenuTitleTextColor</item>
         <item name="android:textSize">14sp</item>
     </style>
+
     <style name="DrawerCloseLocationIcon">
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
         <item name="android:layout_margin">2dp</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
+
     <style name="DrawerRow.Sub" />
+
     <style name="DrawerMainIcon.Sub" />
+
     <style name="DrawerMainTitle.Sub">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -236,6 +259,7 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textStyle" />
     </style>
+
     <style name="EmptyListText">
         <item name="android:id">@id/android:empty</item>
         <item name="android:layout_width">wrap_content</item>
@@ -245,14 +269,17 @@
         <item name="android:textSize">14sp</item>
         <item name="android:layout_gravity">center</item>
     </style>
+
     <style name="LocationListRow">
         <item name="android:gravity">center_vertical</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
     </style>
+
     <style name="LocationListText">
         <item name="android:textSize">14sp</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
+
     <style name="LocationListIcon">
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>

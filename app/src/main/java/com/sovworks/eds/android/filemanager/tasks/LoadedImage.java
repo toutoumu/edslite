@@ -25,67 +25,54 @@ import static com.sovworks.eds.android.filemanager.fragments.PreviewFragment.cal
 import static com.sovworks.eds.android.filemanager.fragments.PreviewFragment.loadDownsampledImage;
 import static com.sovworks.eds.android.filemanager.fragments.PreviewFragment.loadImageParams;
 
-public class LoadedImage
-{
-    public static Single<LoadedImage> createObservable(Context context, Path imagePath, Rect viewRect, Rect regionRect)
-    {
+public class LoadedImage {
+    public static Single<LoadedImage> createObservable(Context context, Path imagePath, Rect viewRect, Rect regionRect) {
         return Single.create(emitter -> {
-            PowerManager pm = (PowerManager)context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
+            PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wl = pm == null ? null : pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LoadImageTask");
-            if(wl!=null)
+            if (wl != null)
                 wl.acquire(10000);
-            try
-            {
+            try {
                 LoadedImage loadedImage = new LoadedImage(imagePath, viewRect, regionRect);
                 loadedImage.loadImage();
                 emitter.onSuccess(loadedImage);
-            }
-            finally
-            {
-                if(wl!=null)
+            } finally {
+                if (wl != null)
                     wl.release();
             }
 
         });
     }
 
-    public Rect getRegionRect()
-    {
+    public Rect getRegionRect() {
         return _regionRect;
     }
 
-    public Bitmap getImageData()
-    {
+    public Bitmap getImageData() {
         return _image;
     }
 
-    public int getSampleSize()
-    {
+    public int getSampleSize() {
         return _sampleSize;
     }
 
-    public int getRotation()
-    {
+    public int getRotation() {
         return _rotation;
     }
 
-    public boolean getFlipX()
-    {
+    public boolean getFlipX() {
         return _flipX;
     }
 
-    public boolean getFlipY()
-    {
+    public boolean getFlipY() {
         return _flipY;
     }
 
-    public boolean isOptimSupported()
-    {
+    public boolean isOptimSupported() {
         return _isOptimSupported;
     }
 
-    private LoadedImage(Path imagePath, Rect viewRect, Rect regionRect)
-    {
+    private LoadedImage(Path imagePath, Rect viewRect, Rect regionRect) {
         _imagePath = imagePath;
         _viewRect = viewRect;
         _regionRect = regionRect;
@@ -99,75 +86,59 @@ public class LoadedImage
     private boolean _flipX, _flipY;
     private int _sampleSize, _rotation;
 
-    private void loadImage() throws IOException
-    {
+    private void loadImage() throws IOException {
         BitmapFactory.Options params = loadImageParams(_imagePath);
         boolean loadFull;
         boolean isJpg = "image/jpeg".equalsIgnoreCase(params.outMimeType);
-        if(_regionRect == null)
-        {
-            _regionRect = new Rect(0,0,params.outWidth,params.outHeight);
+        if (_regionRect == null) {
+            _regionRect = new Rect(0, 0, params.outWidth, params.outHeight);
             _isOptimSupported = isJpg || "image/png".equalsIgnoreCase(params.outMimeType);
             loadFull = true;
-        }
-        else
-        {
-            if(_regionRect.top<0)
+        } else {
+            if (_regionRect.top < 0)
                 _regionRect.top = 0;
-            if(_regionRect.left<0)
-                _regionRect.left=0;
-            if(_regionRect.width()>params.outWidth)
-                _regionRect.right -= (_regionRect.width()-params.outWidth);
-            if(_regionRect.height()>params.outHeight)
-                _regionRect.bottom -= (_regionRect.height()-params.outHeight);
+            if (_regionRect.left < 0)
+                _regionRect.left = 0;
+            if (_regionRect.width() > params.outWidth)
+                _regionRect.right -= (_regionRect.width() - params.outWidth);
+            if (_regionRect.height() > params.outHeight)
+                _regionRect.bottom -= (_regionRect.height() - params.outHeight);
             loadFull = false;
         }
         _sampleSize = calcSampleSize(_viewRect, _regionRect);
-        for(int i=0;i<5;i++,_sampleSize*=2)
-        {
-            try
-            {
-                if(loadFull)
+        for (int i = 0; i < 5; i++, _sampleSize *= 2) {
+            try {
+                if (loadFull)
                     _image = loadDownsampledImage(_imagePath, _sampleSize);
                 else
                     _image = CompatHelper.loadBitmapRegion(_imagePath, _sampleSize, _regionRect);
 
                 _flipX = _flipY = false;
                 _rotation = 0;
-                if(isJpg)
+                if (isJpg)
                     loadInitOrientation(_imagePath);
                 return;
-            }
-            catch(OutOfMemoryError e)
-            {
+            } catch (OutOfMemoryError e) {
                 System.gc();
             }
-            try
-            {
+            try {
                 Thread.sleep(3000);
-            }
-            catch (InterruptedException ignored)
-            {
+            } catch (InterruptedException ignored) {
             }
         }
         throw new OutOfMemoryError();
     }
 
-    private void loadInitOrientation(Path imagePath)
-    {
-        try
-        {
+    private void loadInitOrientation(Path imagePath) {
+        try {
             InputStream s = imagePath.getFile().getInputStream();
-            try
-            {
+            try {
                 Metadata m = ImageMetadataReader.readMetadata(s);
 
-                for(Directory directory: m.getDirectories())
-                    if(directory.containsTag(ExifSubIFDDirectory.TAG_ORIENTATION))
-                    {
+                for (Directory directory : m.getDirectories())
+                    if (directory.containsTag(ExifSubIFDDirectory.TAG_ORIENTATION)) {
                         int orientation = directory.getInt(ExifSubIFDDirectory.TAG_ORIENTATION);
-                        switch (orientation)
-                        {
+                        switch (orientation) {
                             case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
                                 _flipX = true;
                                 break;
@@ -195,15 +166,11 @@ public class LoadedImage
                         }
                         break;
                     }
-            }
-            finally
-            {
+            } finally {
                 s.close();
             }
-        }
-        catch (Exception e)
-        {
-            if(GlobalConfig.isDebug())
+        } catch (Exception e) {
+            if (GlobalConfig.isDebug())
                 Logger.log(e);
         }
     }

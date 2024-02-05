@@ -19,18 +19,16 @@ import io.reactivex.Completable;
 import io.reactivex.subjects.CompletableSubject;
 
 
-public class ExtStorageWritePermisisonCheckFragment extends RxFragment
-{
+public class ExtStorageWritePermisisonCheckFragment extends RxFragment {
     public static final String TAG = "com.sovworks.eds.android.filemanager.fragments.ExtStorageWritePermisisonCheckFragment";
 
-    public static Completable getObservable(RxActivity activity)
-    {
+    public static Completable getObservable(RxActivity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (
                 ContextCompat.checkSelfPermission(
                         activity,
                         Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
+                        && ContextCompat.checkSelfPermission(
                         activity,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED)
@@ -39,8 +37,7 @@ public class ExtStorageWritePermisisonCheckFragment extends RxFragment
 
         FragmentManager fm = activity.getFragmentManager();
         ExtStorageWritePermisisonCheckFragment f = (ExtStorageWritePermisisonCheckFragment) fm.findFragmentByTag(TAG);
-        if(f == null)
-        {
+        if (f == null) {
             f = new ExtStorageWritePermisisonCheckFragment();
             activity.getFragmentManager().beginTransaction().add(f, TAG).commit();
         }
@@ -48,8 +45,7 @@ public class ExtStorageWritePermisisonCheckFragment extends RxFragment
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState)
-    {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lifecycle().
                 filter(event -> event == FragmentEvent.RESUME).
@@ -58,31 +54,26 @@ public class ExtStorageWritePermisisonCheckFragment extends RxFragment
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    public void requestExtStoragePermission()
-    {
+    public void requestExtStoragePermission() {
         requestPermissions(
-                new String[] {
+                new String[]{
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                 },
                 REQUEST_EXT_STORAGE_PERMISSIONS);
     }
 
-    public void cancelExtStoragePermissionRequest()
-    {
+    public void cancelExtStoragePermissionRequest() {
         _extStoragePermissionCheckSubject.onComplete();
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
-    {
-        if (requestCode == REQUEST_EXT_STORAGE_PERMISSIONS)
-        {
-            if((grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_EXT_STORAGE_PERMISSIONS) {
+            if ((grantResults[0] == PackageManager.PERMISSION_GRANTED &&
                     grantResults[1] == PackageManager.PERMISSION_GRANTED) ||
-                    !requestExtStoragePermissionWithRationale())
-            {
+                    !requestExtStoragePermissionWithRationale()) {
                 _extStoragePermissionCheckSubject.onComplete();
                 getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
             }
@@ -95,13 +86,11 @@ public class ExtStorageWritePermisisonCheckFragment extends RxFragment
 
 
     @TargetApi(Build.VERSION_CODES.M)
-    private boolean requestExtStoragePermissionWithRationale()
-    {
+    private boolean requestExtStoragePermissionWithRationale() {
         if (shouldShowRequestPermissionRationale(
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 || shouldShowRequestPermissionRationale(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE))
-        {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             AskPrimaryStoragePermissionDialog.showDialog(getFragmentManager());
             return true;
         }

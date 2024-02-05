@@ -6,23 +6,19 @@ import com.sovworks.eds.android.locations.opener.fragments.EDSLocationOpenerFrag
 import com.sovworks.eds.android.locations.opener.fragments.LocationOpenerBaseFragment;
 import com.sovworks.eds.android.tasks.ChangeEncFsPasswordTask;
 
-public class EncFsSettingsFragment extends EDSLocationSettingsFragment
-{
+public class EncFsSettingsFragment extends EDSLocationSettingsFragment {
     @Override
-    public EncFsLocationBase getLocation()
-    {
+    public EncFsLocationBase getLocation() {
         return (EncFsLocationBase) super.getLocation();
     }
 
     @Override
-    protected TaskFragment createChangePasswordTaskInstance()
-    {
+    protected TaskFragment createChangePasswordTaskInstance() {
         return new ChangeEncFsPasswordTask();
     }
 
     @Override
-    protected LocationOpenerBaseFragment getLocationOpener()
-    {
+    protected LocationOpenerBaseFragment getLocationOpener() {
         return new EDSLocationOpenerFragment();
     }
 }

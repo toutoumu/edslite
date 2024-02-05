@@ -16,68 +16,59 @@ import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.Openable;
 import com.sovworks.eds.settings.Settings;
 
-public abstract class OpeningOptionsFragmentBase extends PropertiesFragmentBase implements PropertiesHostWithStateBundle, PropertiesHostWithLocation
-{
-    public void saveExternalSettings()
-    {
+public abstract class OpeningOptionsFragmentBase extends PropertiesFragmentBase implements PropertiesHostWithStateBundle, PropertiesHostWithLocation {
+    public void saveExternalSettings() {
         _location.saveExternalSettings();
     }
 
     @Override
-    public Bundle getState()
-    {
+    public Bundle getState() {
         return _state;
     }
 
     @Override
-    public Location getTargetLocation()
-    {
+    public Location getTargetLocation() {
         return _location;
     }
 
     @Override
-    protected void createProperties()
-    {
+    protected void createProperties() {
         _location = (Openable) LocationsManager.
                 getLocationsManager(getActivity()).
                 getFromIntent(getActivity().getIntent(), null);
-        if(_location == null)
-        {
+        if (_location == null) {
             getActivity().finish();
             return;
         }
         _settings = UserSettings.getSettings(getActivity());
         _propertiesView.setInstantSave(true);
         Bundle extras = getActivity().getIntent().getExtras();
-        if(extras!=null)
+        if (extras != null)
             _state.putAll(extras);
         createOpenableProperties();
-        if(_location instanceof EDSLocation)
+        if (_location instanceof EDSLocation)
             createEDSLocationProperties();
-        if(_location instanceof ContainerLocation)
+        if (_location instanceof ContainerLocation)
             createContainerProperties();
     }
 
     protected Openable _location;
     protected Settings _settings;
 
-    protected void createEDSLocationProperties()
-    {
+    protected void createEDSLocationProperties() {
         _propertiesView.addProperty(new OpenInReadOnlyModePropertyEditor(this));
     }
 
-    protected void createOpenableProperties()
-    {
+    protected void createOpenableProperties() {
         int id = _propertiesView.addProperty(new PIMPropertyEditor(this));
-        if(!_location.hasCustomKDFIterations())
+        if (!_location.hasCustomKDFIterations())
             _propertiesView.setPropertyState(id, false);
         id = _propertiesView.addProperty(new UseExternalFileManagerPropertyEditor(this));
-        if(_settings.getExternalFileManagerInfo() == null)
+        if (_settings.getExternalFileManagerInfo() == null)
             _propertiesView.setPropertyState(id, false);
     }
 
-    protected void createContainerProperties()
-    {
+    protected void createContainerProperties() {
     }
 
     private final Bundle _state = new Bundle();

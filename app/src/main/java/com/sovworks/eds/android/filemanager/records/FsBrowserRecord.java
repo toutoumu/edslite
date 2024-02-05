@@ -22,45 +22,38 @@ import com.sovworks.eds.locations.Location;
 
 import java.io.IOException;
 
-public abstract class FsBrowserRecord extends CachedPathInfoBase implements BrowserRecord
-{
-    public static class RowViewInfo
-    {
+public abstract class FsBrowserRecord extends CachedPathInfoBase implements BrowserRecord {
+    public static class RowViewInfo {
         public ListView listView;
         public View view;
         public int position;
     }
 
-    public static void updateRowView(FileManagerActivity host, Object item)
-    {
+    public static void updateRowView(FileManagerActivity host, Object item) {
         updateRowView((FileListViewFragment) host.getFragmentManager().findFragmentByTag(FileListViewFragment.TAG), item);
     }
 
-    public static void updateRowView(FileListViewFragment host, Object item)
-    {
+    public static void updateRowView(FileListViewFragment host, Object item) {
         RowViewInfo rvi = getCurrentRowViewInfo(host, item);
-        if(rvi!=null)
+        if (rvi != null)
             updateRowView(rvi);
     }
 
-    public static void updateRowView(RowViewInfo rvi)
-    {
+    public static void updateRowView(RowViewInfo rvi) {
         rvi.listView.getAdapter().getView(rvi.position, rvi.view, rvi.listView);
     }
 
-    public static RowViewInfo getCurrentRowViewInfo(FileListViewFragment host, Object item)
-    {
-        if(host == null || host.isRemoving() || !host.isResumed())
+    public static RowViewInfo getCurrentRowViewInfo(FileListViewFragment host, Object item) {
+        if (host == null || host.isRemoving() || !host.isResumed())
             return null;
         ListView list = host.getListView();
-        if(list == null)
+        if (list == null)
             return null;
         int start = list.getFirstVisiblePosition();
-        for(int i=start, j=list.getLastVisiblePosition();i<=j;i++)
-            if(j<list.getCount() && item == list.getItemAtPosition(i))
-            {
+        for (int i = start, j = list.getLastVisiblePosition(); i <= j; i++)
+            if (j < list.getCount() && item == list.getItemAtPosition(i)) {
                 RowViewInfo rvi = new RowViewInfo();
-                rvi.view = list.getChildAt(i-start);
+                rvi.view = list.getChildAt(i - start);
                 rvi.position = i;
                 rvi.listView = list;
                 return rvi;
@@ -68,188 +61,161 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
         return null;
     }
 
-    public static RowViewInfo getCurrentRowViewInfo(FileManagerActivity host, Object item)
-    {
-        if(host == null)
+    public static RowViewInfo getCurrentRowViewInfo(FileManagerActivity host, Object item) {
+        if (host == null)
             return null;
         FileListViewFragment f = (FileListViewFragment) host.getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
         return getCurrentRowViewInfo(f, item);
     }
 
     @Override
-    public int getViewType()
-    {
+    public int getViewType() {
         return 0;
     }
 
     @Override
-    public void setSelected(boolean val)
-    {
+    public void setSelected(boolean val) {
         _isSelected = val;
     }
 
-    public boolean isSelected()
-    {
+    public boolean isSelected() {
         return _isSelected;
     }
 
     @Override
-    public View createView(int position, ViewGroup parent)
-    {
-        if(_host == null)
+    public View createView(int position, ViewGroup parent) {
+        if (_host == null)
             return null;
         LayoutInflater inflater = (LayoutInflater) _host.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.fs_browser_row, parent, false);
-        ((ViewGroup)v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        ((ViewGroup) v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         updateView(v, position);
         return v;
     }
 
     @Override
-    public void updateView(View view, final int position)
-    {
+    public void updateView(View view, final int position) {
         final FileListViewFragment hf = getHostFragment();
-        //if(isSelected())
+        // if(isSelected())
         //    //noinspection deprecation
         //    view.setBackgroundDrawable(getSelectedBackgroundDrawable(_context));
         CheckBox cb = view.findViewById(android.R.id.checkbox);
-        if(cb!=null)
-        {
-            if(allowSelect() && (_host.isSelectAction() || hf.isInSelectionMode()) && (!_host.isSelectAction() || !_host.isSingleSelectionMode()))
-            {
+        if (cb != null) {
+            if (allowSelect() && (_host.isSelectAction() || hf.isInSelectionMode()) && (!_host.isSelectAction() || !_host.isSingleSelectionMode())) {
                 cb.setOnCheckedChangeListener(null);
                 cb.setChecked(isSelected());
                 cb.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 {
-                    if(isChecked)
+                    if (isChecked)
                         hf.selectFile(FsBrowserRecord.this);
                     else
                         hf.unselectFile(FsBrowserRecord.this);
                 });
                 cb.setVisibility(View.VISIBLE);
-            }
-            else
+            } else
                 cb.setVisibility(View.INVISIBLE);
         }
         RadioButton rb = view.findViewById(R.id.radio);
-        if(rb!=null)
-        {
-            if(allowSelect() && _host.isSelectAction() && _host.isSingleSelectionMode())
-            {
+        if (rb != null) {
+            if (allowSelect() && _host.isSelectAction() && _host.isSingleSelectionMode()) {
                 rb.setOnCheckedChangeListener(null);
                 rb.setChecked(isSelected());
                 rb.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 {
-                    if(isChecked)
+                    if (isChecked)
                         hf.selectFile(FsBrowserRecord.this);
                     else
-                       hf.unselectFile(FsBrowserRecord.this);
+                        hf.unselectFile(FsBrowserRecord.this);
                 });
                 rb.setVisibility(View.VISIBLE);
-            }
-            else
+            } else
                 rb.setVisibility(View.INVISIBLE);
         }
 
         TextView tv = view.findViewById(android.R.id.text1);
-     	tv.setText(getName());
+        tv.setText(getName());
 
         ImageView iv = view.findViewById(android.R.id.icon);
         iv.setImageDrawable(getDefaultIcon());
         iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
         iv.setOnClickListener(view1 ->
         {
-            if (allowSelect())
-            {
-                if(isSelected())
-                {
-                    if(!_host.isSelectAction() || !_host.isSingleSelectionMode())
+            if (allowSelect()) {
+                if (isSelected()) {
+                    if (!_host.isSelectAction() || !_host.isSingleSelectionMode())
                         hf.unselectFile(FsBrowserRecord.this);
-                }
-                else
+                } else
                     hf.selectFile(FsBrowserRecord.this);
             }
         });
 
         iv = view.findViewById(android.R.id.icon1);
-        if(_miniIcon == null)
+        if (_miniIcon == null)
             iv.setVisibility(View.INVISIBLE);
-        else
-        {
+        else {
             iv.setImageDrawable(_miniIcon);
             iv.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    public void updateView()
-    {
+    public void updateView() {
         updateRowView(_host, this);
     }
 
     @Override
-    public void setExtData(ExtendedFileInfoLoader.ExtendedFileInfo data)
-    {
+    public void setExtData(ExtendedFileInfoLoader.ExtendedFileInfo data) {
 
     }
 
     @Override
-    public ExtendedFileInfoLoader.ExtendedFileInfo loadExtendedInfo()
-    {
+    public ExtendedFileInfoLoader.ExtendedFileInfo loadExtendedInfo() {
         return null;
     }
 
     @Override
-    public boolean allowSelect()
-	{
+    public boolean allowSelect() {
         return true;
-	}
-
-	@Override
-	public boolean open() throws Exception
-	{		
-		return false;
-	}
+    }
 
     @Override
-	public boolean openInplace() throws Exception
-	{
-		return false;
-	}
-	
-	@Override
-	public void setHostActivity(FileManagerActivity host)
-	{
-		_host = host;
-	}
-
-    @Override
-    public boolean needLoadExtendedInfo()
-    {
+    public boolean open() throws Exception {
         return false;
     }
 
     @Override
-    public void init(Location location, Path path) throws IOException
-    {
+    public boolean openInplace() throws Exception {
+        return false;
+    }
+
+    @Override
+    public void setHostActivity(FileManagerActivity host) {
+        _host = host;
+    }
+
+    @Override
+    public boolean needLoadExtendedInfo() {
+        return false;
+    }
+
+    @Override
+    public void init(Location location, Path path) throws IOException {
         init(path);
         _locationId = location == null ? "" : location.getId();
     }
 
-    public FsBrowserRecord(Context context)
-	{
+    public FsBrowserRecord(Context context) {
         _context = context;
-	}
+    }
 
-	protected final Context _context;
-	protected String _locationId;
-	protected FileManagerActivity _host;
+    protected final Context _context;
+    protected String _locationId;
+    protected FileManagerActivity _host;
     protected Drawable _miniIcon;
 
-	protected abstract Drawable getDefaultIcon();
+    protected abstract Drawable getDefaultIcon();
 
-    protected FileListViewFragment getHostFragment()
-    {
+    protected FileListViewFragment getHostFragment() {
         return _host == null ? null : (FileListViewFragment) _host.getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
     }
 

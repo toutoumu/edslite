@@ -13,31 +13,26 @@ import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HashingAlgorithmPropertyEditor extends ChoiceDialogPropertyEditor
-{
-    public static String getHashFuncName(MessageDigest md)
-    {
-        if(md instanceof RIPEMD160)
+public class HashingAlgorithmPropertyEditor extends ChoiceDialogPropertyEditor {
+    public static String getHashFuncName(MessageDigest md) {
+        if (md instanceof RIPEMD160)
             return "RIPEMD-160";
-        if(md instanceof Whirlpool)
+        if (md instanceof Whirlpool)
             return "Whirlpool";
         return md.getAlgorithm();
     }
 
-    public HashingAlgorithmPropertyEditor(CreateContainerFragmentBase createContainerFragment)
-    {
+    public HashingAlgorithmPropertyEditor(CreateContainerFragmentBase createContainerFragment) {
         super(createContainerFragment, R.string.hash_algorithm, 0, createContainerFragment.getTag());
     }
 
     @Override
-    protected int loadValue()
-    {
+    protected int loadValue() {
         List<MessageDigest> algs = getCurrentHashAlgList();
-        if(algs == null)
+        if (algs == null)
             return -1;
         String algName = getHostFragment().getState().getString(CreateContainerTaskFragmentBase.ARG_HASHING_ALG);
-        if (algName != null)
-        {
+        if (algName != null) {
             MessageDigest md = VolumeLayoutBase.findHashFunc(algs, algName);
             return algs.indexOf(md);
         } else if (!algs.isEmpty())
@@ -47,33 +42,28 @@ public class HashingAlgorithmPropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected void saveValue(int value)
-    {
+    protected void saveValue(int value) {
         List<MessageDigest> algs = getCurrentHashAlgList();
         MessageDigest md = algs.get(value);
         getHostFragment().getState().putString(CreateContainerTaskFragmentBase.ARG_HASHING_ALG, md.getAlgorithm());
     }
 
     @Override
-    protected ArrayList<String> getEntries()
-    {
+    protected ArrayList<String> getEntries() {
         ArrayList<String> res = new ArrayList<>();
         List<MessageDigest> supportedEngines = getCurrentHashAlgList();
-        if (supportedEngines != null)
-        {
+        if (supportedEngines != null) {
             for (MessageDigest eng : supportedEngines)
                 res.add(getHashFuncName(eng));
         }
         return res;
     }
 
-    protected CreateContainerFragmentBase getHostFragment()
-    {
+    protected CreateContainerFragmentBase getHostFragment() {
         return (CreateContainerFragmentBase) getHost();
     }
 
-    private List<MessageDigest> getCurrentHashAlgList()
-    {
+    private List<MessageDigest> getCurrentHashAlgList() {
         VolumeLayout vl = getHostFragment().getSelectedVolumeLayout();
         return vl != null ? vl.getSupportedHashFuncs() : null;
     }

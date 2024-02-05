@@ -12,22 +12,18 @@ import com.sovworks.eds.android.tasks.ChangeContainerPasswordTask;
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 
-public class ChangePasswordPropertyEditor extends ButtonPropertyEditor implements PasswordDialog.PasswordReceiver
-{
-    public ChangePasswordPropertyEditor(EDSLocationSettingsFragmentBase settingsFragment)
-    {
+public class ChangePasswordPropertyEditor extends ButtonPropertyEditor implements PasswordDialog.PasswordReceiver {
+    public ChangePasswordPropertyEditor(EDSLocationSettingsFragmentBase settingsFragment) {
         super(settingsFragment, R.string.change_container_password, 0, R.string.enter_new_password);
     }
 
-	@Override
-	public EDSLocationSettingsFragment getHost()
-	{
-		return (EDSLocationSettingsFragment) super.getHost();
-	}
+    @Override
+    public EDSLocationSettingsFragment getHost() {
+        return (EDSLocationSettingsFragment) super.getHost();
+    }
 
     @Override
-    protected void onButtonClick()
-    {
+    protected void onButtonClick() {
         Bundle args = new Bundle();
         args.putBoolean(PasswordDialog.ARG_HAS_PASSWORD, true);
         args.putBoolean(PasswordDialog.ARG_VERIFY_PASSWORD, true);
@@ -41,13 +37,10 @@ public class ChangePasswordPropertyEditor extends ButtonPropertyEditor implement
     }
 
     @Override
-    public void onPasswordEntered(final PasswordDialog dlg)
-    {
-        getHost().getResHandler().addResult(new Runnable()
-        {
+    public void onPasswordEntered(final PasswordDialog dlg) {
+        getHost().getResHandler().addResult(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 getHost().getFragmentManager().
                         beginTransaction().
                         add(
@@ -60,6 +53,7 @@ public class ChangePasswordPropertyEditor extends ButtonPropertyEditor implement
     }
 
     @Override
-    public void onPasswordNotEntered(PasswordDialog dlg){}
+    public void onPasswordNotEntered(PasswordDialog dlg) {
+    }
 
 }

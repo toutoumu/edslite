@@ -10,66 +10,54 @@ import com.sovworks.eds.fs.util.PathBase;
 import java.io.IOException;
 
 
-
-class ExFatPath extends PathBase implements Path
-{
-    ExFatPath(ExFat fs, String pathString)
-    {
+class ExFatPath extends PathBase implements Path {
+    ExFatPath(ExFat fs, String pathString) {
         super(fs);
         _pathString = pathString;
     }
 
     @Override
-    public String getPathString()
-    {
+    public String getPathString() {
         return _pathString;
     }
 
     @Override
-    public boolean exists() throws IOException
-    {
+    public boolean exists() throws IOException {
         return getAttr() != null;
     }
 
     @Override
-    public boolean isFile() throws IOException
-    {
+    public boolean isFile() throws IOException {
         FileStat attr = getAttr();
-        return attr!=null && !attr.isDir;
+        return attr != null && !attr.isDir;
     }
 
     @Override
-    public boolean isDirectory() throws IOException
-    {
+    public boolean isDirectory() throws IOException {
         FileStat attr = getAttr();
-        return attr!=null && attr.isDir;
+        return attr != null && attr.isDir;
     }
 
     @Override
-    public Directory getDirectory() throws IOException
-    {
+    public Directory getDirectory() throws IOException {
         return new ExFatDirectory(getFileSystem(), this);
     }
 
     @Override
-    public File getFile() throws IOException
-    {
+    public File getFile() throws IOException {
         return new ExFatFile(getFileSystem(), this);
     }
 
     @Override
-    public ExFat getFileSystem()
-    {
+    public ExFat getFileSystem() {
         return (ExFat) super.getFileSystem();
     }
 
     private final String _pathString;
 
-    FileStat getAttr() throws IOException
-    {
+    FileStat getAttr() throws IOException {
         ExFat ef = getFileSystem();
-        synchronized (ef._sync)
-        {
+        synchronized (ef._sync) {
             FileStat stat = new FileStat();
             int res = ef.getAttr(stat, _pathString);
             if (res == NativeError.ENOENT)

@@ -10,25 +10,22 @@ import java.util.concurrent.CancellationException;
 
 import io.reactivex.Completable;
 
-public class LoadingProgressDialog
-{
-    public static Completable createObservable(Context context, boolean isCancellable)
-    {
+public class LoadingProgressDialog {
+    public static Completable createObservable(Context context, boolean isCancellable) {
         return Completable.create(emitter -> {
             Dialog dialog = makeProgressDialog(context);
             dialog.setCancelable(isCancellable);
-            if(isCancellable)
+            if (isCancellable)
                 dialog.setOnCancelListener((dialogInterface) -> {
                     throw new CancellationException();
                 });
             emitter.setCancellable(dialog::dismiss);
-            if(!emitter.isDisposed())
+            if (!emitter.isDisposed())
                 dialog.show();
         });
     }
 
-    private static Dialog makeProgressDialog(Context context)
-    {
+    private static Dialog makeProgressDialog(Context context) {
         ProgressDialog dialog = new ProgressDialog(context);
         dialog.setMessage(context.getString(R.string.loading));
         dialog.setIndeterminate(true);

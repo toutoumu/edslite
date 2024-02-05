@@ -21,17 +21,14 @@ import com.sovworks.eds.locations.Openable;
 
 import java.io.IOException;
 
-public class OpenableLocationCloserFragment extends LocationCloserBaseFragment
-{
-    public static void wipeMirror(Context context, Location location) throws IOException
-    {
+public class OpenableLocationCloserFragment extends LocationCloserBaseFragment {
+    public static void wipeMirror(Context context, Location location) throws IOException {
         Location mirrorLocation = FileOpsService.getMirrorLocation(
                 UserSettings.getSettings(context).getWorkDir(),
                 context,
                 location.getId()
         );
-        if(mirrorLocation.getCurrentPath().exists())
-        {
+        if (mirrorLocation.getCurrentPath().exists()) {
             SrcDstRec sdr = new SrcDstRec(new SrcDstSingle(
                     mirrorLocation,
                     null
@@ -47,15 +44,11 @@ public class OpenableLocationCloserFragment extends LocationCloserBaseFragment
         }
     }
 
-    public static void closeLocation(Context context, Openable location, boolean forceClose) throws IOException
-    {
-        try
-        {
+    public static void closeLocation(Context context, Openable location, boolean forceClose) throws IOException {
+        try {
             location.close(forceClose);
-        }
-        catch (Exception e)
-        {
-            if(forceClose)
+        } catch (Exception e) {
+            if (forceClose)
                 Logger.log(e);
             else
                 throw e;
@@ -64,36 +57,29 @@ public class OpenableLocationCloserFragment extends LocationCloserBaseFragment
         wipeMirror(context, location);
     }
 
-    public static void makePostCloseCheck(Context context, Location loc)
-    {
-        if(loc instanceof Openable && LocationsManager.isOpen(loc))
+    public static void makePostCloseCheck(Context context, Location loc) {
+        if (loc instanceof Openable && LocationsManager.isOpen(loc))
             return;
         LocationsManager lm = LocationsManager.getLocationsManager(context);
         LocationsManager.broadcastLocationChanged(context, loc);
         lm.unregOpenedLocation(loc);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && loc instanceof EDSLocation)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && loc instanceof EDSLocation)
             ContainersDocumentProviderBase.notifyOpenedLocationsListChanged(context);
 
-        if(!lm.hasOpenLocations())
-        {
+        if (!lm.hasOpenLocations()) {
             lm.broadcastAllContainersClosed();
             LocationsService.stopService(context);
         }
     }
 
-    public static class CloseLocationTaskFragment extends LocationCloserBaseFragment.CloseLocationTaskFragment
-    {
+    public static class CloseLocationTaskFragment extends LocationCloserBaseFragment.CloseLocationTaskFragment {
         @Override
-        protected void procLocation(TaskState state, Location location) throws Exception
-        {
+        protected void procLocation(TaskState state, Location location) throws Exception {
             boolean fc = getArguments().getBoolean(ARG_FORCE_CLOSE, UserSettings.getSettings(_context).alwaysForceClose());
-            try
-            {
-                closeLocation(_context, (Openable)location, fc);
-            }
-            catch (Exception e)
-            {
-                if(fc)
+            try {
+                closeLocation(_context, (Openable) location, fc);
+            } catch (Exception e) {
+                if (fc)
                     Logger.log(e);
                 else
                     throw e;
@@ -102,8 +88,7 @@ public class OpenableLocationCloserFragment extends LocationCloserBaseFragment
     }
 
     @Override
-    protected TaskFragment getCloseLocationTask()
-    {
+    protected TaskFragment getCloseLocationTask() {
         return new CloseLocationTaskFragment();
     }
 }

@@ -36,74 +36,61 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragmentBase implements LocationOpenerBaseFragment.LocationOpenerResultReceiver, PropertiesHostWithLocation, PasswordDialog.PasswordReceiver
-{
-    public static class LocationInfo
-    {
+public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragmentBase implements LocationOpenerBaseFragment.LocationOpenerResultReceiver, PropertiesHostWithLocation, PasswordDialog.PasswordReceiver {
+    public static class LocationInfo {
         public String pathToLocation;
         public long totalSpace;
         public long freeSpace;
     }
 
-    public EDSLocation getLocation()
-    {
+    public EDSLocation getLocation() {
         return _location;
     }
 
-    public void setLocation(EDSLocation container)
-    {
+    public void setLocation(EDSLocation container) {
         _location = container;
     }
 
-	public ActivityResultHandler getResHandler()
-	{
-		return _resHandler;
-	}
-
-    public void onTargetLocationOpened(Bundle openerArgs, Location location)
-    {
-        onIntSettingsAvailable((EDSLocation)location);
+    public ActivityResultHandler getResHandler() {
+        return _resHandler;
     }
 
-    public void onTargetLocationNotOpened(Bundle openerArgs)
-    {
+    public void onTargetLocationOpened(Bundle openerArgs, Location location) {
+        onIntSettingsAvailable((EDSLocation) location);
+    }
+
+    public void onTargetLocationNotOpened(Bundle openerArgs) {
 
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         _resHandler.onPause();
         super.onPause();
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         _resHandler.handle();
     }
 
-    public void saveExternalSettings()
-	{
+    public void saveExternalSettings() {
         _location.saveExternalSettings();
     }
 
     @Override
-    public Location getTargetLocation()
-    {
+    public Location getTargetLocation() {
         return _location;
     }
 
-    public TaskFragment getChangePasswordTask(PasswordDialog pd)
-    {
+    public TaskFragment getChangePasswordTask(PasswordDialog pd) {
         TaskFragment t = createChangePasswordTaskInstance();
         t.setArguments(getChangePasswordTaskArgs(pd));
         return t;
     }
 
-    protected Bundle getChangePasswordTaskArgs(PasswordDialog dlg)
-    {
+    protected Bundle getChangePasswordTaskArgs(PasswordDialog dlg) {
         final Bundle args = new Bundle();
         SecureBuffer sb = new SecureBuffer();
         char[] tmp = dlg.getPassword();
@@ -115,47 +102,39 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
 
     protected abstract TaskFragment createChangePasswordTaskInstance();
 
-    public TaskFragment.TaskCallbacks getLoadLocationInfoTaskCallbacks()
-    {
+    public TaskFragment.TaskCallbacks getLoadLocationInfoTaskCallbacks() {
         return new LoadLocationInfoTaskCallbacks();
     }
 
-    public LocationInfo getLocationInfo()
-    {
+    public LocationInfo getLocationInfo() {
         return _locationInfo;
     }
 
     @Override
-    public void onPasswordEntered(PasswordDialog dlg)
-    {
+    public void onPasswordEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if(pr!=null)
+        if (pr != null)
             pr.onPasswordEntered(dlg);
     }
 
     @Override
-    public void onPasswordNotEntered(PasswordDialog dlg)
-    {
+    public void onPasswordNotEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if(pr!=null)
+        if (pr != null)
             pr.onPasswordNotEntered(dlg);
     }
 
-    class LoadLocationInfoTaskCallbacks extends ProgressDialogTaskFragmentCallbacks
-    {
-        LoadLocationInfoTaskCallbacks()
-        {
+    class LoadLocationInfoTaskCallbacks extends ProgressDialogTaskFragmentCallbacks {
+        LoadLocationInfoTaskCallbacks() {
             super(getActivity(), R.string.loading);
         }
 
         @Override
-        public void onCompleted(Bundle args, TaskFragment.Result result)
-        {
+        public void onCompleted(Bundle args, TaskFragment.Result result) {
             super.onCompleted(args, result);
-            try
-            {
+            try {
                 _locationInfo = (LocationInfo) result.getResult();
                 _propertiesView.setPropertyState(R.string.path_to_container, true);
                 _propertiesView.setPropertyState(R.string.uri_of_the_container, true);
@@ -163,17 +142,15 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
                         R.string.free_space, R.string.total_space
                 ), _location.isOpenOrMounted());
                 _propertiesView.loadProperties(Arrays.asList(
-                        R.string.path_to_container,
-                        R.string.uri_of_the_container,
-                        R.string.free_space,
-                        R.string.total_space
+                                R.string.path_to_container,
+                                R.string.uri_of_the_container,
+                                R.string.free_space,
+                                R.string.total_space
                         ),
                         null
                 );
 
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 Logger.showAndLog(_context, e);
             }
         }
@@ -185,13 +162,11 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
 
     protected abstract LocationOpenerBaseFragment getLocationOpener();
 
-    protected LoadLocationInfoTask initLoadLocationInfoTask()
-    {
+    protected LoadLocationInfoTask initLoadLocationInfoTask() {
         return LoadLocationInfoTask.newInstance(getLocation());
     }
 
-    protected void startLoadLocationInfoTask()
-    {
+    protected void startLoadLocationInfoTask() {
         getFragmentManager().
                 beginTransaction().
                 add(
@@ -201,8 +176,7 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
                 commitAllowingStateLoss();
     }
 
-    protected void onIntSettingsAvailable(EDSLocation loc)
-    {
+    protected void onIntSettingsAvailable(EDSLocation loc) {
         setLocation(loc);
         showInternalSettings();
         getPropertiesView().loadProperties();
@@ -210,13 +184,11 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
     }
 
     @Override
-    protected void createProperties()
-    {
+    protected void createProperties() {
         _location = (EDSLocation) LocationsManager.
                 getLocationsManager(getActivity()).
                 getFromIntent(getActivity().getIntent(), null);
-        if(_location == null)
-        {
+        if (_location == null) {
             getActivity().finish();
             return;
         }
@@ -225,18 +197,15 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
         initPropertiesState();
     }
 
-    protected void createAllProperties()
-    {
+    protected void createAllProperties() {
         createStdProperties(new ArrayList<Integer>());
     }
 
-    protected void initPropertiesState()
-    {
-        if(_location == null)
+    protected void initPropertiesState() {
+        if (_location == null)
             _propertiesView.setPropertiesState(false);
-        else
-        {
-            if(_location.isOpenOrMounted())
+        else {
+            if (_location.isOpenOrMounted())
                 showInternalSettings();
             else
                 hideInternalSettings();
@@ -246,52 +215,42 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
             _propertiesView.setPropertyState(R.string.remember_kdf_iterations_multiplier, _location.hasCustomKDFIterations());
             _propertiesView.setPropertyState(
                     R.string.use_external_file_manager,
-                    UserSettings.getSettings(getActivity()).getExternalFileManagerInfo()!=null
+                    UserSettings.getSettings(getActivity()).getExternalFileManagerInfo() != null
             );
             startLoadLocationInfoTask();
         }
     }
 
-    protected void createStdProperties(Collection<Integer> ids)
-    {
+    protected void createStdProperties(Collection<Integer> ids) {
         createInfoProperties(ids);
         createPasswordProperties(ids);
         createMiscProperties(ids);
     }
 
-    protected void createInfoProperties(Collection<Integer> ids)
-    {
-        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.path_to_container)
-        {
+    protected void createInfoProperties(Collection<Integer> ids) {
+        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.path_to_container) {
             @Override
-            protected String loadText()
-            {
+            protected String loadText() {
                 return _locationInfo == null ? "" : _locationInfo.pathToLocation;
             }
         }));
-        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.uri_of_the_container)
-        {
+        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.uri_of_the_container) {
             @Override
-            protected String loadText()
-            {
+            protected String loadText() {
                 return _locationInfo == null ? "" : _location.getLocationUri().toString();
             }
         }));
-        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.total_space)
-        {
+        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.total_space) {
             @Override
-            protected String loadText()
-            {
+            protected String loadText() {
                 if (!_location.isOpenOrMounted() || _locationInfo == null)
                     return "";
                 return Formatter.formatFileSize(getHost().getContext(), _locationInfo.totalSpace);
             }
         }));
-        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.free_space)
-        {
+        ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.free_space) {
             @Override
-            protected String loadText()
-            {
+            protected String loadText() {
                 if (!_location.isOpenOrMounted() || _locationInfo == null)
                     return "";
                 return Formatter.formatFileSize(getHost().getContext(), _locationInfo.freeSpace);
@@ -299,34 +258,28 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
         }));
     }
 
-    protected void createPasswordProperties(Collection<Integer> ids)
-    {
+    protected void createPasswordProperties(Collection<Integer> ids) {
         ids.add(_propertiesView.addProperty(new ChangePasswordPropertyEditor(this)));
         ids.add(_propertiesView.addProperty(new SavePasswordPropertyEditor(this)));
         ids.add(_propertiesView.addProperty(new SavePIMPropertyEditor(this)));
     }
 
-    protected void createMiscProperties(Collection<Integer> ids)
-    {
-        ids.add(_propertiesView.addProperty(new IntPropertyEditor(this, R.string.auto_close_container, R.string.auto_close_container_desc, getTag())
-        {
+    protected void createMiscProperties(Collection<Integer> ids) {
+        ids.add(_propertiesView.addProperty(new IntPropertyEditor(this, R.string.auto_close_container, R.string.auto_close_container_desc, getTag()) {
             @Override
-            protected int loadValue()
-            {
+            protected int loadValue() {
                 return _location.getExternalSettings().getAutoCloseTimeout() / 60000;
             }
 
             @Override
-            protected void saveValue(int value)
-            {
+            protected void saveValue(int value) {
                 _location.getExternalSettings().setAutoCloseTimeout(value * 60000);
                 saveExternalSettings();
                 LocationsService.registerInactiveContainerCheck(getContext(), _location);
             }
 
             @Override
-            protected int getDialogViewResId()
-            {
+            protected int getDialogViewResId() {
                 return R.layout.settings_edit_num_lim4;
             }
         }));
@@ -336,11 +289,9 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
                 R.string.internal_container_settings,
                 R.string.internal_container_settings_desc,
                 R.string.open
-        )
-        {
+        ) {
             @Override
-            protected void onButtonClick()
-            {
+            protected void onButtonClick() {
                 Bundle openerArgs = new Bundle();
                 LocationsManager.storePathsInBundle(openerArgs, _location, null);
                 openerArgs.putString(LocationOpenerBaseFragment.PARAM_RECEIVER_FRAGMENT_TAG, getTag());
@@ -355,21 +306,18 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
         ids.add(_propertiesView.addProperty(new UseExternalFileManagerPropertyEditor(this)));
     }
 
-	protected void showInternalSettings()
-	{
-		setInternalPropertiesEnabled(true);
-	}
+    protected void showInternalSettings() {
+        setInternalPropertiesEnabled(true);
+    }
 
-    protected void hideInternalSettings()
-	{
-		setInternalPropertiesEnabled(false);
-	}
+    protected void hideInternalSettings() {
+        setInternalPropertiesEnabled(false);
+    }
 
-    protected void setInternalPropertiesEnabled(boolean enabled)
-	{
-		_propertiesView.setPropertyState(R.string.free_space, enabled && _locationInfo!=null);
-		_propertiesView.setPropertyState(R.string.total_space, enabled && _locationInfo!=null);
-		_propertiesView.setPropertyState(R.string.change_container_password, enabled);
+    protected void setInternalPropertiesEnabled(boolean enabled) {
+        _propertiesView.setPropertyState(R.string.free_space, enabled && _locationInfo != null);
+        _propertiesView.setPropertyState(R.string.total_space, enabled && _locationInfo != null);
+        _propertiesView.setPropertyState(R.string.change_container_password, enabled);
         _propertiesView.setPropertyState(R.string.internal_container_settings, !enabled);
-	}
+    }
 }

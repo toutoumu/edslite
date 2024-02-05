@@ -20,16 +20,13 @@ import com.sovworks.eds.locations.Openable;
 import java.util.Collection;
 import java.util.List;
 
-public class ContainerSettingsFragmentBase extends EDSLocationSettingsFragment
-{
+public class ContainerSettingsFragmentBase extends EDSLocationSettingsFragment {
     @Override
-    public ContainerLocation getLocation()
-    {
+    public ContainerLocation getLocation() {
         return (ContainerLocation) super.getLocation();
     }
 
-    public ContainerFormatInfo getCurrentContainerFormat()
-    {
+    public ContainerFormatInfo getCurrentContainerFormat() {
         List<ContainerFormatInfo> supportedFormats = getLocation().getSupportedFormats();
         return supportedFormats.size() == 1 ?
                 supportedFormats.get(0) :
@@ -40,27 +37,23 @@ public class ContainerSettingsFragmentBase extends EDSLocationSettingsFragment
     }
 
     @Override
-    protected TaskFragment createChangePasswordTaskInstance()
-    {
+    protected TaskFragment createChangePasswordTaskInstance() {
         return new ChangeContainerPasswordTask();
     }
 
     @Override
-    protected LocationOpenerBaseFragment getLocationOpener()
-    {
+    protected LocationOpenerBaseFragment getLocationOpener() {
         return new ContainerOpenerFragment();
     }
 
     @Override
-    protected void createStdProperties(Collection<Integer> ids)
-    {
+    protected void createStdProperties(Collection<Integer> ids) {
         super.createStdProperties(ids);
         createHintProperties(ids);
     }
 
     @Override
-    protected Bundle getChangePasswordTaskArgs(PasswordDialog dlg)
-    {
+    protected Bundle getChangePasswordTaskArgs(PasswordDialog dlg) {
         final Bundle args = new Bundle();
         args.putAll(dlg.getOptions());
         args.putParcelable(Openable.PARAM_PASSWORD, new SecureBuffer(dlg.getPassword()));
@@ -68,8 +61,7 @@ public class ContainerSettingsFragmentBase extends EDSLocationSettingsFragment
         return args;
     }
 
-    protected void createHintProperties(Collection<Integer> ids)
-    {
+    protected void createHintProperties(Collection<Integer> ids) {
         ids.add(_propertiesView.addProperty(new ContainerFormatHintPropertyEditor(this)));
         ids.add(_propertiesView.addProperty(new EncEngineHintPropertyEditor(this)));
         ids.add(_propertiesView.addProperty(new HashAlgHintPropertyEditor(this)));

@@ -10,107 +10,90 @@ import com.sovworks.eds.locations.LocationBase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ExternalStorageLocation extends DeviceBasedLocation
-{
-	public static final String URI_SCHEME = "ext-st";
+public class ExternalStorageLocation extends DeviceBasedLocation {
+    public static final String URI_SCHEME = "ext-st";
 
-	public static class ExternalSettings extends LocationBase.ExternalSettings
-	{
-		public boolean dontAskWritePermission()
-		{
-			return _dontAskWritePermission;
-		}
-		public void setDontAskWritePermission(boolean val)
-		{
-			_dontAskWritePermission = val;
-		}
+    public static class ExternalSettings extends LocationBase.ExternalSettings {
+        public boolean dontAskWritePermission() {
+            return _dontAskWritePermission;
+        }
 
-		public String getDocumentsAPIUriString()
-		{
-			return _documentsAPIUriString;
-		}
+        public void setDontAskWritePermission(boolean val) {
+            _dontAskWritePermission = val;
+        }
 
-		public void setDocumentsAPIUriString(String documentsAPIUriString)
-		{
-			_documentsAPIUriString = documentsAPIUriString;
-		}
+        public String getDocumentsAPIUriString() {
+            return _documentsAPIUriString;
+        }
 
-		@Override
-		public void saveToJSONObject(JSONObject jo) throws JSONException
-		{
-			super.saveToJSONObject(jo);
-			jo.put(SETTINGS_DONT_ASK_WRITE_PERMISSION, _dontAskWritePermission);
-			if(_documentsAPIUriString == null)
-				jo.remove(SETTINGS_DOC_API_URI_STRING);
-			else
-				jo.put(SETTINGS_DOC_API_URI_STRING, _documentsAPIUriString);
-		}
+        public void setDocumentsAPIUriString(String documentsAPIUriString) {
+            _documentsAPIUriString = documentsAPIUriString;
+        }
 
-		@Override
-		public void loadFromJSONOjbect(JSONObject jo) throws JSONException
-		{
-			super.loadFromJSONOjbect(jo);
-			_dontAskWritePermission = jo.optBoolean(SETTINGS_DONT_ASK_WRITE_PERMISSION, false);
-			_documentsAPIUriString = jo.optString(SETTINGS_DOC_API_URI_STRING, null);
-		}
+        @Override
+        public void saveToJSONObject(JSONObject jo) throws JSONException {
+            super.saveToJSONObject(jo);
+            jo.put(SETTINGS_DONT_ASK_WRITE_PERMISSION, _dontAskWritePermission);
+            if (_documentsAPIUriString == null)
+                jo.remove(SETTINGS_DOC_API_URI_STRING);
+            else
+                jo.put(SETTINGS_DOC_API_URI_STRING, _documentsAPIUriString);
+        }
 
-		private static final String SETTINGS_DOC_API_URI_STRING = "documents_api_uri_string";
-		private static final String SETTINGS_DONT_ASK_WRITE_PERMISSION = "dont_ask_write_permission";
+        @Override
+        public void loadFromJSONOjbect(JSONObject jo) throws JSONException {
+            super.loadFromJSONOjbect(jo);
+            _dontAskWritePermission = jo.optBoolean(SETTINGS_DONT_ASK_WRITE_PERMISSION, false);
+            _documentsAPIUriString = jo.optString(SETTINGS_DOC_API_URI_STRING, null);
+        }
 
-		private String _documentsAPIUriString;
-		private boolean _dontAskWritePermission;
-	}
+        private static final String SETTINGS_DOC_API_URI_STRING = "documents_api_uri_string";
+        private static final String SETTINGS_DONT_ASK_WRITE_PERMISSION = "dont_ask_write_permission";
 
-	public ExternalStorageLocation(Context context, String label, String mountPath, String currentPath)
-	{
-		super(UserSettings.getSettings(context), label, mountPath, currentPath);
-		_context = context;
-	}
+        private String _documentsAPIUriString;
+        private boolean _dontAskWritePermission;
+    }
 
-	public ExternalStorageLocation(Context context, Uri uri)
-	{
-		super(UserSettings.getSettings(context), uri);
-		_context = context;
-	}
+    public ExternalStorageLocation(Context context, String label, String mountPath, String currentPath) {
+        super(UserSettings.getSettings(context), label, mountPath, currentPath);
+        _context = context;
+    }
 
-	@Override
-	public Uri.Builder makeFullUri()
-	{
-		return super.makeFullUri().scheme(URI_SCHEME);
-	}
+    public ExternalStorageLocation(Context context, Uri uri) {
+        super(UserSettings.getSettings(context), uri);
+        _context = context;
+    }
 
-	@Override
-	public synchronized ExternalSettings getExternalSettings()
-	{
-		return (ExternalSettings)super.getExternalSettings();
-	}
+    @Override
+    public Uri.Builder makeFullUri() {
+        return super.makeFullUri().scheme(URI_SCHEME);
+    }
 
-	@Override
-	public void saveExternalSettings()
-	{
-		try
-		{
-			UserSettings.getSettings(_context).setLocationSettingsString(getId(), getExternalSettings().save());
-		}
-		catch (JSONException e)
-		{
-			throw new RuntimeException("Settings serialization failed", e);
-		}
-	}
+    @Override
+    public synchronized ExternalSettings getExternalSettings() {
+        return (ExternalSettings) super.getExternalSettings();
+    }
 
-	@Override
-	public ExternalStorageLocation copy()
-	{
-		return new ExternalStorageLocation(_context, getTitle(), getRootPath(), _currentPathString);
-	}
+    @Override
+    public void saveExternalSettings() {
+        try {
+            UserSettings.getSettings(_context).setLocationSettingsString(getId(), getExternalSettings().save());
+        } catch (JSONException e) {
+            throw new RuntimeException("Settings serialization failed", e);
+        }
+    }
 
-	protected final Context _context;
+    @Override
+    public ExternalStorageLocation copy() {
+        return new ExternalStorageLocation(_context, getTitle(), getRootPath(), _currentPathString);
+    }
 
-	@Override
-	protected ExternalSettings loadExternalSettings()
-	{
-		ExternalSettings res = new ExternalSettings();
-		res.load(UserSettings.getSettings(_context),getId());
-		return res;
-	}
+    protected final Context _context;
+
+    @Override
+    protected ExternalSettings loadExternalSettings() {
+        ExternalSettings res = new ExternalSettings();
+        res.load(UserSettings.getSettings(_context), getId());
+        return res;
+    }
 }

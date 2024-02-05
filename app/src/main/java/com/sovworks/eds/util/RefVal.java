@@ -1,9 +1,7 @@
 package com.sovworks.eds.util;
 
-public class RefVal<T>
-{
-    public RefVal(T value)
-    {
+public class RefVal<T> {
+    public RefVal(T value) {
         this.value = value;
     }
 

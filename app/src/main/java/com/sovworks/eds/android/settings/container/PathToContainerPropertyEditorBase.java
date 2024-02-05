@@ -14,11 +14,9 @@ import com.sovworks.eds.android.settings.PathPropertyEditor;
 import java.io.IOException;
 
 
-public abstract class PathToContainerPropertyEditorBase extends PathPropertyEditor
-{
+public abstract class PathToContainerPropertyEditorBase extends PathPropertyEditor {
 
-    public PathToContainerPropertyEditorBase(CreateContainerFragmentBase createEDSLocationFragment)
-    {
+    public PathToContainerPropertyEditorBase(CreateContainerFragmentBase createEDSLocationFragment) {
         super(createEDSLocationFragment,
                 R.string.path_to_container,
                 0,
@@ -26,21 +24,18 @@ public abstract class PathToContainerPropertyEditorBase extends PathPropertyEdit
     }
 
     @Override
-    protected void onTextChanged(final String newValue)
-    {
+    protected void onTextChanged(final String newValue) {
         super.onTextChanged(newValue);
         getHostFragment().getActivity().invalidateOptionsMenu();
     }
 
-    protected CreateContainerFragment getHostFragment()
-    {
+    protected CreateContainerFragment getHostFragment() {
         return (CreateContainerFragment) getHost();
     }
 
 
     @Override
-    protected Intent getSelectPathIntent() throws IOException
-    {
+    protected Intent getSelectPathIntent() throws IOException {
         boolean addExisting = getHostFragment().getState().getBoolean(CreateEDSLocationFragment.ARG_ADD_EXISTING_LOCATION);
         boolean isEncFs = getHostFragment().isEncFsFormat();
         Intent i = FileManagerActivity.getSelectPathIntent(
@@ -57,15 +52,13 @@ public abstract class PathToContainerPropertyEditorBase extends PathPropertyEdit
     }
 
     @Override
-    protected void saveText(String text)
-    {
+    protected void saveText(String text) {
         getHostFragment().getState().putParcelable(CreateContainerTaskFragmentBase.ARG_LOCATION, Uri.parse(text));
     }
 
     @Override
-    protected String loadText()
-    {
+    protected String loadText() {
         Uri uri = getHostFragment().getState().getParcelable(CreateContainerTaskFragmentBase.ARG_LOCATION);
-        return uri!=null ? uri.toString() : null;
+        return uri != null ? uri.toString() : null;
     }
 }

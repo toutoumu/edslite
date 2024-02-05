@@ -15,10 +15,8 @@ import com.sovworks.eds.fs.Path;
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.Openable;
 
-public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationTaskFragment
-{
-    public static ContainerFormatInfo getContainerFormatByName(String name)
-    {
+public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationTaskFragment {
+    public static ContainerFormatInfo getContainerFormatByName(String name) {
         for (ContainerFormatInfo ci : EdsContainer.getSupportedFormats())
             if (ci.getFormatName().equals(name))
                 return ci;
@@ -33,22 +31,20 @@ public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationT
     public static final String ARG_FILE_SYSTEM_TYPE = "com.sovworks.eds.android.FILE_SYSTEM_TYPE";
 
     @Override
-    protected EDSLocationFormatter createFormatter()
-    {
+    protected EDSLocationFormatter createFormatter() {
         return new ContainerFormatter();
     }
 
     @Override
-    protected void initFormatter(TaskState state, EDSLocationFormatter formatter, SecureBuffer password) throws Exception
-    {
+    protected void initFormatter(TaskState state, EDSLocationFormatter formatter, SecureBuffer password) throws Exception {
         super.initFormatter(state, formatter, password);
         Bundle args = getArguments();
-        ContainerFormatterBase cf = (ContainerFormatterBase)formatter;
+        ContainerFormatterBase cf = (ContainerFormatterBase) formatter;
         cf.setContainerFormat(getContainerFormatByName(args.getString(ARG_CONTAINER_FORMAT)));
         cf.setContainerSize(args.getInt(ARG_SIZE) * 1024L * 1024L);
         cf.setNumKDFIterations(args.getInt(Openable.PARAM_KDF_ITERATIONS, 0));
         FileSystemInfo fst = args.getParcelable(ARG_FILE_SYSTEM_TYPE);
-        if(fst!=null)
+        if (fst != null)
             cf.setFileSystemType(fst);
         String encAlgName = args.getString(ARG_CIPHER_NAME);
         String encModeName = args.getString(ARG_CIPHER_MODE_NAME);
@@ -61,8 +57,7 @@ public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationT
     }
 
     @Override
-    protected boolean checkParams(TaskState state, Location locationLocation) throws Exception
-    {
+    protected boolean checkParams(TaskState state, Location locationLocation) throws Exception {
         Bundle args = getArguments();
         Path path = locationLocation.getCurrentPath();
         if (path.exists() && path.isDirectory())
@@ -72,12 +67,10 @@ public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationT
             throw new UserException(getActivity(),
                     R.string.err_container_size_is_too_small);
 
-        if (!getArguments().getBoolean(ARG_OVERWRITE, false))
-        {
+        if (!getArguments().getBoolean(ARG_OVERWRITE, false)) {
             if (path.exists()
                     && path.isFile()
-                    && path.getFile().getSize() > 0)
-            {
+                    && path.getFile().getSize() > 0) {
                 state.setResult(RESULT_REQUEST_OVERWRITE);
                 return false;
             }

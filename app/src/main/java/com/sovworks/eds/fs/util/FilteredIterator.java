@@ -3,10 +3,8 @@ package com.sovworks.eds.fs.util;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public abstract class FilteredIterator<T> implements Iterator<T>
-{
-    public FilteredIterator(Iterator<? extends T> base)
-    {
+public abstract class FilteredIterator<T> implements Iterator<T> {
+    public FilteredIterator(Iterator<? extends T> base) {
         _base = base;
     }
 
@@ -16,9 +14,8 @@ public abstract class FilteredIterator<T> implements Iterator<T>
      * @see #next
      */
     @Override
-    public synchronized boolean hasNext()
-    {
-        if(!_hasNext)
+    public synchronized boolean hasNext() {
+        if (!_hasNext)
             setNext();
         return _hasNext;
     }
@@ -31,9 +28,8 @@ public abstract class FilteredIterator<T> implements Iterator<T>
      * @see #hasNext
      */
     @Override
-    public synchronized T next()
-    {
-        if(!hasNext())
+    public synchronized T next() {
+        if (!hasNext())
             throw new NoSuchElementException();
         _hasNext = false;
         return _nextItem;
@@ -50,15 +46,13 @@ public abstract class FilteredIterator<T> implements Iterator<T>
      *                                       already been called after the last call to {@code next}.
      */
     @Override
-    public synchronized void remove()
-    {
-        if(!_hasNext)
+    public synchronized void remove() {
+        if (!_hasNext)
             throw new IllegalStateException();
         _base.remove();
     }
 
-    public Iterator<? extends T> getBaseIterator()
-    {
+    public Iterator<? extends T> getBaseIterator() {
         return _base;
     }
 
@@ -68,14 +62,11 @@ public abstract class FilteredIterator<T> implements Iterator<T>
     private T _nextItem;
     private final Iterator<? extends T> _base;
 
-    private void setNext()
-    {
+    private void setNext() {
         _hasNext = false;
-        while(_base.hasNext())
-        {
+        while (_base.hasNext()) {
             T nextItem = _base.next();
-            if(isValidItem(nextItem))
-            {
+            if (isValidItem(nextItem)) {
                 _nextItem = nextItem;
                 _hasNext = true;
                 break;

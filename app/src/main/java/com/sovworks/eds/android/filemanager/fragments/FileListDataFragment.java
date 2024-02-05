@@ -62,26 +62,21 @@ import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_NUM_DESC
 import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_SIZE_ASC;
 import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_SIZE_DESC;
 
-public class FileListDataFragment extends RxFragment
-{
-    public static FileListDataFragment newInstance()
-    {
+public class FileListDataFragment extends RxFragment {
+    public static FileListDataFragment newInstance() {
         return new FileListDataFragment();
     }
 
-    static
-    {
-        if(GlobalConfig.isTest())
+    static {
+        if (GlobalConfig.isTest())
             TEST_READING_OBSERVABLE = BehaviorSubject.createDefault(false);
 
     }
 
     public static Subject<Boolean> TEST_READING_OBSERVABLE;
 
-    public static <T extends CachedPathInfo> Comparator<T> getComparator(Settings settings)
-    {
-        switch (settings.getFilesSortMode())
-        {
+    public static <T extends CachedPathInfo> Comparator<T> getComparator(Settings settings) {
+        switch (settings.getFilesSortMode()) {
             case FB_SORT_FILENAME_ASC:
                 return new FileNamesComparator<>(true);
             case FB_SORT_FILENAME_DESC:
@@ -103,10 +98,9 @@ public class FileListDataFragment extends RxFragment
         }
     }
 
-    public static Uri getLocationUri(Intent intent, Bundle state)
-    {
+    public static Uri getLocationUri(Intent intent, Bundle state) {
         Uri locUri;
-        if(state!=null)
+        if (state != null)
             locUri = state.getParcelable(LocationsManager.PARAM_LOCATION_URI);
         else
             locUri = intent.getData();
@@ -116,8 +110,7 @@ public class FileListDataFragment extends RxFragment
     public static final String TAG = "com.sovworks.eds.android.filemanager.fragments.FileListDataFragment";
 
     @Override
-    public void onCreate(Bundle state)
-    {
+    public void onCreate(Bundle state) {
         super.onCreate(state);
         setRetainInstance(true);
         _location = getFallbackLocation();
@@ -127,64 +120,54 @@ public class FileListDataFragment extends RxFragment
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //TODO remove dependency
-        synchronized (_filesListSync)
-        {
-            if(_fileList!=null)
-                for(BrowserRecord br: _fileList)
+        // TODO remove dependency
+        synchronized (_filesListSync) {
+            if (_fileList != null)
+                for (BrowserRecord br : _fileList)
                     br.setHostActivity((FileManagerActivity) getActivity());
         }
     }
 
 
     @Override
-	public void onActivityResult (int requestCode, int resultCode, Intent data)
-	{
-		if(requestCode == REQUEST_CODE_OPEN_LOCATION)
-        {
-            if(resultCode != Activity.RESULT_OK)
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_OPEN_LOCATION) {
+            if (resultCode != Activity.RESULT_OK)
                 getActivity().setIntent(new Intent());
             lifecycle().
                     filter(event -> event == FragmentEvent.RESUME).
                     firstElement().
                     subscribe(isResumed ->
-                            loadLocation(null, false),
+                                    loadLocation(null, false),
                             err ->
-                    {
-                        if(!(err instanceof CancellationException))
-                            Logger.log(err);
-                    });
+                            {
+                                if (!(err instanceof CancellationException))
+                                    Logger.log(err);
+                            });
 
-        }
-		else
-			super.onActivityResult(requestCode, resultCode, data);
-	}
+        } else
+            super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
-    public void onDetach ()
-    {
+    public void onDetach() {
         super.onDetach();
-        //TODO remove dependency
-        synchronized (_filesListSync)
-        {
-            if(_fileList!=null)
-                for(BrowserRecord br: _fileList)
+        // TODO remove dependency
+        synchronized (_filesListSync) {
+            if (_fileList != null)
+                for (BrowserRecord br : _fileList)
                     br.setHostActivity(null);
         }
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         cancelReadDirTask();
         _navigHistory.clear();
-        synchronized (_filesListSync)
-        {
-            if(_fileList!=null)
-            {
+        synchronized (_filesListSync) {
+            if (_fileList != null) {
                 _fileList.clear();
                 _fileList = null;
             }
@@ -194,25 +177,20 @@ public class FileListDataFragment extends RxFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle state)
-    {
+    public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
-        if(_location!=null)
-        {
+        if (_location != null) {
             ArrayList<Path> selectedPaths = getSelectedPaths();
             LocationsManager.storePathsInBundle(state, _location, selectedPaths);
         }
         state.putParcelableArrayList(STATE_NAVIG_HISTORY, new ArrayList<>(_navigHistory));
     }
 
-    public ArrayList<BrowserRecord> getSelectedFiles()
-    {
+    public ArrayList<BrowserRecord> getSelectedFiles() {
         ArrayList<BrowserRecord> res = new ArrayList<>();
-        synchronized (_filesListSync)
-        {
-            if(_fileList!=null)
-                for (BrowserRecord rec: _fileList)
-                {
+        synchronized (_filesListSync) {
+            if (_fileList != null)
+                for (BrowserRecord rec : _fileList) {
                     if (rec.isSelected())
                         res.add(rec);
                 }
@@ -220,13 +198,10 @@ public class FileListDataFragment extends RxFragment
         return res;
     }
 
-    public boolean hasSelectedFiles()
-    {
-        synchronized (_filesListSync)
-        {
-            if(_fileList!=null)
-                for (BrowserRecord rec: _fileList)
-                {
+    public boolean hasSelectedFiles() {
+        synchronized (_filesListSync) {
+            if (_fileList != null)
+                for (BrowserRecord rec : _fileList) {
                     if (rec.isSelected())
                         return true;
                 }
@@ -234,66 +209,55 @@ public class FileListDataFragment extends RxFragment
         return false;
     }
 
-    public BrowserRecord findLoadedFileByPath(Path path)
-    {
-        synchronized (_filesListSync)
-        {
-        	if(_fileList!=null)
-	            for(BrowserRecord f: _fileList)
-		            if(path.equals(f.getPath()))
-		                return f;        
+    public BrowserRecord findLoadedFileByPath(Path path) {
+        synchronized (_filesListSync) {
+            if (_fileList != null)
+                for (BrowserRecord f : _fileList)
+                    if (path.equals(f.getPath()))
+                        return f;
         }
         return null;
     }
 
-    public ArrayList<Path> getSelectedPaths()
-    {
+    public ArrayList<Path> getSelectedPaths() {
         return FileListViewFragment.getPathsFromRecords(getSelectedFiles());
     }
 
-    public NavigableSet<BrowserRecord> getFileList()
-    {
+    public NavigableSet<BrowserRecord> getFileList() {
         return _fileList;
     }
 
-    public Object getFilesListSync()
-    {
+    public Object getFilesListSync() {
         return _filesListSync;
     }
 
-    public Location getLocation()
-    {
+    public Location getLocation() {
         return _location;
     }
 
-    public void copyToAdapter(FileListViewAdapter adapter)
-    {
-        synchronized (_filesListSync)
-        {
+    public void copyToAdapter(FileListViewAdapter adapter) {
+        synchronized (_filesListSync) {
             adapter.clear();
-            if(_fileList!=null)
+            if (_fileList != null)
                 adapter.addAll(_fileList);
         }
     }
 
-    public Observable<LoadLocationInfo> getLocationLoadingObservable()
-    {
+    public Observable<LoadLocationInfo> getLocationLoadingObservable() {
         return _locationLoading;
     }
 
-    public Observable<BrowserRecord> getLoadRecordObservable()
-    {
+    public Observable<BrowserRecord> getLoadRecordObservable() {
         return _recordLoadedSubject;
     }
 
-    static class LoadLocationInfo implements Cloneable
-    {
-        enum Stage
-        {
+    static class LoadLocationInfo implements Cloneable {
+        enum Stage {
             StartedLoading,
             Loading,
             FinishedLoading
         }
+
         Stage stage;
         CachedPathInfo folder;
         BrowserRecord file;
@@ -301,21 +265,16 @@ public class FileListDataFragment extends RxFragment
         Location location;
 
         @Override
-        public LoadLocationInfo clone()
-        {
-            try
-            {
+        public LoadLocationInfo clone() {
+            try {
                 return (LoadLocationInfo) super.clone();
-            }
-            catch (CloneNotSupportedException ignore)
-            {
+            } catch (CloneNotSupportedException ignore) {
                 return null;
             }
         }
     }
 
-    public synchronized void readLocation(Location location, Collection<Path> selectedFiles)
-    {
+    public synchronized void readLocation(Location location, Collection<Path> selectedFiles) {
         Logger.debug(TAG + " readCurrentLocation");
         cancelReadDirTask();
         clearCurrentFiles();
@@ -324,7 +283,7 @@ public class FileListDataFragment extends RxFragment
             return;
 
         FileManagerActivity activity = (FileManagerActivity) getActivity();
-        if(activity == null)
+        if (activity == null)
             return;
         Context context = activity.getApplicationContext();
         boolean showRootFolder = activity.getIntent().
@@ -348,8 +307,7 @@ public class FileListDataFragment extends RxFragment
                     LoadLocationInfo loadLocationInfo = new LoadLocationInfo();
                     loadLocationInfo.stage = LoadLocationInfo.Stage.Loading;
                     loadLocationInfo.folderSettings = dirSettings;
-                    if(location.getCurrentPath().isFile())
-                    {
+                    if (location.getCurrentPath().isFile()) {
                         loadLocationInfo.file = ReadDir.getBrowserRecordFromFsRecord(
                                 context,
                                 location,
@@ -359,8 +317,7 @@ public class FileListDataFragment extends RxFragment
                         Location parentLocation = location.copy();
                         parentLocation.setCurrentPath(location.getCurrentPath().getParentPath());
                         loadLocationInfo.location = parentLocation;
-                    }
-                    else
+                    } else
                         loadLocationInfo.location = location;
                     CachedPathInfo cpi = new CachedPathInfoBase();
                     cpi.init(loadLocationInfo.location.getCurrentPath());
@@ -375,15 +332,14 @@ public class FileListDataFragment extends RxFragment
                 }).
                 observeOn(Schedulers.io()).
                 flatMapObservable(loadLocationInfo -> ReadDir.createObservable(
-                    context,
-                    loadLocationInfo.location,
-                    selectedFiles,
-                    loadLocationInfo.folderSettings,
-                    showRootFolder
+                        context,
+                        loadLocationInfo.location,
+                        selectedFiles,
+                        loadLocationInfo.folderSettings,
+                        showRootFolder
 
                 ));
-        if(TEST_READING_OBSERVABLE != null)
-        {
+        if (TEST_READING_OBSERVABLE != null) {
             observable = observable.
                     doOnSubscribe(res -> TEST_READING_OBSERVABLE.onNext(true)).
                     doFinally(() -> TEST_READING_OBSERVABLE.onNext(false));
@@ -400,15 +356,14 @@ public class FileListDataFragment extends RxFragment
                         },
                         err ->
                         {
-                            if(!(err instanceof CancellationException))
+                            if (!(err instanceof CancellationException))
                                 Logger.log(err);
                         }
                 );
 
     }
 
-    private void sendFinishedLoading(Location location)
-    {
+    private void sendFinishedLoading(Location location) {
         Logger.debug(TAG + ": _locationLoading.onNext isLoading = false");
         LoadLocationInfo loadLocationInfo = new LoadLocationInfo();
         loadLocationInfo.location = location;
@@ -416,66 +371,60 @@ public class FileListDataFragment extends RxFragment
         _locationLoading.onNext(loadLocationInfo);
     }
 
-    public Single<BrowserRecord> makeNewFile(String name, int type)
-    {
+    public Single<BrowserRecord> makeNewFile(String name, int type) {
         return Single.create(emitter -> CreateNewFile.createObservable(
-                getActivity().getApplicationContext(),
-                getLocation(),
-                name,
-                type,
-                false
-        ).compose(bindToLifecycle()).
+                        getActivity().getApplicationContext(),
+                        getLocation(),
+                        name,
+                        type,
+                        false
+                ).compose(bindToLifecycle()).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(rec -> {
                             addRecordToList(rec);
-                            if(!emitter.isDisposed())
+                            if (!emitter.isDisposed())
                                 emitter.onSuccess(rec);
                         },
                         err -> Logger.showAndLog(getActivity(), err)));
     }
 
-    public Single<BrowserRecord> createOrFindFile(String name, int type)
-    {
+    public Single<BrowserRecord> createOrFindFile(String name, int type) {
         return Single.create(emitter -> CreateNewFile.createObservable(
-                getActivity().getApplicationContext(),
-                getLocation(),
-                name,
-                type,
-                true
-        ).compose(bindToLifecycle()).
+                        getActivity().getApplicationContext(),
+                        getLocation(),
+                        name,
+                        type,
+                        true
+                ).compose(bindToLifecycle()).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(rec -> {
-                            if(findLoadedFileByPath(rec.getPath()) == null)
+                            if (findLoadedFileByPath(rec.getPath()) == null)
                                 addRecordToList(rec);
-                            if(!emitter.isDisposed())
+                            if (!emitter.isDisposed())
                                 emitter.onSuccess(rec);
                         },
                         err -> Logger.showAndLog(getActivity(), err)));
 
     }
 
-    private void addRecordToList(BrowserRecord rec)
-    {
+    private void addRecordToList(BrowserRecord rec) {
         FileManagerActivity fm = (FileManagerActivity) getActivity();
         rec.setHostActivity(fm);
-        synchronized (_filesListSync)
-        {
-            if(_fileList!=null)
+        synchronized (_filesListSync) {
+            if (_fileList != null)
                 _fileList.add(rec);
         }
     }
 
-    public void reSortFiles()
-    {
+    public void reSortFiles() {
         LoadLocationInfo loadInfo = new LoadLocationInfo();
         loadInfo.stage = LoadLocationInfo.Stage.StartedLoading;
         loadInfo.location = _location;
         Logger.debug(TAG + ": _locationLoading.onNext started loading (sorting)");
         _locationLoading.onNext(loadInfo);
-        synchronized (_filesListSync)
-        {
+        synchronized (_filesListSync) {
             TreeSet<BrowserRecord> n = new TreeSet<>(initSorter());
             if (_fileList != null)
                 n.addAll(_fileList);
@@ -487,67 +436,57 @@ public class FileListDataFragment extends RxFragment
         _locationLoading.onNext(loadInfo);
     }
 
-    public Stack<HistoryItem> getNavigHistory()
-    {
+    public Stack<HistoryItem> getNavigHistory() {
         return _navigHistory;
     }
 
-    public void removeLocationFromHistory(Location loc)
-    {
+    public void removeLocationFromHistory(Location loc) {
         String id = loc.getId();
-        if(id!=null)
-        {
+        if (id != null) {
             List<HistoryItem> cur = new ArrayList<>(_navigHistory);
-            for(HistoryItem hi: cur)
-                if(id.equals(hi.locationId))
+            for (HistoryItem hi : cur)
+                if (id.equals(hi.locationId))
                     _navigHistory.remove(hi);
         }
     }
 
-    public DirectorySettings getDirectorySettings()
-    {
+    public DirectorySettings getDirectorySettings() {
         return _directorySettings;
     }
 
-    public static class HistoryItem implements Parcelable
-    {
-        public static final Creator<HistoryItem> CREATOR = new Creator<HistoryItem>()
-        {
+    public static class HistoryItem implements Parcelable {
+        public static final Creator<HistoryItem> CREATOR = new Creator<HistoryItem>() {
             @Override
-            public HistoryItem createFromParcel(Parcel in)
-            {
+            public HistoryItem createFromParcel(Parcel in) {
                 return new HistoryItem(in);
             }
 
             @Override
-            public HistoryItem[] newArray(int size)
-            {
+            public HistoryItem[] newArray(int size) {
                 return new HistoryItem[size];
             }
         };
 
         @Override
-        public int describeContents()
-        {
+        public int describeContents() {
             return 0;
         }
 
         @Override
-        public void writeToParcel(Parcel parcel, int flags)
-        {
+        public void writeToParcel(Parcel parcel, int flags) {
             parcel.writeParcelable(locationUri, flags);
             parcel.writeInt(scrollPosition);
             parcel.writeString(locationId);
         }
 
-        HistoryItem(){}
+        HistoryItem() {
+        }
 
         public Uri locationUri;
         public int scrollPosition;
         public String locationId;
 
-        HistoryItem(Parcel p)
-        {
+        HistoryItem(Parcel p) {
             locationUri = p.readParcelable(ClassLoader.getSystemClassLoader());
             scrollPosition = p.readInt();
             locationId = p.readString();
@@ -568,73 +507,56 @@ public class FileListDataFragment extends RxFragment
     private final Subject<BrowserRecord> _recordLoadedSubject = PublishSubject.create();
     private Disposable _readLocationObserver;
 
-    private synchronized void cancelReadDirTask()
-    {
-        if(_readLocationObserver != null)
-        {
+    private synchronized void cancelReadDirTask() {
+        if (_readLocationObserver != null) {
             _readLocationObserver.dispose();
             _readLocationObserver = null;
         }
     }
 
-    private void restoreNavigHistory(Bundle state)
-	{
-        if (state.containsKey(STATE_NAVIG_HISTORY))
-        {
+    private void restoreNavigHistory(Bundle state) {
+        if (state.containsKey(STATE_NAVIG_HISTORY)) {
             ArrayList<HistoryItem> l = state.getParcelableArrayList(STATE_NAVIG_HISTORY);
-            if(l!=null)
+            if (l != null)
                 _navigHistory.addAll(l);
         }
-	}
+    }
 
-    public void loadLocation(final Bundle savedState, final boolean autoOpen)
-	{
-		final Uri uri = getLocationUri(getActivity().getIntent(), savedState);
+    public void loadLocation(final Bundle savedState, final boolean autoOpen) {
+        final Uri uri = getLocationUri(getActivity().getIntent(), savedState);
         Location loc = null;
-		try
-		{
-			loc = initLocationFromUri(uri);
-		}
-		catch(Exception e)
-		{
-			Logger.showAndLog(getActivity(), e);
-		}
-		if(loc == null)
+        try {
+            loc = initLocationFromUri(uri);
+        } catch (Exception e) {
+            Logger.showAndLog(getActivity(), e);
+        }
+        if (loc == null)
             loc = getFallbackLocation();
 
-        if(autoOpen && !LocationsManager.isOpen(loc))
-		{
+        if (autoOpen && !LocationsManager.isOpen(loc)) {
             Intent i = new Intent(getActivity(), OpenLocationsActivity.class);
             LocationsManager.storeLocationsInIntent(i, Collections.singletonList(loc));
             startActivityForResult(i, REQUEST_CODE_OPEN_LOCATION);
-		}
-		else if(savedState == null)
-        {
+        } else if (savedState == null) {
             resetIntent();
             readLocation(loc, null);
-        }
-        else
+        } else
             restoreState(savedState);
-	}
+    }
 
-    private void resetIntent()
-    {
+    private void resetIntent() {
         Intent i = getActivity().getIntent();
-        if(i.getAction() == null || Intent.ACTION_MAIN.equals(i.getAction()))
-        {
+        if (i.getAction() == null || Intent.ACTION_MAIN.equals(i.getAction())) {
             i.setData(null);
             getActivity().setIntent(i);
         }
     }
 
-    private void clearCurrentFiles()
-    {
-        synchronized (_filesListSync)
-        {
-            if(_location!=null)
-            {
+    private void clearCurrentFiles() {
+        synchronized (_filesListSync) {
+            if (_location != null) {
                 ExtendedFileInfoLoader loader = ExtendedFileInfoLoader.getInstance();
-                for (BrowserRecord br: _fileList)
+                for (BrowserRecord br : _fileList)
                     loader.detachRecord(_location.getId(), br);
             }
             _fileList.clear();
@@ -643,30 +565,26 @@ public class FileListDataFragment extends RxFragment
         _location = null;
     }
 
-    private void restoreState(Bundle state)
-    {
+    private void restoreState(Bundle state) {
         restoreNavigHistory(state);
         ArrayList<Path> selectedFiles = new ArrayList<>();
         Location loc = _locationsManager.getFromBundle(state, selectedFiles);
-        if(loc!=null)
+        if (loc != null)
             readLocation(loc, selectedFiles);
     }
 
-    private Location initLocationFromUri(Uri locationUri) throws Exception
-	{
-		return locationUri != null ?
-				_locationsManager.getLocation(locationUri)
-			:
-				null;
-	}
+    private Location initLocationFromUri(Uri locationUri) throws Exception {
+        return locationUri != null ?
+                _locationsManager.getLocation(locationUri)
+                :
+                null;
+    }
 
-	private Location getFallbackLocation()
-	{
-		return FileManagerActivity.getStartLocation(getActivity());
-	}
+    private Location getFallbackLocation() {
+        return FileManagerActivity.getStartLocation(getActivity());
+    }
 
-    private Comparator<BrowserRecord> initSorter()
-	{
+    private Comparator<BrowserRecord> initSorter() {
         return getComparator(UserSettings.getSettings(getActivity()));
-	}
+    }
 }

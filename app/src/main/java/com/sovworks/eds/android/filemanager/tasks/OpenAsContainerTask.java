@@ -7,10 +7,8 @@ import com.sovworks.eds.android.filemanager.fragments.FileListViewFragment;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.locations.Location;
 
-public class OpenAsContainerTask extends CheckStartPathTask
-{
-    public static OpenAsContainerTask newInstance(Location locationLocation, boolean storeLink)
-    {
+public class OpenAsContainerTask extends CheckStartPathTask {
+    public static OpenAsContainerTask newInstance(Location locationLocation, boolean storeLink) {
         Bundle args = new Bundle();
         args.putBoolean(ARG_STORE_LINK, storeLink);
         LocationsManager.storePathsInBundle(args, locationLocation, null);
@@ -20,8 +18,7 @@ public class OpenAsContainerTask extends CheckStartPathTask
     }
 
     @Override
-    protected TaskCallbacks getTaskCallbacks(Activity activity)
-    {
+    protected TaskCallbacks getTaskCallbacks(Activity activity) {
         FileListViewFragment f = (FileListViewFragment) getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
         return f == null ? null : f.getOpenAsContainerTaskCallbacks();
     }

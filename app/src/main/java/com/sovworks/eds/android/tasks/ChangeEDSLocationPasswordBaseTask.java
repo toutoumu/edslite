@@ -16,11 +16,9 @@ import com.sovworks.eds.locations.EDSLocation;
 
 import java.io.IOException;
 
-public abstract class ChangeEDSLocationPasswordBaseTask extends TaskFragment
-{
+public abstract class ChangeEDSLocationPasswordBaseTask extends TaskFragment {
     @Override
-    public void initTask(Activity activity)
-    {
+    public void initTask(Activity activity) {
         _context = activity.getApplicationContext();
         _location = (EDSLocation) LocationsManager.getLocationsManager(_context).getFromBundle(getArguments(), null);
     }
@@ -29,35 +27,28 @@ public abstract class ChangeEDSLocationPasswordBaseTask extends TaskFragment
     protected Context _context;
 
     @Override
-    protected void doWork(TaskState state) throws Exception
-    {
-		changeLocationPassword();
-	}
+    protected void doWork(TaskState state) throws Exception {
+        changeLocationPassword();
+    }
 
-	@Override
-    protected TaskCallbacks getTaskCallbacks(Activity activity)
-    {
+    @Override
+    protected TaskCallbacks getTaskCallbacks(Activity activity) {
         final EDSLocationSettingsFragment f = (EDSLocationSettingsFragment) getFragmentManager().findFragmentByTag(SettingsBaseActivity.SETTINGS_FRAGMENT_TAG);
-        if(f == null)
+        if (f == null)
             return null;
-        return new ProgressDialogTaskFragmentCallbacks(activity, R.string.changing_password)
-        {
+        return new ProgressDialogTaskFragmentCallbacks(activity, R.string.changing_password) {
             @Override
-            public void onCompleted(Bundle args, Result result)
-            {
+            public void onCompleted(Bundle args, Result result) {
                 super.onCompleted(args, result);
-                try
-                {
+                try {
                     result.getResult();
                     f.getPropertiesView().loadProperties();
-                }
-                catch (Throwable e)
-                {
+                } catch (Throwable e) {
                     Logger.showAndLog(_context, result.getError());
                 }
             }
         };
     }
 
-	protected abstract void changeLocationPassword() throws IOException, ApplicationException;
+    protected abstract void changeLocationPassword() throws IOException, ApplicationException;
 }

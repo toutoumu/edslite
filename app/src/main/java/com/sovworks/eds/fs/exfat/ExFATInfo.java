@@ -9,19 +9,15 @@ import com.sovworks.eds.fs.RandomAccessIO;
 import java.io.IOException;
 
 
-public class ExFATInfo extends FileSystemInfo
-{
-    public static final Creator<ExFATInfo> CREATOR = new Creator<ExFATInfo>()
-    {
+public class ExFATInfo extends FileSystemInfo {
+    public static final Creator<ExFATInfo> CREATOR = new Creator<ExFATInfo>() {
         @Override
-        public ExFATInfo createFromParcel(Parcel in)
-        {
+        public ExFATInfo createFromParcel(Parcel in) {
             return new ExFATInfo();
         }
 
         @Override
-        public ExFATInfo[] newArray(int size)
-        {
+        public ExFATInfo[] newArray(int size) {
             return new ExFATInfo[size];
         }
     };
@@ -29,31 +25,26 @@ public class ExFATInfo extends FileSystemInfo
     public static final String NAME = "ExFAT";
 
     @Override
-    public String getFileSystemName()
-    {
+    public String getFileSystemName() {
         return NAME;
     }
 
     @Override
-    public void makeNewFileSystem(RandomAccessIO img) throws IOException
-    {
+    public void makeNewFileSystem(RandomAccessIO img) throws IOException {
         ExFat.makeNewFS(img);
     }
 
     @Override
-    public FileSystem openFileSystem(RandomAccessIO img, boolean readOnly) throws IOException
-    {
+    public FileSystem openFileSystem(RandomAccessIO img, boolean readOnly) throws IOException {
         return new ExFat(img, readOnly);
     }
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i)
-    {
+    public void writeToParcel(Parcel parcel, int i) {
     }
 }

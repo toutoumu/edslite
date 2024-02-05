@@ -9,11 +9,9 @@ import android.view.View;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.locations.activities.LocationListActivity;
 
-public abstract class DrawerManageLocationMenuItem extends DrawerMenuItemBase
-{
+public abstract class DrawerManageLocationMenuItem extends DrawerMenuItemBase {
     @Override
-    public void onClick(View view, int position)
-    {
+    public void onClick(View view, int position) {
         Intent i = new Intent(getContext(), LocationListActivity.class);
         i.putExtra(LocationListActivity.EXTRA_LOCATION_TYPE, getLocationType());
         getContext().startActivity(i);
@@ -21,25 +19,21 @@ public abstract class DrawerManageLocationMenuItem extends DrawerMenuItemBase
     }
 
     @Override
-    public Drawable getIcon()
-    {
+    public Drawable getIcon() {
         return getIcon(getContext());
     }
 
     @Override
-    public int getViewType()
-    {
+    public int getViewType() {
         return 3;
     }
 
     @Override
-    protected int getLayoutId()
-    {
+    protected int getLayoutId() {
         return R.layout.drawer_folder_item;
     }
 
-    protected DrawerManageLocationMenuItem(DrawerControllerBase drawerController)
-    {
+    protected DrawerManageLocationMenuItem(DrawerControllerBase drawerController) {
         super(drawerController);
     }
 
@@ -47,13 +41,11 @@ public abstract class DrawerManageLocationMenuItem extends DrawerMenuItemBase
 
     private static Drawable _icon;
 
-    private synchronized static Drawable getIcon(Context context)
-    {
-        if(_icon == null)
-        {
+    private synchronized static Drawable getIcon(Context context) {
+        if (_icon == null) {
             TypedValue typedValue = new TypedValue();
             context.getTheme().resolveAttribute(R.attr.manageLocationsIcon, typedValue, true);
-            //noinspection deprecation
+            // noinspection deprecation
             _icon = context.getResources().getDrawable(typedValue.resourceId);
         }
         return _icon;

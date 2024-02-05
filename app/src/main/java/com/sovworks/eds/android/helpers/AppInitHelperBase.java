@@ -14,18 +14,15 @@ import io.reactivex.CompletableEmitter;
 
 import static com.sovworks.eds.android.settings.UserSettingsCommon.CURRENT_SETTINGS_VERSION;
 
-public abstract class AppInitHelperBase
-{
-    public static Completable createObservable(RxActivity activity)
-    {
+public abstract class AppInitHelperBase {
+    public static Completable createObservable(RxActivity activity) {
         return Completable.create(emitter -> {
             AppInitHelper initHelper = new AppInitHelper(activity, emitter);
             initHelper.startInitSequence();
         });
     }
 
-    AppInitHelperBase(RxActivity activity, CompletableEmitter emitter)
-    {
+    AppInitHelperBase(RxActivity activity, CompletableEmitter emitter) {
         _activity = activity;
         _settings = UserSettings.getSettings(activity);
         _initFinished = emitter;
@@ -36,23 +33,21 @@ public abstract class AppInitHelperBase
     final CompletableEmitter _initFinished;
 
     @SuppressLint("ApplySharedPref")
-    void convertLegacySettings()
-    {
+    void convertLegacySettings() {
         int curSettingsVersion = _settings.getCurrentSettingsVersion();
-        if(curSettingsVersion >= Settings.VERSION)
+        if (curSettingsVersion >= Settings.VERSION)
             return;
 
-        if(curSettingsVersion < 0)
-        {
-            if(_settings.getLastViewedPromoVersion() > 160)
+        if (curSettingsVersion < 0) {
+            if (_settings.getLastViewedPromoVersion() > 160)
                 _settings.getSharedPreferences().edit().putInt(CURRENT_SETTINGS_VERSION, Settings.VERSION).commit();
             else
                 curSettingsVersion = 1;
         }
 
-        if(curSettingsVersion < 2)
+        if (curSettingsVersion < 2)
             updateSettingsV2();
-        if(curSettingsVersion < 3)
+        if (curSettingsVersion < 3)
             updateSettingsV3();
         _settings.
                 getSharedPreferences().
@@ -61,28 +56,23 @@ public abstract class AppInitHelperBase
                 commit();
     }
 
-    protected void updateSettingsV2()
-    {
+    protected void updateSettingsV2() {
         makeContainersVisible();
     }
 
-    private void updateSettingsV3()
-    {
+    private void updateSettingsV3() {
         convertEncAlgName();
     }
 
-    private void convertEncAlgName()
-    {
+    private void convertEncAlgName() {
         LocationsManager lm = LocationsManager.getLocationsManager(_activity);
         for (Location l : lm.getLoadedLocations(false))
-            if (l instanceof ContainerBasedLocation)
-            {
-                ContainerBasedLocation.ExternalSettings externalSettings = ((ContainerBasedLocation)l).getExternalSettings();
+            if (l instanceof ContainerBasedLocation) {
+                ContainerBasedLocation.ExternalSettings externalSettings = ((ContainerBasedLocation) l).getExternalSettings();
                 String encAlg = externalSettings.getEncEngineName();
-                if(encAlg == null)
+                if (encAlg == null)
                     continue;
-                switch (encAlg)
-                {
+                switch (encAlg) {
                     case "aes-twofish-serpent-xts-plain64":
                         externalSettings.setEncEngineName("serpent-twofish-aes-xts-plain64");
                         l.saveExternalSettings();
@@ -108,12 +98,10 @@ public abstract class AppInitHelperBase
     }
 
 
-    private void makeContainersVisible()
-    {
+    private void makeContainersVisible() {
         LocationsManager lm = LocationsManager.getLocationsManager(_activity);
         for (Location l : lm.getLoadedLocations(false))
-            if (l instanceof ContainerBasedLocation && !l.getExternalSettings().isVisibleToUser())
-            {
+            if (l instanceof ContainerBasedLocation && !l.getExternalSettings().isVisibleToUser()) {
                 l.getExternalSettings().setVisibleToUser(true);
                 l.saveExternalSettings();
             }

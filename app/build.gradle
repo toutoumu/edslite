@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 28
+    compileSdkVersion 33
 
     defaultConfig {
-        applicationId "com.sovworks.eds.android"
-        minSdkVersion 14
-        targetSdkVersion 28
+        applicationId "com.sovworks.eds.android1"
+        minSdkVersion 21
+        targetSdkVersion 33
         versionCode 237
         versionName "2.0.0.237"
         multiDexEnabled true

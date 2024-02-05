@@ -12,27 +12,24 @@ import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.helpers.Util;
 
 
-public abstract class ConfirmationDialog extends DialogFragment
-{
+public abstract class ConfirmationDialog extends DialogFragment {
     public static final String ARG_RECEIVER_TAG = "com.sovworks.eds.android.RECEIVER_TAG";
 
-    public interface Receiver
-    {
+    public interface Receiver {
         void onYes();
+
         void onNo();
     }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Util.setDialogStyle(this);
-	}
+    }
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getTitle())
                 .setCancelable(false)
@@ -52,36 +49,30 @@ public abstract class ConfirmationDialog extends DialogFragment
         return builder.create();
     }
 
-    protected void onNo()
-    {
+    protected void onNo() {
         Receiver rec = getReceiver();
-        if(rec != null)
+        if (rec != null)
             rec.onNo();
     }
 
-    protected void onYes()
-    {
+    protected void onYes() {
         Receiver rec = getReceiver();
-        if(rec != null)
+        if (rec != null)
             rec.onYes();
     }
 
     protected abstract String getTitle();
 
-    protected Receiver getReceiver()
-    {
+    protected Receiver getReceiver() {
         Bundle args = getArguments();
         String tag = args == null ? null : args.getString(ARG_RECEIVER_TAG);
-        if(tag != null)
-        {
+        if (tag != null) {
             Fragment f = getFragmentManager().findFragmentByTag(tag);
-            if(f instanceof Receiver)
+            if (f instanceof Receiver)
                 return (Receiver) f;
-        }
-        else
-        {
+        } else {
             Activity act = getActivity();
-            if(act instanceof Receiver)
+            if (act instanceof Receiver)
                 return (Receiver) act;
         }
         return null;

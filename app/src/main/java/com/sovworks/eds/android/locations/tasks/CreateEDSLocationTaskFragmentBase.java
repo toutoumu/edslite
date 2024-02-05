@@ -22,8 +22,7 @@ import com.sovworks.eds.locations.Openable;
 import java.io.IOException;
 
 public abstract class CreateEDSLocationTaskFragmentBase extends
-        com.sovworks.eds.android.fragments.TaskFragment
-{
+        com.sovworks.eds.android.fragments.TaskFragment {
     public static final String TAG = "com.sovworks.eds.android.locations.tasks.CreateEDSLocationTaskFragment";
 
     public static final String ARG_LOCATION = "com.sovworks.eds.android.LOCATION";
@@ -33,8 +32,7 @@ public abstract class CreateEDSLocationTaskFragmentBase extends
     public static final int RESULT_REQUEST_OVERWRITE = 1;
 
     @Override
-    public void initTask(Activity activity)
-    {
+    public void initTask(Activity activity) {
         _context = activity.getApplicationContext();
         _locationsManager = LocationsManager.getLocationsManager(_context);
     }
@@ -43,59 +41,46 @@ public abstract class CreateEDSLocationTaskFragmentBase extends
     protected LocationsManager _locationsManager;
 
     @Override
-    protected TaskCallbacks getTaskCallbacks(Activity activity)
-    {
+    protected TaskCallbacks getTaskCallbacks(Activity activity) {
         CreateEDSLocationFragment f = (CreateEDSLocationFragment) getFragmentManager().findFragmentByTag(SettingsBaseActivity.SETTINGS_FRAGMENT_TAG);
         return f == null ? null : f.getCreateLocationTaskCallbacks();
     }
 
     @Override
-    protected void doWork(TaskState state) throws Exception
-    {
+    protected void doWork(TaskState state) throws Exception {
         state.setResult(0);
         Location location = _locationsManager
                 .getLocation(
                         (Uri) getArguments().getParcelable(ARG_LOCATION));
 
-        if(!checkParams(state, location))
+        if (!checkParams(state, location))
             return;
         PowerManager pm = (PowerManager) _context
                 .getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 toString());
         wl.acquire();
-        try
-        {
+        try {
             createEDSLocation(state, location);
-        }
-        finally
-        {
+        } finally {
             wl.release();
         }
     }
 
-    protected void createEDSLocation(TaskState state, Location locationLocation) throws Exception
-    {
+    protected void createEDSLocation(TaskState state, Location locationLocation) throws Exception {
         EDSLocationFormatter f = createFormatter();
         SecureBuffer password = getArguments().getParcelable(Openable.PARAM_PASSWORD);
-        try
-        {
+        try {
             initFormatter(state, f, password);
             f.format(locationLocation);
-        }
-        catch (WrongImageFormatException e)
-        {
+        } catch (WrongImageFormatException e) {
             WrongPasswordOrBadContainerException e1 = new WrongPasswordOrBadContainerException(
                     _context);
             e1.initCause(e);
             throw e1;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new InputOutputException(_context, e);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new UserException(_context,
                     R.string.err_failed_creating_container, e);
         }
@@ -103,15 +88,12 @@ public abstract class CreateEDSLocationTaskFragmentBase extends
 
     protected abstract EDSLocationFormatter createFormatter();
 
-    protected void initFormatter(final TaskState state, final EDSLocationFormatter formatter, SecureBuffer password) throws Exception
-    {
+    protected void initFormatter(final TaskState state, final EDSLocationFormatter formatter, SecureBuffer password) throws Exception {
         formatter.setContext(_context);
         formatter.setPassword(password);
-        formatter.setProgressReporter(new ContainerFormatterBase.ProgressReporter()
-        {
+        formatter.setProgressReporter(new ContainerFormatterBase.ProgressReporter() {
             @Override
-            public boolean report(byte prc)
-            {
+            public boolean report(byte prc) {
                 state.updateUI(prc);
                 return !state.isTaskCancelled();
             }
@@ -119,12 +101,9 @@ public abstract class CreateEDSLocationTaskFragmentBase extends
 
     }
 
-    protected boolean checkParams(TaskState state, Location locationLocation) throws Exception
-    {
-        if (!getArguments().getBoolean(ARG_OVERWRITE, false))
-        {
-            if (locationLocation.getCurrentPath().exists())
-            {
+    protected boolean checkParams(TaskState state, Location locationLocation) throws Exception {
+        if (!getArguments().getBoolean(ARG_OVERWRITE, false)) {
+            if (locationLocation.getCurrentPath().exists()) {
                 state.setResult(RESULT_REQUEST_OVERWRITE);
                 return false;
             }

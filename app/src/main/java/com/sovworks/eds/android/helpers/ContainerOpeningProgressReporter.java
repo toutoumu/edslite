@@ -1,7 +1,6 @@
 package com.sovworks.eds.android.helpers;
 
-public interface ContainerOpeningProgressReporter extends ProgressReporter
-{
+public interface ContainerOpeningProgressReporter extends ProgressReporter {
     void setCurrentKDFName(String name);
 
     void setCurrentEncryptionAlgName(String name);

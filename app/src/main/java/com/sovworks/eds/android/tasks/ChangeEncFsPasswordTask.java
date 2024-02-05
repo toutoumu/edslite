@@ -10,36 +10,30 @@ import com.sovworks.eds.locations.LocationsManager;
 
 import java.io.IOException;
 
-public class ChangeEncFsPasswordTask extends ChangeEDSLocationPasswordTask
-{
+public class ChangeEncFsPasswordTask extends ChangeEDSLocationPasswordTask {
     public static final String TAG = "com.sovworks.eds.android.tasks.ChangeContainerPasswordTask";
-    //public static final String ARG_FIN_ACTIVITY = "fin_activity";
+    // public static final String ARG_FIN_ACTIVITY = "fin_activity";
 
-	public static ChangeEncFsPasswordTask newInstance(EncFsLocationBase container, Bundle passwordDialogResult)
-    {
+    public static ChangeEncFsPasswordTask newInstance(EncFsLocationBase container, Bundle passwordDialogResult) {
         Bundle args = new Bundle();
         args.putAll(passwordDialogResult);
         LocationsManager.storePathsInBundle(args, container, null);
         ChangeEncFsPasswordTask f = new ChangeEncFsPasswordTask();
         f.setArguments(args);
         return f;
-	}
+    }
 
     @Override
-	protected void changeLocationPassword() throws IOException, ApplicationException
-    {
-        EncFsLocationBase loc = (EncFsLocationBase)_location;
+    protected void changeLocationPassword() throws IOException, ApplicationException {
+        EncFsLocationBase loc = (EncFsLocationBase) _location;
         SecureBuffer sb = Util.getPassword(getArguments(), LocationsManager.getLocationsManager(_context));
         byte[] pd = sb.getDataArray();
-        try
-        {
+        try {
 
             loc.getEncFs().encryptVolumeKeyAndWriteConfig(pd);
-        }
-        finally
-        {
+        } finally {
             SecureBuffer.eraseData(pd);
             sb.close();
         }
-	}
+    }
 }

@@ -20,14 +20,12 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 
 @SuppressWarnings("ForLoopReplaceableByForEach")
-public class EditableSecureBuffer implements Editable
-{
+public class EditableSecureBuffer implements Editable {
     public static final String TAG = "EditableSecureBuffer";
     private static final boolean VERBOSE_LOG = false;
 
-    public EditableSecureBuffer(SecureBuffer sb)
-    {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": creating");
+    public EditableSecureBuffer(SecureBuffer sb) {
+        if (VERBOSE_LOG) Logger.debug(TAG + ": creating");
         _sb = sb;
         CharBuffer cb = sb.getCharBuffer();
         mGapStart = cb.length();
@@ -36,71 +34,59 @@ public class EditableSecureBuffer implements Editable
         mSpanInsertCount = 0;
         mSpans = new Object[0];
         mSpanStarts =
-        mSpanEnds =
-        mSpanFlags =
-        mSpanMax =
-        mSpanOrder =
-        mPrioSortBuffer =
-        mOrderSortBuffer = new int[0];
+                mSpanEnds =
+                        mSpanFlags =
+                                mSpanMax =
+                                        mSpanOrder =
+                                                mPrioSortBuffer =
+                                                        mOrderSortBuffer = new int[0];
     }
 
     @SuppressWarnings("unused")
-    public int getTextWatcherDepth()
-    {
+    public int getTextWatcherDepth() {
         return mTextWatcherDepth;
     }
 
-    private static class GrowingArrayUtils
-    {
-        static <T> T[] append(T[] current, int count, T newElement)
-        {
+    private static class GrowingArrayUtils {
+        static <T> T[] append(T[] current, int count, T newElement) {
             count++;
-            if(count >= current.length)
-                current = Arrays.copyOf(current, getNewSize(count - 1 , 1));
+            if (count >= current.length)
+                current = Arrays.copyOf(current, getNewSize(count - 1, 1));
             current[count - 1] = newElement;
             return current;
         }
 
-        static int[] append(int[] current, int count, int newElement)
-        {
+        static int[] append(int[] current, int count, int newElement) {
             count++;
-            if(count >= current.length)
-                current = Arrays.copyOf(current, getNewSize(count - 1 , 1));
+            if (count >= current.length)
+                current = Arrays.copyOf(current, getNewSize(count - 1, 1));
             current[count - 1] = newElement;
             return current;
         }
 
-        private static int getNewSize(int current, int adding)
-        {
-            return Math.max(current*2, current + adding);
+        private static int getNewSize(int current, int adding) {
+            return Math.max(current * 2, current + adding);
         }
     }
 
-    private static class ArrayUtils
-    {
-        static <T> T[] emptyArray(Class<T> kind)
-        {
-            //noinspection unchecked
-            return (T[])Array.newInstance(kind, 0);
+    private static class ArrayUtils {
+        static <T> T[] emptyArray(Class<T> kind) {
+            // noinspection unchecked
+            return (T[]) Array.newInstance(kind, 0);
         }
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in equals");
-        if(obj instanceof EditableSecureBuffer && length() == ((EditableSecureBuffer) obj).length())
-        {
+    public boolean equals(Object obj) {
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in equals");
+        if (obj instanceof EditableSecureBuffer && length() == ((EditableSecureBuffer) obj).length()) {
             char[] d1 = new char[length()];
             char[] d2 = d1.clone();
-            try
-            {
+            try {
                 getChars(0, d1.length, d1, 0);
-                ((EditableSecureBuffer)obj).getChars(0, d2.length, d2, 0);
+                ((EditableSecureBuffer) obj).getChars(0, d2.length, d2, 0);
                 return Arrays.equals(d1, d2);
-            }
-            finally
-            {
+            } finally {
                 SecureBuffer.eraseData(d1);
                 SecureBuffer.eraseData(d2);
             }
@@ -109,8 +95,7 @@ public class EditableSecureBuffer implements Editable
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         char[] d = new char[length()];
         getChars(0, d.length, d, 0);
         return Arrays.hashCode(d);
@@ -123,9 +108,9 @@ public class EditableSecureBuffer implements Editable
      */
     @Override
     public char charAt(int where) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in charAt");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in charAt");
         CharBuffer cb = _sb.getCharBuffer();
-        if(cb == null)
+        if (cb == null)
             return ' ';
         cb.clear();
         int len = cb.capacity() - mGapLength;
@@ -146,16 +131,15 @@ public class EditableSecureBuffer implements Editable
      */
     @Override
     public int length() {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in length");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in length");
         CharBuffer cb = _sb.getCharBuffer();
         return cb == null ? 0 : (cb.capacity() - mGapLength);
     }
 
-    private void resizeFor(int size)
-    {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in resizeFor");
+    private void resizeFor(int size) {
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in resizeFor");
         CharBuffer cb = _sb.getCharBuffer();
-        if(cb == null)
+        if (cb == null)
             return;
         cb.clear();
         final int oldLength = cb.capacity();
@@ -163,7 +147,7 @@ public class EditableSecureBuffer implements Editable
             return;
         }
 
-        char[] newText = new char[size*2];
+        char[] newText = new char[size * 2];
         cb.get(newText, 0, mGapStart);
         final int newLength = newText.length;
         final int delta = newLength - oldLength;
@@ -186,14 +170,14 @@ public class EditableSecureBuffer implements Editable
     }
 
     private void moveGapTo(int where) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in moveGapTo");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in moveGapTo");
         if (where == mGapStart)
             return;
 
         boolean atEnd = (where == length());
 
         CharBuffer cb = _sb.getCharBuffer();
-        if(cb == null)
+        if (cb == null)
             return;
         cb.clear();
         if (where < mGapStart) {
@@ -246,19 +230,19 @@ public class EditableSecureBuffer implements Editable
 
     // Documentation from interface
     public EditableSecureBuffer insert(int where, CharSequence tb, int start, int end) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in insert");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in insert");
         return replace(where, where, tb, start, end);
     }
 
     // Documentation from interface
     public EditableSecureBuffer insert(int where, CharSequence tb) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in insert 2");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in insert 2");
         return replace(where, where, tb, 0, tb.length());
     }
 
     // Documentation from interface
     public EditableSecureBuffer delete(int start, int end) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in delete");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in delete");
         EditableSecureBuffer ret = replace(start, end, "", 0, 0);
 
         if (mGapLength > 2 * length())
@@ -269,14 +253,14 @@ public class EditableSecureBuffer implements Editable
 
     // Documentation from interface
     public void clear() {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in clear");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in clear");
         replace(0, length(), "", 0, 0);
         mSpanInsertCount = 0;
     }
 
     // Documentation from interface
     public void clearSpans() {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in clearSpans");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in clearSpans");
         for (int i = mSpanCount - 1; i >= 0; i--) {
             Object what = mSpans[i];
             int ostart = mSpanStarts[i];
@@ -300,8 +284,7 @@ public class EditableSecureBuffer implements Editable
 
     @NonNull
     @Override
-    public String toString()
-    {
+    public String toString() {
         char[] cs = new char[length()];
         Arrays.fill(cs, ' ');
         return new String(cs);
@@ -309,7 +292,7 @@ public class EditableSecureBuffer implements Editable
 
     // Documentation from interface
     public EditableSecureBuffer append(CharSequence text) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in append");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in append");
         int length = length();
         return replace(length, length, text, 0, text.length());
     }
@@ -317,13 +300,14 @@ public class EditableSecureBuffer implements Editable
     /**
      * Appends the character sequence {@code text} and spans {@code what} over the appended part.
      * See {@link Spanned} for an explanation of what the flags mean.
-     * @param text the character sequence to append.
-     * @param what the object to be spanned over the appended text.
+     *
+     * @param text  the character sequence to append.
+     * @param what  the object to be spanned over the appended text.
      * @param flags see {@link Spanned}.
      * @return this {@code SpannableStringBuilder}.
      */
     public EditableSecureBuffer append(CharSequence text, Object what, int flags) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in append 2");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in append 2");
         int start = length();
         append(text);
         setSpan(what, start, length(), flags);
@@ -332,7 +316,7 @@ public class EditableSecureBuffer implements Editable
 
     // Documentation from interface
     public EditableSecureBuffer append(CharSequence text, int start, int end) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in append 3");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in append 3");
         int length = length();
         return replace(length, length, text, start, end);
     }
@@ -344,7 +328,7 @@ public class EditableSecureBuffer implements Editable
 
     // Returns true if a node was removed (so we can restart search from root)
     private boolean removeSpansForChange(int start, int end, boolean textIsRemoved, int i) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in removeSpansForChange");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in removeSpansForChange");
         if ((i & 1) != 0) {
             // internal tree node
             if (resolveGap(mSpanMax[i]) >= start &&
@@ -370,7 +354,7 @@ public class EditableSecureBuffer implements Editable
     }
 
     private void change(int start, int end, CharSequence cs, int csStart, int csEnd) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in change");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in change");
         // Can be negative
         final int replacedLength = end - start;
         final int replacementLength = csEnd - csStart;
@@ -423,7 +407,7 @@ public class EditableSecureBuffer implements Editable
         moveGapTo(end);
 
         CharBuffer cb = _sb.getCharBuffer();
-        if(cb == null)
+        if (cb == null)
             return;
 
         if (nbNewChars >= mGapLength) {
@@ -434,7 +418,7 @@ public class EditableSecureBuffer implements Editable
         // The removal pass needs to be done before the gap is updated in order to broadcast the
         // correct previous positions to the correct intersecting SpanWatchers
         if (replacedLength > 0) { // no need for span fixup on pure insertion
-            //noinspection StatementWithEmptyBody
+            // noinspection StatementWithEmptyBody
             while (mSpanCount > 0 &&
                     removeSpansForChange(start, end, textIsRemoved, treeRoot())) {
                 // keep deleting spans as needed, and restart from root after every deletion
@@ -449,7 +433,7 @@ public class EditableSecureBuffer implements Editable
             new Exception("mGapLength < 1").printStackTrace();
 
         cb = _sb.getCharBuffer();
-        if(cb == null)
+        if (cb == null)
             return;
         cb.clear();
         cb.position(start);
@@ -490,7 +474,7 @@ public class EditableSecureBuffer implements Editable
                     int flagsStart = (copySpanFlags & START_MASK) >> START_SHIFT;
                     int flagsEnd = copySpanFlags & END_MASK;
 
-                    if(!isInvalidParagraphStart(copySpanStart, flagsStart) &&
+                    if (!isInvalidParagraphStart(copySpanStart, flagsStart) &&
                             !isInvalidParagraphEnd(copySpanEnd, flagsEnd)) {
                         setSpan(false, spans[i], copySpanStart, copySpanEnd, copySpanFlags);
                     }
@@ -502,7 +486,7 @@ public class EditableSecureBuffer implements Editable
 
     private int updatedIntervalBound(int offset, int start, int nbNewChars, int flag, boolean atEnd,
                                      boolean textIsRemoved) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in updatedIntervalBound");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in updatedIntervalBound");
         if (offset >= start && offset < mGapStart + mGapLength) {
             if (flag == POINT) {
                 // A POINT located inside the replaced range should be moved to the end of the
@@ -535,7 +519,7 @@ public class EditableSecureBuffer implements Editable
 
     // Note: caller is responsible for removing the mIndexOfSpan entry.
     private void removeSpan(int i) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in removeSpan");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in removeSpan");
         Object object = mSpans[i];
 
         int start = mSpanStarts[i];
@@ -571,7 +555,7 @@ public class EditableSecureBuffer implements Editable
 
     // Documentation from interface
     public EditableSecureBuffer replace(int start, int end, CharSequence tb) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in replace");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in replace");
         return replace(start, end, tb, 0, tb.length());
     }
 
@@ -579,7 +563,7 @@ public class EditableSecureBuffer implements Editable
     @SuppressLint("DefaultLocale")
     public EditableSecureBuffer replace(final int start, final int end,
                                         CharSequence tb, int tbstart, int tbend) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in replace 2");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in replace 2");
         checkRange("replace", start, end);
 
         int filtercount = mFilters.length;
@@ -622,7 +606,7 @@ public class EditableSecureBuffer implements Editable
             boolean changed = false;
             if (selectionStart > start && selectionStart < end) {
                 final long diff = selectionStart - start;
-                final int offset = (int)(diff * newLen / origLen);
+                final int offset = (int) (diff * newLen / origLen);
                 selectionStart = start + offset;
 
                 changed = true;
@@ -631,7 +615,7 @@ public class EditableSecureBuffer implements Editable
             }
             if (selectionEnd > start && selectionEnd < end) {
                 final long diff = selectionEnd - start;
-                final int offset = (int)(diff * newLen / origLen);
+                final int offset = (int) (diff * newLen / origLen);
                 selectionEnd = start + offset;
 
                 changed = true;
@@ -643,7 +627,7 @@ public class EditableSecureBuffer implements Editable
             }
         }
 
-        if(VERBOSE_LOG) Logger.debug(String.format("before send text changed: start=%d origLen=%d newLen=%d", start, origLen, newLen));
+        if (VERBOSE_LOG) Logger.debug(String.format("before send text changed: start=%d origLen=%d newLen=%d", start, origLen, newLen));
         sendTextChanged(textWatchers, start, origLen, newLen);
         sendAfterTextChanged(textWatchers);
 
@@ -668,7 +652,7 @@ public class EditableSecureBuffer implements Editable
     }
 
     private void sendToSpanWatchers(int replaceStart, int replaceEnd, int nbNewChars) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in sendToSpanWatchers");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in sendToSpanWatchers");
         for (int i = 0; i < mSpanCount; i++) {
             int spanFlags = mSpanFlags[i];
 
@@ -744,7 +728,7 @@ public class EditableSecureBuffer implements Editable
      * inserted at the start or end of the span's range.
      */
     public void setSpan(Object what, int start, int end, int flags) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in setSpan");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in setSpan");
         setSpan(true, what, start, end, flags);
     }
 
@@ -752,16 +736,16 @@ public class EditableSecureBuffer implements Editable
     // invariants. If send is false and the span already exists, then this method
     // will not change the index of any spans.
     private void setSpan(boolean send, Object what, int start, int end, int flags) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in setSpan 2");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in setSpan 2");
         checkRange("setSpan", start, end);
 
         int flagsStart = (flags & START_MASK) >> START_SHIFT;
-        if(isInvalidParagraphStart(start, flagsStart)) {
+        if (isInvalidParagraphStart(start, flagsStart)) {
             throw new RuntimeException("PARAGRAPH span must start at paragraph boundary");
         }
 
         int flagsEnd = flags & END_MASK;
-        if(isInvalidParagraphEnd(end, flagsEnd)) {
+        if (isInvalidParagraphEnd(end, flagsEnd)) {
             throw new RuntimeException("PARAGRAPH span must end at paragraph boundary");
         }
 
@@ -866,7 +850,7 @@ public class EditableSecureBuffer implements Editable
      * Remove the specified markup object from the buffer.
      */
     public void removeSpan(Object what) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in removeSpan");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in removeSpan");
         if (mIndexOfSpan == null) return;
         Integer i = mIndexOfSpan.remove(what);
         if (i != null) {
@@ -879,7 +863,7 @@ public class EditableSecureBuffer implements Editable
      * markup object, or -1 if it is not attached to this buffer.
      */
     public int getSpanStart(Object what) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in getSpanStart");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in getSpanStart");
         if (mIndexOfSpan == null) return -1;
         Integer i = mIndexOfSpan.get(what);
         return i == null ? -1 : resolveGap(mSpanStarts[i]);
@@ -890,7 +874,7 @@ public class EditableSecureBuffer implements Editable
      * markup object, or -1 if it is not attached to this buffer.
      */
     public int getSpanEnd(Object what) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in getSpanEnd");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in getSpanEnd");
         if (mIndexOfSpan == null) return -1;
         Integer i = mIndexOfSpan.get(what);
         return i == null ? -1 : resolveGap(mSpanEnds[i]);
@@ -901,7 +885,7 @@ public class EditableSecureBuffer implements Editable
      * markup object, or 0 if it is not attached to this buffer.
      */
     public int getSpanFlags(Object what) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in getSpanFlags");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in getSpanFlags");
         if (mIndexOfSpan == null) return 0;
         Integer i = mIndexOfSpan.get(what);
         return i == null ? 0 : mSpanFlags[i];
@@ -914,7 +898,7 @@ public class EditableSecureBuffer implements Editable
      */
     @SuppressWarnings("unchecked")
     public <T> T[] getSpans(int queryStart, int queryEnd, @Nullable Class<T> kind) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in getSpans");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in getSpans");
         return getSpans(queryStart, queryEnd, kind, true);
     }
 
@@ -924,17 +908,16 @@ public class EditableSecureBuffer implements Editable
      * a list of all the spans regardless of type.
      *
      * @param queryStart Start index.
-     * @param queryEnd End index.
-     * @param kind Class type to search for.
-     * @param sort If true the results are sorted by the insertion order.
-     * @param <T> span type
+     * @param queryEnd   End index.
+     * @param kind       Class type to search for.
+     * @param sort       If true the results are sorted by the insertion order.
+     * @param <T>        span type
      * @return Array of the spans. Empty array if no results are found.
-     *
      */
     private <T> T[] getSpans(int queryStart, int queryEnd, @Nullable Class<T> kind,
                              boolean sort) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in getSpans 2");
-        if (kind == null) //noinspection unchecked
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in getSpans 2");
+        if (kind == null) // noinspection unchecked
             return (T[]) ArrayUtils.emptyArray(Object.class);
         if (mSpanCount == 0) return ArrayUtils.emptyArray(kind);
         int count = countSpans(queryStart, queryEnd, kind, treeRoot());
@@ -955,7 +938,7 @@ public class EditableSecureBuffer implements Editable
     }
 
     private int countSpans(int queryStart, int queryEnd, Class kind, int i) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in countSpans");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in countSpans");
         int count = 0;
         if ((i & 1) != 0) {
             // internal tree node
@@ -995,23 +978,23 @@ public class EditableSecureBuffer implements Editable
     /**
      * Fills the result array with the spans found under the current interval tree node.
      *
-     * @param queryStart Start index for the interval query.
-     * @param queryEnd End index for the interval query.
-     * @param kind Class type to search for.
-     * @param i Index of the current tree node.
-     * @param ret Array to be filled with results.
-     * @param priority Buffer to keep record of the priorities of spans found.
+     * @param queryStart     Start index for the interval query.
+     * @param queryEnd       End index for the interval query.
+     * @param kind           Class type to search for.
+     * @param i              Index of the current tree node.
+     * @param ret            Array to be filled with results.
+     * @param priority       Buffer to keep record of the priorities of spans found.
      * @param insertionOrder Buffer to keep record of the insertion orders of spans found.
-     * @param count The number of found spans.
-     * @param sort Flag to fill the priority and insertion order buffers. If false then
-     *             the spans with priority flag will be sorted in the result array.
-     * @param <T> span type
+     * @param count          The number of found spans.
+     * @param sort           Flag to fill the priority and insertion order buffers. If false then
+     *                       the spans with priority flag will be sorted in the result array.
+     * @param <T>            span type
      * @return The total number of spans found.
      */
     @SuppressWarnings("unchecked")
     private <T> int getSpansRec(int queryStart, int queryEnd, Class<T> kind,
                                 int i, T[] ret, int[] priority, int[] insertionOrder, int count, boolean sort) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in getSpansRec");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in getSpansRec");
         if ((i & 1) != 0) {
             // internal tree node
             int left = leftChild(i);
@@ -1044,7 +1027,7 @@ public class EditableSecureBuffer implements Editable
                     priority[target] = spanPriority;
                     insertionOrder[target] = mSpanOrder[i];
                 } else if (spanPriority != 0) {
-                    //insertion sort for elements with priority
+                    // insertion sort for elements with priority
                     int j = 0;
                     for (; j < count; j++) {
                         int p = getSpanFlags(ret[j]) & SPAN_PRIORITY;
@@ -1068,14 +1051,14 @@ public class EditableSecureBuffer implements Editable
      * Check the size of the buffer and grow if required.
      *
      * @param buffer Buffer to be checked.
-     * @param size Required size.
+     * @param size   Required size.
      * @return Same buffer instance if the current size is greater than required size. Otherwise a
      * new instance is created and returned.
      */
     private int[] checkSortBuffer(int[] buffer, int size) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in checkSortBuffer");
-        if(size > buffer.length) {
-            return new int[size + buffer.length /2];
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in checkSortBuffer");
+        if (size > buffer.length) {
+            return new int[size + buffer.length / 2];
         }
         return buffer;
     }
@@ -1086,13 +1069,13 @@ public class EditableSecureBuffer implements Editable
      * priority. If priorities are the same, the spans will be sorted with insertion order. A
      * span with a lower insertion order will be before a span with a higher insertion order.
      *
-     * @param array Span array to be sorted.
-     * @param priority Priorities of the spans
+     * @param array          Span array to be sorted.
+     * @param priority       Priorities of the spans
      * @param insertionOrder Insertion orders of the spans
-     * @param <T> Span object type.
+     * @param <T>            Span object type.
      */
     private <T> void sort(T[] array, int[] priority, int[] insertionOrder) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in sort");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in sort");
         int size = array.length;
         for (int i = size / 2 - 1; i >= 0; i--) {
             siftDown(i, array, size, priority, insertionOrder);
@@ -1115,16 +1098,16 @@ public class EditableSecureBuffer implements Editable
     /**
      * Helper function for heap sort.
      *
-     * @param index Index of the element to sift down.
-     * @param array Span array to be sorted.
-     * @param size Current heap size.
-     * @param priority Priorities of the spans
+     * @param index          Index of the element to sift down.
+     * @param array          Span array to be sorted.
+     * @param size           Current heap size.
+     * @param priority       Priorities of the spans
      * @param insertionOrder Insertion orders of the spans
-     * @param <T> Span object type.
+     * @param <T>            Span object type.
      */
     private <T> void siftDown(int index, T[] array, int size, int[] priority,
                               int[] insertionOrder) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in siftDown");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in siftDown");
         T v = array[index];
         int prio = priority[index];
         int insertOrder = insertionOrder[index];
@@ -1152,15 +1135,15 @@ public class EditableSecureBuffer implements Editable
      * Compare two span elements in an array. Comparison is based first on the priority flag of
      * the span, and then the insertion order of the span.
      *
-     * @param left Index of the element to compare.
-     * @param right Index of the other element to compare.
-     * @param priority Priorities of the spans
+     * @param left           Index of the element to compare.
+     * @param right          Index of the other element to compare.
+     * @param priority       Priorities of the spans
      * @param insertionOrder Insertion orders of the spans
      * @return comparison result
      */
     private int compareSpans(int left, int right, int[] priority,
                              int[] insertionOrder) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in compareSpans");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in compareSpans");
         int priority1 = priority[left];
         int priority2 = priority[right];
         if (priority1 == priority2) {
@@ -1179,7 +1162,7 @@ public class EditableSecureBuffer implements Editable
      * begins or ends.
      */
     public int nextSpanTransition(int start, int limit, Class kind) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in nextSpanTransition");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in nextSpanTransition");
         if (mSpanCount == 0) return limit;
         if (kind == null) {
             kind = Object.class;
@@ -1188,7 +1171,7 @@ public class EditableSecureBuffer implements Editable
     }
 
     private int nextSpanTransitionRec(int start, int limit, Class kind, int i) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in nextSpanTransitionRec");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in nextSpanTransitionRec");
         if ((i & 1) != 0) {
             // internal tree node
             int left = leftChild(i);
@@ -1216,7 +1199,7 @@ public class EditableSecureBuffer implements Editable
      * range of this buffer, including the overlapping spans.
      */
     public CharSequence subSequence(int start, int end) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in subSequence");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in subSequence");
         return new SpannableStringBuilder(this, start, end);
     }
 
@@ -1225,11 +1208,11 @@ public class EditableSecureBuffer implements Editable
      * specified array, beginning at the specified offset.
      */
     public void getChars(int start, int end, char[] dest, int destoff) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in getChars");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in getChars");
         checkRange("getChars", start, end);
 
         CharBuffer cb = _sb.getCharBuffer();
-        if(cb == null)
+        if (cb == null)
             return;
         cb.clear();
         if (end <= mGapStart) {
@@ -1250,12 +1233,9 @@ public class EditableSecureBuffer implements Editable
 
         mTextWatcherDepth++;
         for (int i = 0; i < n; i++) {
-            try
-            {
+            try {
                 watchers[i].beforeTextChanged(this, start, before, after);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 Logger.log(e);
             }
         }
@@ -1263,17 +1243,14 @@ public class EditableSecureBuffer implements Editable
     }
 
     private void sendTextChanged(TextWatcher[] watchers, int start, int before, int after) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in sendTextChanged");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in sendTextChanged");
         int n = watchers.length;
 
         mTextWatcherDepth++;
         for (int i = 0; i < n; i++) {
-            try
-            {
+            try {
                 watchers[i].onTextChanged(this, start, before, after);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 Logger.log(e);
             }
         }
@@ -1281,17 +1258,14 @@ public class EditableSecureBuffer implements Editable
     }
 
     private void sendAfterTextChanged(TextWatcher[] watchers) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in sendAfterTextChanged");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in sendAfterTextChanged");
         int n = watchers.length;
 
         mTextWatcherDepth++;
         for (int i = 0; i < n; i++) {
-            try
-            {
+            try {
                 watchers[i].afterTextChanged(this);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 Logger.log(e);
             }
         }
@@ -1299,53 +1273,44 @@ public class EditableSecureBuffer implements Editable
     }
 
     private void sendSpanAdded(Object what, int start, int end) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in sendSpanAdded");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in sendSpanAdded");
         SpanWatcher[] recip = getSpans(start, end, SpanWatcher.class);
         int n = recip.length;
 
         for (int i = 0; i < n; i++) {
-            try
-            {
+            try {
                 recip[i].onSpanAdded(this, what, start, end);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 Logger.log(e);
             }
         }
     }
 
     private void sendSpanRemoved(Object what, int start, int end) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in sendSpanRemoved");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in sendSpanRemoved");
         SpanWatcher[] recip = getSpans(start, end, SpanWatcher.class);
         int n = recip.length;
 
         for (int i = 0; i < n; i++) {
-            try
-            {
+            try {
                 recip[i].onSpanRemoved(this, what, start, end);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 Logger.log(e);
             }
         }
     }
 
     private void sendSpanChanged(Object what, int oldStart, int oldEnd, int start, int end) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in sendSpanChanged");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in sendSpanChanged");
         // The bounds of a possible SpanWatcher are guaranteed to be set before this method is
         // called, so that the order of the span does not affect this broadcast.
         SpanWatcher[] spanWatchers = getSpans(Math.min(oldStart, start),
                 Math.min(Math.max(oldEnd, end), length()), SpanWatcher.class);
         int n = spanWatchers.length;
         for (int i = 0; i < n; i++) {
-            try
-            {
+            try {
                 spanWatchers[i].onSpanChanged(this, what, oldStart, oldEnd, start, end);
-            }
-            catch (Throwable e)
-            {
+            } catch (Throwable e) {
                 Logger.log(e);
             }
         }
@@ -1376,7 +1341,7 @@ public class EditableSecureBuffer implements Editable
 
     // Documentation from interface
     public void setFilters(InputFilter[] filters) {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in setFilters");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in setFilters");
         if (filters == null) {
             throw new IllegalArgumentException();
         }
@@ -1453,7 +1418,7 @@ public class EditableSecureBuffer implements Editable
 
     // restores binary interval tree invariants after any mutation of span structure
     private void restoreInvariants() {
-        if(VERBOSE_LOG) Logger.debug(TAG + ": in restoreInvariants");
+        if (VERBOSE_LOG) Logger.debug(TAG + ": in restoreInvariants");
         if (mSpanCount == 0) return;
 
         // invariant 1: span starts are nondecreasing

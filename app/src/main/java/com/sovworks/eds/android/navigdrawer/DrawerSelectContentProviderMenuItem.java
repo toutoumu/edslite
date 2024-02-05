@@ -10,22 +10,18 @@ import android.widget.ImageView;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.fragments.FileListViewFragment;
 
-public class DrawerSelectContentProviderMenuItem extends DrawerMenuItemBase
-{
-    public DrawerSelectContentProviderMenuItem(DrawerControllerBase drawerController)
-    {
+public class DrawerSelectContentProviderMenuItem extends DrawerMenuItemBase {
+    public DrawerSelectContentProviderMenuItem(DrawerControllerBase drawerController) {
         super(drawerController);
     }
 
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return getDrawerController().getMainActivity().getString(R.string.content_provider);
     }
 
     @Override
-    public void onClick(View view, int position)
-    {
+    public void onClick(View view, int position) {
         super.onClick(view, position);
         Intent i;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT)
@@ -34,48 +30,42 @@ public class DrawerSelectContentProviderMenuItem extends DrawerMenuItemBase
             i = new Intent(Intent.ACTION_GET_CONTENT);
         i.setType("*/*");
         i.addCategory(Intent.CATEGORY_OPENABLE);
-        //if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && !getDrawerController().getMainActivity().isSingleSelectionMode())
+        // if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && !getDrawerController().getMainActivity().isSingleSelectionMode())
         //    i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 
         FileListViewFragment f = getDrawerController().getMainActivity().getFileListViewFragment();
-        if(f!=null)
+        if (f != null)
             f.startActivityForResult(i, FileListViewFragment.REQUEST_CODE_SELECT_FROM_CONTENT_PROVIDER);
     }
 
     @Override
-    public int getViewType()
-    {
+    public int getViewType() {
         return 2;
     }
 
     @Override
-    public void updateView(View view, @SuppressWarnings("UnusedParameters") int position)
-    {
+    public void updateView(View view, @SuppressWarnings("UnusedParameters") int position) {
         super.updateView(view, position);
         ImageView iv = (ImageView) view.findViewById(R.id.close);
-        if(iv!=null)
+        if (iv != null)
             iv.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    protected int getLayoutId()
-    {
+    protected int getLayoutId() {
         return R.layout.drawer_location_item;
     }
 
     @Override
-    public Drawable getIcon()
-    {
+    public Drawable getIcon() {
         return getIcon(getDrawerController().getMainActivity());
     }
 
-    private synchronized static Drawable getIcon(Context context)
-    {
-        if(_icon == null)
-        {
+    private synchronized static Drawable getIcon(Context context) {
+        if (_icon == null) {
             TypedValue typedValue = new TypedValue();
             context.getTheme().resolveAttribute(R.attr.storageIcon, typedValue, true);
-            //noinspection deprecation
+            // noinspection deprecation
             _icon = context.getResources().getDrawable(typedValue.resourceId);
         }
         return _icon;

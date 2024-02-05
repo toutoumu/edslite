@@ -14,11 +14,9 @@ import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.settings.PropertyEditor;
 import com.sovworks.eds.android.settings.views.PropertiesView;
 
-public abstract class PropertiesFragmentBase extends Fragment implements PropertyEditor.Host
-{
+public abstract class PropertiesFragmentBase extends Fragment implements PropertyEditor.Host {
     @Override
-    public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.properties_fragment, container, false);
         _propertiesView = view.findViewById(R.id.list);
         createProperties();
@@ -28,45 +26,37 @@ public abstract class PropertiesFragmentBase extends Fragment implements Propert
 
     @SuppressLint("Override")
     @Override
-    public Context getContext()
-    {
+    public Context getContext() {
         return getActivity();
     }
 
     @Override
-    public PropertiesView getPropertiesView()
-    {
+    public PropertiesView getPropertiesView() {
         return _propertiesView;
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(!getPropertiesView().onActivityResult(requestCode, resultCode, data))
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!getPropertiesView().onActivityResult(requestCode, resultCode, data))
             super.onActivityResult(requestCode, resultCode, data);
     }
 
     protected PropertiesView _propertiesView;
 
-    protected void initProperties(Bundle state)
-    {
-        try
-        {
+    protected void initProperties(Bundle state) {
+        try {
             if (state == null)
                 _propertiesView.loadProperties();
             else
                 _propertiesView.loadProperties(state);
-        }
-        catch (Throwable e)
-        {
+        } catch (Throwable e) {
             Logger.showAndLog(getActivity(), e);
         }
     }
 
     protected abstract void createProperties();
 
-    protected void setPropertiesEnabled(Iterable<Integer> propertyIds, boolean enabled)
-    {
+    protected void setPropertiesEnabled(Iterable<Integer> propertyIds, boolean enabled) {
         _propertiesView.setPropertiesState(propertyIds, enabled);
     }
 }

@@ -12,22 +12,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor
-{
-    public EncEngineHintPropertyEditor(ContainerSettingsFragmentBase containerSettingsFragment)
-    {
+public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor {
+    public EncEngineHintPropertyEditor(ContainerSettingsFragmentBase containerSettingsFragment) {
         super(containerSettingsFragment, R.string.encryption_algorithm, R.string.encryption_alg_desc, containerSettingsFragment.getTag());
     }
 
     @Override
-    public ContainerSettingsFragment getHost()
-    {
+    public ContainerSettingsFragment getHost() {
         return (ContainerSettingsFragment) super.getHost();
     }
 
     @Override
-    protected void saveValue(int value)
-    {
+    protected void saveValue(int value) {
         if (value == 0)
             getHost().getLocation().getExternalSettings().setEncEngineName(null);
         else
@@ -36,11 +32,9 @@ public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected int loadValue()
-    {
+    protected int loadValue() {
         String name = getHost().getLocation().getExternalSettings().getEncEngineName();
-        if (name != null)
-        {
+        if (name != null) {
             int i = findEngineIndexByName(name);
             if (i >= 0)
                 return i + 1;
@@ -49,8 +43,7 @@ public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected ArrayList<String> getEntries()
-    {
+    protected ArrayList<String> getEntries() {
         ArrayList<String> entries = new ArrayList<>();
         entries.add("-");
         for (EncryptionEngine ee : getSupportedEncEngines())
@@ -58,16 +51,13 @@ public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor
         return entries;
     }
 
-    private String getEncEngineName(EncryptionEngine ee)
-    {
+    private String getEncEngineName(EncryptionEngine ee) {
         return VolumeLayoutBase.getEncEngineName(ee);
     }
 
-    private int findEngineIndexByName(String name)
-    {
+    private int findEngineIndexByName(String name) {
         int i = 0;
-        for (EncryptionEngine ee : getSupportedEncEngines())
-        {
+        for (EncryptionEngine ee : getSupportedEncEngines()) {
             if (name.equalsIgnoreCase(getEncEngineName(ee)))
                 return i;
             i++;
@@ -75,8 +65,7 @@ public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor
         return -1;
     }
 
-    private List<? extends EncryptionEngine> getSupportedEncEngines()
-    {
+    private List<? extends EncryptionEngine> getSupportedEncEngines() {
         ContainerFormatInfo cfi = getHost().getCurrentContainerFormat();
         return cfi != null ?
                 cfi.getVolumeLayout().getSupportedEncryptionEngines()

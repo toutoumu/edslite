@@ -24,10 +24,8 @@ import io.reactivex.schedulers.Schedulers;
 import static com.sovworks.eds.android.providers.ContainersDocumentProviderBase.getDocumentIdFromLocation;
 
 @TargetApi(Build.VERSION_CODES.KITKAT)
-public class DocumentRootsCursor extends AbstractCursor
-{
-    public DocumentRootsCursor(Context context, LocationsManager lm, @NotNull String[] projection)
-    {
+public class DocumentRootsCursor extends AbstractCursor {
+    public DocumentRootsCursor(Context context, LocationsManager lm, @NotNull String[] projection) {
         _context = context;
         _lm = lm;
         _projection = projection;
@@ -35,64 +33,54 @@ public class DocumentRootsCursor extends AbstractCursor
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         return _locations.size();
     }
 
     @Override
-    public String[] getColumnNames()
-    {
+    public String[] getColumnNames() {
         return _projection;
     }
 
     @Override
-    public String getString(int column)
-    {
+    public String getString(int column) {
         return String.valueOf(getValueFromCurrentLocation(column));
     }
 
     @Override
-    public short getShort(int column)
-    {
+    public short getShort(int column) {
         return (short) getValueFromCurrentLocation(column);
     }
 
     @Override
-    public int getInt(int column)
-    {
+    public int getInt(int column) {
         return (int) getValueFromCurrentLocation(column);
     }
 
     @Override
-    public long getLong(int column)
-    {
+    public long getLong(int column) {
         return (long) getValueFromCurrentLocation(column);
     }
 
     @Override
-    public float getFloat(int column)
-    {
+    public float getFloat(int column) {
         return (float) getValueFromCurrentLocation(column);
     }
 
     @Override
-    public double getDouble(int column)
-    {
+    public double getDouble(int column) {
         return (double) getValueFromCurrentLocation(column);
     }
 
     @Override
-    public boolean isNull(int column)
-    {
+    public boolean isNull(int column) {
         return getValueFromCurrentLocation(column) == null;
     }
 
     @Override
-    public boolean onMove(int oldPosition, int newPosition)
-    {
+    public boolean onMove(int oldPosition, int newPosition) {
         _current = null;
-        if(newPosition >=0 && newPosition < _locations.size())
+        if (newPosition >= 0 && newPosition < _locations.size())
             _current = getObservable(_locations.get(newPosition)).
                     subscribeOn(Schedulers.io()).
                     blockingGet();
@@ -100,8 +88,7 @@ public class DocumentRootsCursor extends AbstractCursor
     }
 
     @Override
-    public boolean requery()
-    {
+    public boolean requery() {
         fillList();
         _current = null;
         return super.requery();
@@ -112,8 +99,7 @@ public class DocumentRootsCursor extends AbstractCursor
     private final Context _context;
     private final List<EDSLocation> _locations = new ArrayList<>();
 
-    private static class LocationInfo
-    {
+    private static class LocationInfo {
         Location location;
         long freeSpace, totalSpace;
         String title, documentId;
@@ -123,50 +109,37 @@ public class DocumentRootsCursor extends AbstractCursor
     private Single<LocationInfo> _request;
     private LocationInfo _current;
 
-    private void fillList()
-    {
+    private void fillList() {
         _locations.clear();
-        for(EDSLocation l: _lm.getLoadedEDSLocations(true))
-            if(l.isOpen())
+        for (EDSLocation l : _lm.getLoadedEDSLocations(true))
+            if (l.isOpen())
                 _locations.add(l);
     }
 
-    private Single<LocationInfo> getObservable(EDSLocation loc)
-    {
-        synchronized (this)
-        {
-            if(_request == null)
-                try
-                {
+    private Single<LocationInfo> getObservable(EDSLocation loc) {
+        synchronized (this) {
+            if (_request == null)
+                try {
                     _request = createObservable(loc);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             return _request;
         }
     }
 
-    private Single<LocationInfo> createObservable(EDSLocation loc) throws Exception
-    {
+    private Single<LocationInfo> createObservable(EDSLocation loc) throws Exception {
         return Single.create(em -> {
             LocationInfo res = new LocationInfo();
             res.location = loc;
-            try
-            {
+            try {
                 res.freeSpace = loc.getFS().getRootPath().getDirectory().getFreeSpace();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 Logger.log(e);
             }
-            try
-            {
+            try {
                 res.totalSpace = loc.getFS().getRootPath().getDirectory().getTotalSpace();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 Logger.log(e);
             }
             res.title = loc.getTitle();
@@ -177,17 +150,14 @@ public class DocumentRootsCursor extends AbstractCursor
         });
     }
 
-    private Object getValueFromCurrentLocation(int column)
-    {
-        if(_current == null)
+    private Object getValueFromCurrentLocation(int column) {
+        if (_current == null)
             return null;
         return getValueFromCachedPathInfo(_current, _projection[column]);
     }
 
-    private Object getValueFromCachedPathInfo(LocationInfo li, String columnName)
-    {
-        switch (columnName)
-        {
+    private Object getValueFromCachedPathInfo(LocationInfo li, String columnName) {
+        switch (columnName) {
             case DocumentsContract.Root.COLUMN_ROOT_ID:
                 return li.location.getId();
             case DocumentsContract.Root.COLUMN_SUMMARY:
@@ -209,17 +179,15 @@ public class DocumentRootsCursor extends AbstractCursor
             case DocumentsContract.Root.COLUMN_ICON:
                 return R.drawable.ic_lock_open;
             default:
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                     return getMoreColumns(li, columnName);
 
         }
         return null;
     }
 
-    private Object getMoreColumns(LocationInfo li, String columnName)
-    {
-        switch (columnName)
-        {
+    private Object getMoreColumns(LocationInfo li, String columnName) {
+        switch (columnName) {
             case DocumentsContract.Root.COLUMN_CAPACITY_BYTES:
                 return li.totalSpace;
         }
@@ -227,15 +195,14 @@ public class DocumentRootsCursor extends AbstractCursor
     }
 
 
-    private int getFlags(LocationInfo li)
-    {
+    private int getFlags(LocationInfo li) {
         // FLAG_SUPPORTS_CREATE means at least one directory under the root supports
         // creating documents. FLAG_SUPPORTS_RECENTS means your application's most
         // recently used documents will show up in the "Recents" category.
         // FLAG_SUPPORTS_SEARCH allows users to search all documents the application
         // shares.
         int flags = DocumentsContract.Root.FLAG_SUPPORTS_SEARCH;
-        if(!li.location.isReadOnly())
+        if (!li.location.isReadOnly())
             flags |= DocumentsContract.Root.FLAG_SUPPORTS_CREATE;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             flags |= DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD;

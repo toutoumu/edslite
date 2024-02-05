@@ -9,10 +9,8 @@ import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.android.locations.tasks.AddExistingContainerTaskFragment;
 import com.sovworks.eds.locations.Location;
 
-public class CheckStartPathTask extends AddExistingContainerTaskFragment
-{
-    public static CheckStartPathTask newInstance(Uri startUri, boolean storeLink)
-    {
+public class CheckStartPathTask extends AddExistingContainerTaskFragment {
+    public static CheckStartPathTask newInstance(Uri startUri, boolean storeLink) {
         Bundle args = new Bundle();
         args.putBoolean(ARG_STORE_LINK, storeLink);
         args.putParcelable(LocationsManager.PARAM_LOCATION_URI, startUri);
@@ -22,19 +20,17 @@ public class CheckStartPathTask extends AddExistingContainerTaskFragment
     }
 
     @Override
-    protected void doWork(TaskState state) throws Exception
-    {
+    protected void doWork(TaskState state) throws Exception {
         LocationsManager lm = LocationsManager.getLocationsManager(_context);
         Location loc = lm.getFromBundle(getArguments(), null);
-        if(loc.getCurrentPath().isFile())
+        if (loc.getCurrentPath().isFile())
             state.setResult(findOrCreateEDSLocation(lm, loc, getArguments().getBoolean(ARG_STORE_LINK)));
         else
             state.setResult(null);
     }
 
     @Override
-    protected TaskCallbacks getTaskCallbacks(Activity activity)
-    {
-        return ((FileManagerActivity)activity).getCheckStartPathCallbacks();
+    protected TaskCallbacks getTaskCallbacks(Activity activity) {
+        return ((FileManagerActivity) activity).getCheckStartPathCallbacks();
     }
 }

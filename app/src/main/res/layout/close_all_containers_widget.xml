@@ -5,6 +5,7 @@
     android:layout_margin="1dp"
     android:layout_gravity="center"
     android:background="@drawable/widget_background">
+
     <ImageButton
         android:id="@+id/containersClosedImageButton"
         android:layout_width="40dp"
@@ -13,5 +14,5 @@
         android:src="@drawable/widget_locked_all"
         android:scaleType="fitCenter"
         android:contentDescription="@string/close_all_containers"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 </FrameLayout>

@@ -1,5 +1,4 @@
 package com.sovworks.eds.android.locations.fragments;
 
-public class CreateContainerFragment extends CreateContainerFragmentBase
-{
+public class CreateContainerFragment extends CreateContainerFragmentBase {
 }

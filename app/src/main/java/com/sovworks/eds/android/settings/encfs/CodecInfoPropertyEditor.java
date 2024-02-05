@@ -7,24 +7,20 @@ import com.sovworks.eds.util.RefVal;
 
 import java.util.ArrayList;
 
-public abstract class CodecInfoPropertyEditor extends ChoiceDialogPropertyEditor
-{
-    public CodecInfoPropertyEditor(CreateEDSLocationFragment hostFragment, int titleId, int descrId)
-    {
+public abstract class CodecInfoPropertyEditor extends ChoiceDialogPropertyEditor {
+    public CodecInfoPropertyEditor(CreateEDSLocationFragment hostFragment, int titleId, int descrId) {
         super(hostFragment, titleId, descrId, hostFragment.getTag());
     }
 
     protected abstract Iterable<? extends AlgInfo> getCodecs();
+
     protected abstract String getParamName();
 
-    protected int findCodec(String name, RefVal<AlgInfo> codec)
-    {
+    protected int findCodec(String name, RefVal<AlgInfo> codec) {
         int i = 0;
-        for(AlgInfo ci: getCodecs())
-        {
-            if(name.equals(ci.getName()))
-            {
-                if(codec!=null)
+        for (AlgInfo ci : getCodecs()) {
+            if (name.equals(ci.getName())) {
+                if (codec != null)
                     codec.value = ci;
                 return i;
             }
@@ -34,20 +30,16 @@ public abstract class CodecInfoPropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected int loadValue()
-    {
+    protected int loadValue() {
         String encAlgName = getHostFragment().getState().getString(getParamName());
         return encAlgName != null ? findCodec(encAlgName, null) : 0;
     }
 
     @Override
-    protected void saveValue(int value)
-    {
+    protected void saveValue(int value) {
         int i = 0;
-        for(AlgInfo ci: getCodecs())
-        {
-            if(i == value)
-            {
+        for (AlgInfo ci : getCodecs()) {
+            if (i == value) {
                 getHostFragment().getState().putString(getParamName(), ci.getName());
                 return;
             }
@@ -57,16 +49,14 @@ public abstract class CodecInfoPropertyEditor extends ChoiceDialogPropertyEditor
     }
 
     @Override
-    protected ArrayList<String> getEntries()
-    {
+    protected ArrayList<String> getEntries() {
         ArrayList<String> res = new ArrayList<>();
-        for(AlgInfo ci: getCodecs())
+        for (AlgInfo ci : getCodecs())
             res.add(ci.getDescr());
         return res;
     }
 
-    protected CreateEDSLocationFragment getHostFragment()
-    {
+    protected CreateEDSLocationFragment getHostFragment() {
         return (CreateEDSLocationFragment) getHost();
     }
 

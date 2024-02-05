@@ -25,33 +25,26 @@ import com.sovworks.eds.settings.Settings;
 
 import java.io.IOException;
 
-public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsBaseActivity
-{
+public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsBaseActivity {
 
-    public static class MainFragment extends PropertiesFragmentBase
-    {
-        public class TargetPathPropertyEditor extends PathPropertyEditor
-        {
-            TargetPathPropertyEditor()
-            {
-                super(MainFragment.this,R.string.target_path, 0, getTag());
+    public static class MainFragment extends PropertiesFragmentBase {
+        public class TargetPathPropertyEditor extends PathPropertyEditor {
+            TargetPathPropertyEditor() {
+                super(MainFragment.this, R.string.target_path, 0, getTag());
             }
 
             @Override
-            protected String loadText()
-            {
+            protected String loadText() {
                 return _state.getString(ARG_URI);
             }
 
             @Override
-            protected void saveText(String text) throws Exception
-            {
+            protected void saveText(String text) throws Exception {
                 _state.putString(ARG_URI, text);
             }
 
             @Override
-            protected Intent getSelectPathIntent() throws IOException
-            {
+            protected Intent getSelectPathIntent() throws IOException {
                 return FileManagerActivity.getSelectPathIntent(
                         getContext(),
                         null,
@@ -66,26 +59,21 @@ public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsB
         }
 
         @Override
-        public void onCreate(Bundle savedInstanceState)
-        {
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setHasOptionsMenu(true);
         }
 
         @Override
-        protected void createProperties()
-        {
-            _propertiesView.addProperty(new TextPropertyEditor(this, R.string.enter_widget_title, 0, getTag())
-            {
+        protected void createProperties() {
+            _propertiesView.addProperty(new TextPropertyEditor(this, R.string.enter_widget_title, 0, getTag()) {
                 @Override
-                protected String loadText()
-                {
+                protected String loadText() {
                     return _state.getString(ARG_TITLE);
                 }
 
                 @Override
-                protected void saveText(String text) throws Exception
-                {
+                protected void saveText(String text) throws Exception {
                     _state.putString(ARG_TITLE, text);
                 }
             });
@@ -93,16 +81,13 @@ public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsB
         }
 
         @Override
-        public void onCreateOptionsMenu (Menu menu, MenuInflater inflater)
-        {
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
             inflater.inflate(R.menu.widget_config_menu, menu);
         }
 
         @Override
-        public boolean onOptionsItemSelected(MenuItem menuItem)
-        {
-            switch (menuItem.getItemId())
-            {
+        public boolean onOptionsItemSelected(MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
                 case R.id.confirm:
                     createWidget();
                     return true;
@@ -116,19 +101,16 @@ public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsB
 
         private final Bundle _state = new Bundle();
 
-        protected PropertyEditor getPathPE()
-        {
+        protected PropertyEditor getPathPE() {
             return new TargetPathPropertyEditor();
         }
 
-        private void createWidget()
-        {
-            try
-            {
+        private void createWidget() {
+            try {
                 _propertiesView.saveProperties();
                 String title = _state.getString(ARG_TITLE);
                 String path = _state.getString(ARG_URI);
-                if(title==null || title.trim().isEmpty() || path==null || path.trim().isEmpty())
+                if (title == null || title.trim().isEmpty() || path == null || path.trim().isEmpty())
                     return;
 
                 initWidgetFields(title, path);
@@ -140,15 +122,12 @@ public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsB
                 );
                 getActivity().setResult(RESULT_OK, resultValue);
                 getActivity().finish();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Logger.showAndLog(getActivity(), e);
             }
         }
 
-        private void initWidgetFields(String title,String path) throws Exception
-        {
+        private void initWidgetFields(String title, String path) throws Exception {
             int widgetId = getWidgetId();
             Location target = LocationsManager.getLocationsManager(getActivity()).getDefaultLocationFromPath(path);
             Settings.LocationShortcutWidgetInfo info = new Settings.LocationShortcutWidgetInfo();
@@ -164,25 +143,22 @@ public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsB
             );
         }
 
-        private int getWidgetId()
-        {
+        private int getWidgetId() {
             return getActivity().getIntent().getIntExtra(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
         }
     }
-	
-	@Override
-    public void onCreate(Bundle icicle)
-	{
+
+    @Override
+    public void onCreate(Bundle icicle) {
         Util.setTheme(this);
         super.onCreate(icicle);
         setResult(RESULT_CANCELED);
     }
 
     @Override
-    protected Fragment getSettingsFragment()
-    {
+    protected Fragment getSettingsFragment() {
         return new MainFragment();
     }
 }

@@ -14,36 +14,30 @@ import com.sovworks.eds.locations.Openable;
 
 import java.io.IOException;
 
-public abstract class ChangeContainerPasswordTaskBase extends ChangeEDSLocationPasswordTask
-{
+public abstract class ChangeContainerPasswordTaskBase extends ChangeEDSLocationPasswordTask {
     public static final String TAG = "com.sovworks.eds.android.tasks.ChangeContainerPasswordTask";
-    //public static final String ARG_FIN_ACTIVITY = "fin_activity";
+    // public static final String ARG_FIN_ACTIVITY = "fin_activity";
 
-	@Override
-	protected void changeLocationPassword() throws IOException, ApplicationException
-    {
-        ContainerLocation cont = (ContainerLocation)_location;
+    @Override
+    protected void changeLocationPassword() throws IOException, ApplicationException {
+        ContainerLocation cont = (ContainerLocation) _location;
         setContainerPassword(cont);
         RandomAccessIO io = cont.getLocation().getCurrentPath().getFile().getRandomAccessIO(File.AccessMode.ReadWrite);
-        try
-        {
+        try {
             VolumeLayout vl = cont.getEdsContainer().getVolumeLayout();
             vl.writeHeader(io);
-        }
-        finally
-        {
+        } finally {
             io.close();
         }
-	}
+    }
 
-	protected void setContainerPassword(ContainerLocation container) throws IOException
-    {
+    protected void setContainerPassword(ContainerLocation container) throws IOException {
         VolumeLayout vl = container.getEdsContainer().getVolumeLayout();
-        Bundle args  = getArguments();
+        Bundle args = getArguments();
         SecureBuffer sb = Util.getPassword(args, LocationsManager.getLocationsManager(_context));
         vl.setPassword(sb.getDataArray());
         sb.close();
-        if(args.containsKey(Openable.PARAM_KDF_ITERATIONS))
+        if (args.containsKey(Openable.PARAM_KDF_ITERATIONS))
             vl.setNumKDFIterations(args.getInt(Openable.PARAM_KDF_ITERATIONS));
     }
 }

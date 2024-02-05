@@ -13,28 +13,24 @@ import com.sovworks.eds.android.locations.fragments.DocumentTreeLocationsListFra
 import com.sovworks.eds.android.locations.fragments.LocationListBaseFragment;
 import com.sovworks.eds.android.settings.UserSettings;
 
-public abstract class LocationListActivityBase extends Activity
-{
+public abstract class LocationListActivityBase extends Activity {
     public static final String EXTRA_LOCATION_TYPE = "com.sovworks.eds.android.LOCATION_TYPE";
 
     @Override
-	public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         Util.setTheme(this);
         super.onCreate(savedInstanceState);
-        if(UserSettings.getSettings(this).isFlagSecureEnabled())
+        if (UserSettings.getSettings(this).isFlagSecureEnabled())
             CompatHelper.setWindowFlagSecure(this);
-        if(savedInstanceState == null)
+        if (savedInstanceState == null)
             getFragmentManager().
-                beginTransaction().
-                add(android.R.id.content, getCreateLocationFragment(), LocationListBaseFragment.TAG).
-                commit();
+                    beginTransaction().
+                    add(android.R.id.content, getCreateLocationFragment(), LocationListBaseFragment.TAG).
+                    commit();
     }
 
-    protected Fragment getCreateLocationFragment()
-    {
-        switch (getIntent().getStringExtra(EXTRA_LOCATION_TYPE))
-        {
+    protected Fragment getCreateLocationFragment() {
+        switch (getIntent().getStringExtra(EXTRA_LOCATION_TYPE)) {
             case ContainerBasedLocation.URI_SCHEME:
                 return new ContainerListFragment();
             case DocumentTreeLocation.URI_SCHEME:

@@ -2,51 +2,42 @@ package com.sovworks.eds.fs.encfs.ciphers;
 
 import com.sovworks.eds.fs.encfs.NameCodec;
 
-public class NullNameCipher implements NameCodec
-{
+public class NullNameCipher implements NameCodec {
     @Override
-    public String encodeName(String plaintextName)
-    {
+    public String encodeName(String plaintextName) {
         return plaintextName;
     }
 
     @Override
-    public String decodeName(String encodedName)
-    {
+    public String decodeName(String encodedName) {
         return encodedName;
     }
 
     @Override
-    public void init(byte[] key)
-    {
+    public void init(byte[] key) {
     }
 
     @Override
-    public void close()
-    {
+    public void close() {
     }
 
     @Override
-    public void setIV(byte[] iv)
-    {
+    public void setIV(byte[] iv) {
 
     }
 
     @Override
-    public byte[] getChainedIV(String plaintextName)
-    {
+    public byte[] getChainedIV(String plaintextName) {
         return null;
     }
 
     @Override
-    public byte[] getIV()
-    {
+    public byte[] getIV() {
         return null;
     }
 
     @Override
-    public int getIVSize()
-    {
+    public int getIVSize() {
         return 0;
     }
 

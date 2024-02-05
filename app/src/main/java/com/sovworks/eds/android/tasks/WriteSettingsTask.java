@@ -13,24 +13,21 @@ import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.android.locations.fragments.EDSLocationSettingsFragment;
 import com.sovworks.eds.locations.EDSLocation;
 
-public class WriteSettingsTask extends TaskFragment
-{
+public class WriteSettingsTask extends TaskFragment {
     public static final String TAG = "com.sovworks.eds.android.tasks.WriteSettingsTask";
     public static final String ARG_FIN_ACTIVITY = "com.sovworks.eds.android.FIN_ACTIVITY";
 
-	public static WriteSettingsTask newInstance(EDSLocation cont, boolean finActivity)
-    {
+    public static WriteSettingsTask newInstance(EDSLocation cont, boolean finActivity) {
         Bundle args = new Bundle();
         args.putBoolean(ARG_FIN_ACTIVITY, finActivity);
         LocationsManager.storePathsInBundle(args, cont, null);
-		WriteSettingsTask f = new WriteSettingsTask();
+        WriteSettingsTask f = new WriteSettingsTask();
         f.setArguments(args);
         return f;
-	}
+    }
 
     @Override
-    protected void initTask(Activity activity)
-    {
+    protected void initTask(Activity activity) {
         super.initTask(activity);
         _context = activity.getApplicationContext();
     }
@@ -38,34 +35,27 @@ public class WriteSettingsTask extends TaskFragment
     private Context _context;
 
     @Override
-    protected void doWork(TaskState state) throws Exception
-    {
+    protected void doWork(TaskState state) throws Exception {
         EDSLocation cont = (EDSLocation) LocationsManager.getLocationsManager(_context).getFromBundle(getArguments(), null);
-		cont.applyInternalSettings();
+        cont.applyInternalSettings();
         cont.writeInternalSettings();
-	}
+    }
 
     @Override
-    protected TaskCallbacks getTaskCallbacks(Activity activity)
-    {
+    protected TaskCallbacks getTaskCallbacks(Activity activity) {
         EDSLocationSettingsFragment f = (EDSLocationSettingsFragment)
                 getFragmentManager().findFragmentByTag(SettingsBaseActivity.SETTINGS_FRAGMENT_TAG);
-        if(f == null)
+        if (f == null)
             return null;
-        return new ProgressDialogTaskFragmentCallbacks(activity, R.string.saving_changes)
-        {
+        return new ProgressDialogTaskFragmentCallbacks(activity, R.string.saving_changes) {
             @Override
-            public void onCompleted(Bundle args, TaskFragment.Result result)
-            {
+            public void onCompleted(Bundle args, TaskFragment.Result result) {
                 super.onCompleted(args, result);
-                try
-                {
+                try {
                     result.getResult();
-                    if(args.getBoolean(WriteSettingsTask.ARG_FIN_ACTIVITY,false))
+                    if (args.getBoolean(WriteSettingsTask.ARG_FIN_ACTIVITY, false))
                         getActivity().finish();
-                }
-                catch(Throwable e)
-                {
+                } catch (Throwable e) {
                     Logger.showAndLog(_context, result.getError());
                 }
             }

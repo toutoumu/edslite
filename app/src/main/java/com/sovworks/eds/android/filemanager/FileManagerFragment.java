@@ -1,6 +1,5 @@
 package com.sovworks.eds.android.filemanager;
 
-public interface FileManagerFragment
-{
+public interface FileManagerFragment {
     boolean onBackPressed();
 }

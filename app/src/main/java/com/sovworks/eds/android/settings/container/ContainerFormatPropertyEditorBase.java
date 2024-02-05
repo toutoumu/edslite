@@ -15,10 +15,8 @@ import com.sovworks.eds.container.EdsContainer;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogPropertyEditor
-{
-    public ContainerFormatPropertyEditorBase(CreateContainerFragmentBase createContainerFragment, int descResId)
-    {
+public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogPropertyEditor {
+    public ContainerFormatPropertyEditorBase(CreateContainerFragmentBase createContainerFragment, int descResId) {
         super(
                 createContainerFragment,
                 R.string.container_format,
@@ -27,8 +25,7 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
     }
 
     @Override
-    protected List<String> getEntries()
-    {
+    protected List<String> getEntries() {
         ArrayList<String> res = new ArrayList<>();
         for (ContainerFormatInfo i : EdsContainer.getSupportedFormats())
             res.add(i.getFormatName());
@@ -37,41 +34,33 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
     }
 
     @Override
-    protected int loadValue()
-    {
+    protected int loadValue() {
         int formatId = getFormatIdFromName(getHostFragment().getState().getString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT));
         boolean addExisting = getHostFragment().getState().getBoolean(CreateEDSLocationFragment.ARG_ADD_EXISTING_LOCATION);
         boolean isEncFs = isEncFs(formatId);
         getHostFragment().getPropertiesView().beginUpdate();
-        try
-        {
+        try {
             updateEncFsProperties(isEncFs && !addExisting);
             updateContainerFormatProperties(!isEncFs && !addExisting, getSelectedContainerFormatInfo(formatId));
             updateCommonProperties(addExisting);
-        }
-        finally
-        {
+        } finally {
             getHostFragment().getPropertiesView().endUpdate(null);
         }
-        //getHostFragment().getPropertiesView().loadProperties();
+        // getHostFragment().getPropertiesView().loadProperties();
         return formatId;
     }
 
 
     @Override
-    protected void saveValue(int value)
-    {
+    protected void saveValue(int value) {
         boolean addExisting = getHostFragment().getState().getBoolean(CreateEDSLocationFragment.ARG_ADD_EXISTING_LOCATION);
         getHostFragment().getPropertiesView().beginUpdate();
-        try
-        {
-            if (isEncFs(value))
-            {
+        try {
+            if (isEncFs(value)) {
                 getHostFragment().getState().putString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT, EDSLocationFormatter.FORMAT_ENCFS);
                 updateContainerFormatProperties(false, null);
                 updateEncFsProperties(!addExisting);
-            } else
-            {
+            } else {
                 ContainerFormatInfo cfi = getSelectedContainerFormatInfo(value);
                 if (cfi != null)
                     getHostFragment().getState().putString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT, cfi.getFormatName());
@@ -79,33 +68,27 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
                 updateContainerFormatProperties(!addExisting, cfi);
             }
             updateCommonProperties(addExisting);
-        }
-        finally
-        {
+        } finally {
             getHostFragment().getPropertiesView().endUpdate(null);
         }
-        //getHostFragment().getPropertiesView().loadProperties();
+        // getHostFragment().getPropertiesView().loadProperties();
     }
 
-    private boolean isEncFs(int formatId)
-    {
+    private boolean isEncFs(int formatId) {
         return formatId == EdsContainer.getSupportedFormats().size();
     }
 
-    protected CreateContainerFragmentBase getHostFragment()
-    {
+    protected CreateContainerFragmentBase getHostFragment() {
         return (CreateContainerFragment) getHost();
     }
 
-    protected int getFormatIdFromName(String formatName)
-    {
+    protected int getFormatIdFromName(String formatName) {
         if (formatName == null)
             return 0;
         List<ContainerFormatInfo> supportedFormats = EdsContainer.getSupportedFormats();
-        if(EDSLocationFormatter.FORMAT_ENCFS.equals(formatName))
+        if (EDSLocationFormatter.FORMAT_ENCFS.equals(formatName))
             return supportedFormats.size();
-        for (int i = 0; i < supportedFormats.size(); i++)
-        {
+        for (int i = 0; i < supportedFormats.size(); i++) {
             ContainerFormatInfo cfi = supportedFormats.get(i);
             if (cfi.getFormatName().equalsIgnoreCase(formatName))
                 return i;
@@ -113,14 +96,12 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
         return 0;
     }
 
-    protected ContainerFormatInfo getSelectedContainerFormatInfo(int formatId)
-    {
+    protected ContainerFormatInfo getSelectedContainerFormatInfo(int formatId) {
         List<ContainerFormatInfo> fmts = EdsContainer.getSupportedFormats();
         return formatId >= fmts.size() ? null : fmts.get(formatId);
     }
 
-    protected void updateContainerFormatProperties(boolean enable, ContainerFormatInfo cfi)
-    {
+    protected void updateContainerFormatProperties(boolean enable, ContainerFormatInfo cfi) {
         PropertiesView pm = getHost().getPropertiesView();
         pm.setPropertyState(R.string.container_size, enable);
         pm.setPropertyState(R.string.kdf_iterations_multiplier, enable && cfi.hasCustomKDFIterationsSupport());
@@ -130,8 +111,7 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
         pm.setPropertyState(R.string.file_system_type, enable);
     }
 
-    private void updateEncFsProperties(boolean enable)
-    {
+    private void updateEncFsProperties(boolean enable) {
         PropertiesView pm = getHost().getPropertiesView();
         pm.setPropertyState(DataCodecPropertyEditor.ID, enable);
         pm.setPropertyState(R.string.filename_encryption_algorithm, enable);
@@ -146,8 +126,7 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
     }
 
 
-    protected void updateCommonProperties(boolean addExisting)
-    {
+    protected void updateCommonProperties(boolean addExisting) {
         PropertiesView pm = getHost().getPropertiesView();
         pm.setPropertyState(R.string.path_to_container, true);
         pm.setPropertyState(R.string.container_password, !addExisting);

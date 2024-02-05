@@ -15,55 +15,45 @@ import com.sovworks.eds.settings.Settings;
 
 import java.io.IOException;
 
-public abstract class AddExistingContainerTaskFragmentBase extends AddExistingEDSLocationTaskFragment
-{
+public abstract class AddExistingContainerTaskFragmentBase extends AddExistingEDSLocationTaskFragment {
     public static final String TAG = "com.sovworks.eds.android.locations.tasks.AddExistingContainerTaskFragment";
 
     @Override
-    protected EDSLocation createEDSLocation(Location locationLocation) throws Exception
-    {
+    protected EDSLocation createEDSLocation(Location locationLocation) throws Exception {
         Logger.debug("Adding EDS loc at " + locationLocation.getLocationUri());
         Path cp = locationLocation.getCurrentPath();
         boolean isEncFs = false;
-        if(cp.isFile())
-        {
+        if (cp.isFile()) {
             String fn = cp.getFile().getName();
-            if(Config.CONFIG_FILENAME.equalsIgnoreCase(fn) || Config.CONFIG_FILENAME2.equalsIgnoreCase(fn))
-            {
+            if (Config.CONFIG_FILENAME.equalsIgnoreCase(fn) || Config.CONFIG_FILENAME2.equalsIgnoreCase(fn)) {
                 Path parentPath = cp.getParentPath();
-                if(parentPath!=null)
-                {
+                if (parentPath != null) {
                     locationLocation.setCurrentPath(parentPath);
                     isEncFs = true;
                 }
             }
-        }
-        else if(cp.isDirectory())
-        {
+        } else if (cp.isDirectory()) {
             Path cfgPath = Config.getConfigFilePath(cp.getDirectory());
-            if(cfgPath == null)
+            if (cfgPath == null)
                 throw new UserException("EncFs config file doesn't exist", R.string.encfs_config_file_not_found);
             isEncFs = true;
-        }
-        else
+        } else
             throw new UserException("Wrong path", R.string.wrong_path);
 
-        if(isEncFs)
+        if (isEncFs)
             return new EncFsLocation(locationLocation, _context);
         else
             return createContainerBasedLocation(locationLocation);
     }
 
-    protected ContainerLocation createContainerBasedLocation(Location locationLocation) throws Exception
-    {
+    protected ContainerLocation createContainerBasedLocation(Location locationLocation) throws Exception {
         Settings settings = UserSettings.getSettings(_context);
         return createContainerLocationBase(locationLocation, settings);
     }
 
-    protected ContainerLocation createContainerLocationBase(Location locationLocation, Settings settings) throws IOException
-    {
+    protected ContainerLocation createContainerLocationBase(Location locationLocation, Settings settings) throws IOException {
         String formatName = getArguments().getString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT);
-        if(formatName == null)
+        if (formatName == null)
             formatName = "";
         return ContainerFormatter.createBaseContainerLocationFromFormatInfo(
                 formatName,

@@ -8,40 +8,33 @@ import android.view.View;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.dialogs.AboutDialog;
 
-public class DrawerAboutMenuItem extends DrawerMenuItemBase
-{
+public class DrawerAboutMenuItem extends DrawerMenuItemBase {
 
-    public DrawerAboutMenuItem(DrawerControllerBase drawerController)
-    {
+    public DrawerAboutMenuItem(DrawerControllerBase drawerController) {
         super(drawerController);
     }
 
     @Override
-    public String getTitle()
-    {
+    public String getTitle() {
         return getDrawerController().getMainActivity().getString(R.string.about);
     }
 
     @Override
-    public void onClick(View view, int position)
-    {
+    public void onClick(View view, int position) {
         super.onClick(view, position);
         AboutDialog.showDialog(getDrawerController().getMainActivity().getFragmentManager());
     }
 
     @Override
-    public Drawable getIcon()
-    {
+    public Drawable getIcon() {
         return getIcon(getDrawerController().getMainActivity());
     }
 
-    private synchronized static Drawable getIcon(Context context)
-    {
-        if(_icon == null)
-        {
+    private synchronized static Drawable getIcon(Context context) {
+        if (_icon == null) {
             TypedValue typedValue = new TypedValue();
             context.getTheme().resolveAttribute(R.attr.aboutIcon, typedValue, true);
-            //noinspection deprecation
+            // noinspection deprecation
             _icon = context.getResources().getDrawable(typedValue.resourceId);
         }
         return _icon;

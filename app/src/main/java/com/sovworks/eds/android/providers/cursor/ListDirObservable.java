@@ -18,71 +18,57 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.disposables.Disposables;
 
-public class ListDirObservable
-{
+public class ListDirObservable {
 
-    public static Observable<CachedPathInfo> create(LocationsManager lm, Uri locUri)
-    {
+    public static Observable<CachedPathInfo> create(LocationsManager lm, Uri locUri) {
         return Observable.create(observableEmitter -> {
             Location loc = lm.getLocation(locUri);
-            if(loc.getCurrentPath().isDirectory())
+            if (loc.getCurrentPath().isDirectory())
                 emitListDir(loc.getCurrentPath().getDirectory(), observableEmitter);
-            else if(loc.getCurrentPath().isFile())
+            else if (loc.getCurrentPath().isFile())
                 emitFile(loc.getCurrentPath().getFile(), observableEmitter);
             else
                 observableEmitter.onComplete();
         });
     }
 
-    public static Observable<CachedPathInfo> create(Location loc, boolean listDir)
-    {
+    public static Observable<CachedPathInfo> create(Location loc, boolean listDir) {
         return Observable.create(observableEmitter -> {
-            if(loc.getCurrentPath().isDirectory())
-            {
-                if(listDir)
+            if (loc.getCurrentPath().isDirectory()) {
+                if (listDir)
                     emitListDir(loc.getCurrentPath().getDirectory(), observableEmitter);
                 else
                     emitFile(loc.getCurrentPath().getDirectory(), observableEmitter);
-            }
-            else if(loc.getCurrentPath().isFile())
+            } else if (loc.getCurrentPath().isFile())
                 emitFile(loc.getCurrentPath().getFile(), observableEmitter);
             else
                 observableEmitter.onComplete();
         });
     }
 
-    private static void emitFile(FSRecord f, ObservableEmitter<CachedPathInfo> observableEmitter) throws IOException
-    {
+    private static void emitFile(FSRecord f, ObservableEmitter<CachedPathInfo> observableEmitter) throws IOException {
         CachedPathInfo cpi = new CachedPathInfoBase();
         cpi.init(f.getPath());
         observableEmitter.onNext(cpi);
         observableEmitter.onComplete();
     }
 
-    private static void emitListDir(Directory dir, ObservableEmitter<CachedPathInfo> observableEmitter) throws IOException
-    {
+    private static void emitListDir(Directory dir, ObservableEmitter<CachedPathInfo> observableEmitter) throws IOException {
         Directory.Contents contents = dir.list();
         observableEmitter.setDisposable(Disposables.fromRunnable(() ->
         {
-            try
-            {
+            try {
                 contents.close();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 Logger.log(e);
             }
         }));
-        for(Path p: contents)
-        {
+        for (Path p : contents) {
             CachedPathInfo cpi = new CachedPathInfoBase();
-            try
-            {
+            try {
                 cpi.init(p);
                 observableEmitter.onNext(cpi);
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 Logger.log(e);
             }
         }
