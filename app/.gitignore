@@ -1,3 +1,4 @@
 /build
 /.externalNativeBuild/
 /build-local.gradle
+.cxx
