@@ -8,10 +8,16 @@
 
     <ImageView
         android:id="@android:id/icon"
+        style="@style/DrawerMainIcon.Sub"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        style="@style/DrawerMainIcon.Sub"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="12dp"
         android:contentDescription="@string/location_type" />
 
     <TextView
@@ -21,5 +27,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        tools:text="文本"
         style="@style/DrawerMainTitle.Sub" />
 </RelativeLayout>

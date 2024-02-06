@@ -138,7 +138,8 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
         ImageView iv = view.findViewById(android.R.id.icon);
         iv.setImageDrawable(getDefaultIcon());
         iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        iv.setOnClickListener(view1 ->
+        // todo 去掉点击图片显示选择
+        /* iv.setOnClickListener(view1 ->
         {
             if (allowSelect()) {
                 if (isSelected()) {
@@ -147,7 +148,7 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
                 } else
                     hf.selectFile(FsBrowserRecord.this);
             }
-        });
+        }); */
 
         iv = view.findViewById(android.R.id.icon1);
         if (_miniIcon == null)

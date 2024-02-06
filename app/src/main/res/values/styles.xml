@@ -204,7 +204,7 @@
     </style>
 
     <style name="LeftDrawer" parent="android:Widget.Holo.Light.ListView">
-        <item name="android:layout_width">240dp</item>
+        <item name="android:layout_width">280dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">start</item>
         <item name="android:choiceMode">singleChoice</item>
@@ -212,7 +212,7 @@
     </style>
 
     <style name="LeftDrawer.Dark" parent="android:Widget.Holo.ListView">
-        <item name="android:layout_width">240dp</item>
+        <item name="android:layout_width">280dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_gravity">start</item>
         <item name="android:choiceMode">singleChoice</item>
@@ -239,6 +239,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?attr/drawerMenuTitleTextColor</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginLeft">16dp</item>
     </style>
 
     <style name="DrawerCloseLocationIcon">
@@ -250,7 +251,12 @@
 
     <style name="DrawerRow.Sub" />
 
-    <style name="DrawerMainIcon.Sub" />
+    <style name="DrawerMainIcon.Sub" >
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_margin">12dp</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
 
     <style name="DrawerMainTitle.Sub">
         <item name="android:layout_width">0dp</item>

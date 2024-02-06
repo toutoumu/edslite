@@ -134,7 +134,8 @@ public abstract class ReadDirBase {
                     break;
 
                 BrowserRecord record = getBrowserRecordFromFsRecord(_targetLocation, path, _directorySettings);
-                if (record == null)
+                // todo 过滤掉隐藏文件
+                if (record == null || record.getName().startsWith("."))
                     continue;
                 procRecord(record, count++);
                 em.onNext(record);

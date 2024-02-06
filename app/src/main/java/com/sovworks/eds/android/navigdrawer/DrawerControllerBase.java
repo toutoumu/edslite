@@ -3,10 +3,13 @@ package com.sovworks.eds.android.navigdrawer;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +47,7 @@ public abstract class DrawerControllerBase {
         if (ab != null) {
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
+            ab.setDisplayShowHomeEnabled(false);
         }
 
         List<DrawerMenuItemBase> list = fillDrawer();
