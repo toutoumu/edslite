@@ -1,4 +1,4 @@
-# EDS Lite
+# EDS Lite 文件加密
 
 EDS (Encrypted Data Store) is a virtual disk encryption software for Android which allows you to store your files in an encrypted container. EDS Lite is an open source edition of EDS. Visit [EDS web site](https://sovworks.com/eds/) to learn about EDS features and capabilities.
 
