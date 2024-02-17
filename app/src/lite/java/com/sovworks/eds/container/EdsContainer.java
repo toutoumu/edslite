@@ -15,8 +15,8 @@ public class EdsContainer extends EdsContainerBase {
 
     private static final ContainerFormatInfo[] SUPPORTED_FORMATS =
             new ContainerFormatInfo[]{
-                    new com.sovworks.eds.truecrypt.FormatInfo(),
                     new com.sovworks.eds.veracrypt.FormatInfo(),
+                    new com.sovworks.eds.truecrypt.FormatInfo(),
                     new com.sovworks.eds.luks.FormatInfo()
             };
 
