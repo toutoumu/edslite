@@ -12,6 +12,7 @@
         android:background="?attr/propertyDivider"
         android:descendantFocusability="afterDescendants"
         android:divider="?attr/propertyDivider"
+        android:dividerPadding="16dp"
         android:showDividers="beginning|middle|end"
         android:focusable="false"
         android:orientation="vertical" />
