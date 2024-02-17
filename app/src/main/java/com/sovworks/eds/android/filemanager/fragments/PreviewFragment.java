@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.ViewSwitcher;
 
 import com.sovworks.eds.android.Logger;
@@ -39,6 +40,7 @@ import java.util.concurrent.CancellationException;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
@@ -195,6 +197,7 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
             }
         });
         _viewSwitcher = view.findViewById(R.id.viewSwitcher);
+        _progressLayout = view.findViewById(R.id.progressLayout);
         _mainImageView.setOnLoadOptimImageListener(srcImageRect ->
         {
             if (_isOptimSupported)
@@ -218,6 +221,7 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
         _mainImageView.clearImage();
         _mainImageView = null;
         _viewSwitcher = null;
+        _progressLayout = null;
         super.onDestroyView();
     }
 
@@ -290,7 +294,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
     }
 
     private GestureImageViewWithFullScreenMode _mainImageView;
-    private ViewSwitcher _viewSwitcher;
+    // private ViewSwitcher _viewSwitcher;
+    private RelativeLayout _viewSwitcher;
+    private RelativeLayout _progressLayout;
     private Path _currentImagePath, _prevImagePath, _nextImagePath;
     private final Rect _viewRect = new Rect();
     private boolean _isFullScreen, _isOptimSupported;
@@ -304,7 +310,7 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
             if (loc != null) {
                 loc = loc.copy();
                 loc.setCurrentPath(_currentImagePath);
-                LoadPathInfoObservable.create(loc).
+                Disposable xx = LoadPathInfoObservable.create(loc).
                         subscribeOn(Schedulers.io()).
                         observeOn(AndroidSchedulers.mainThread()).
                         compose(bindToLifecycle()).
@@ -364,13 +370,15 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
     }
 
     private void showLoading() {
-        if (_viewSwitcher.getCurrentView() == _mainImageView)
-            _viewSwitcher.showNext();
+        // if (_viewSwitcher.getCurrentView() == _mainImageView)
+        //     _viewSwitcher.showNext();
+        _progressLayout.setVisibility(View.VISIBLE);
     }
 
     private void showImage() {
-        if (_viewSwitcher.getCurrentView() != _mainImageView)
-            _viewSwitcher.showPrevious();
+        // if (_viewSwitcher.getCurrentView() != _mainImageView)
+        //     _viewSwitcher.showPrevious();
+        _progressLayout.setVisibility(View.INVISIBLE);
         getActivity().invalidateOptionsMenu();
     }
 
@@ -440,7 +448,7 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
     }
 
     private void loadImageWhenReady() {
-        _imageViewPrepared.
+        Disposable xx = _imageViewPrepared.
                 filter(res -> res).
                 firstElement().
                 compose(bindToLifecycle()).
@@ -467,7 +475,7 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
                     doFinally(() -> TEST_LOAD_IMAGE_TASK_OBSERVABLE.onNext(false));
         }
 
-        loadImageTaskObservable.subscribe(res -> {
+        Disposable xx = loadImageTaskObservable.subscribe(res -> {
             if (regionRect == null) {
                 _mainImageView.setImage(
                         res.getImageData(),
