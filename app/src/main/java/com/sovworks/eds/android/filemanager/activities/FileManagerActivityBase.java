@@ -387,6 +387,7 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
         if (f != null && ((FileManagerFragment) f).onBackPressed())
             return;
 
+        _drawer.openDrawer();
         // super.onBackPressed();
     }
 

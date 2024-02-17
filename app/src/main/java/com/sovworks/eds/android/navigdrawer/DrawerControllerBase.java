@@ -100,7 +100,7 @@ public abstract class DrawerControllerBase {
         _drawerLayout.closeDrawer(_drawerListView);
     }
 
-    private void openDrawer() {
+    public void openDrawer() {
         _drawerLayout.openDrawer(_drawerListView);
     }
 
@@ -120,11 +120,12 @@ public abstract class DrawerControllerBase {
     public boolean onBackPressed() {
         if (_drawerListView == null || !_drawerLayout.isDrawerOpen(_drawerListView))
             return false;
-        for (int i = 0; i < _drawerListView.getCount(); i++) {
+        // 去掉左侧菜单,返回按钮折叠选项功能
+        /* for (int i = 0; i < _drawerListView.getCount(); i++) {
             DrawerMenuItemBase item = (DrawerMenuItemBase) _drawerListView.getItemAtPosition(i);
             if (item != null && item.onBackPressed())
                 return true;
-        }
+        } */
         _drawerLayout.closeDrawer(_drawerListView);
         return true;
     }
