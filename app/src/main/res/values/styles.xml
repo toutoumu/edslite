@@ -230,7 +230,10 @@
     <style name="DrawerMainIcon">
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
-        <item name="android:layout_margin">2dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:layout_marginTop">2dp</item>
+        <item name="android:layout_marginBottom">2dp</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 
@@ -239,7 +242,6 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?attr/drawerMenuTitleTextColor</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:layout_marginLeft">16dp</item>
     </style>
 
     <style name="DrawerCloseLocationIcon">
@@ -254,7 +256,10 @@
     <style name="DrawerMainIcon.Sub" >
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
-        <item name="android:layout_margin">12dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
         <item name="android:scaleType">fitCenter</item>
     </style>
 
@@ -277,11 +282,13 @@
     </style>
 
     <style name="LocationListRow">
+        <item name="android:paddingLeft">14dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
     </style>
 
     <style name="LocationListText">
+        <item name="android:paddingLeft">6dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>

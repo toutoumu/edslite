@@ -16,7 +16,7 @@
     </style>
 
     <style name="FileDesc">
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">12sp</item>
         <item name="android:textColor">?attr/secTextColor</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -73,8 +73,8 @@
     <style name="FileListRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/file_list_row_height</item>
-        <item name="android:paddingLeft">4dp</item>
-        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingLeft">14dp</item>
+        <item name="android:paddingRight">14dp</item>
         <item name="android:minHeight">?android:attr/listPreferredItemHeightSmall</item>
     </style>
 
