@@ -54,6 +54,7 @@ import java.util.Collections;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.sovworks.eds.android.providers.cursor.FSCursorBase.COLUMN_ID;
@@ -218,7 +219,7 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
     private static ParcelFileDescriptor readFromPipe(final File targetFile, final Bundle opts) throws IOException {
         final ParcelFileDescriptor[] pfds = ParcelFileDescriptor.createPipe();
-        Completable.create(s -> {
+        Disposable d = Completable.create(s -> {
                     FileInputStream fin = new FileInputStream(pfds[0].getFileDescriptor());
                     try {
                         Util.CancellableProgressInfo pi = new Util.CancellableProgressInfo();
@@ -244,7 +245,7 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
     private static ParcelFileDescriptor writeToPipe(final File srcFile, final Bundle opts) throws IOException {
         final ParcelFileDescriptor[] pfds = ParcelFileDescriptor.createPipe();
-        Completable.create(s ->
+        Disposable d = Completable.create(s ->
                 {
                     FileOutputStream fout = new FileOutputStream(pfds[1].getFileDescriptor());
                     try {

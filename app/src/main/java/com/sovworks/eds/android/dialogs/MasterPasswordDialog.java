@@ -14,8 +14,7 @@ import com.sovworks.eds.android.settings.UserSettings;
 import com.sovworks.eds.crypto.SecureBuffer;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.sovworks.eds.settings.Settings;
-import com.trello.rxlifecycle2.components.RxActivity;
-
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import io.reactivex.Single;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
@@ -26,7 +25,7 @@ public class MasterPasswordDialog extends PasswordDialog {
     public static final String TAG = "com.sovworks.eds.android.dialogs.MasterPasswordDialog";
     public static final String ARG_IS_OBSERVABLE = "com.sovworks.eds.android.IS_OBSERVABLE";
 
-    public static Single<Boolean> getObservable(RxActivity activity) {
+    public static Single<Boolean> getObservable(RxAppCompatActivity activity) {
         UserSettings s = UserSettings.getSettings(activity);
         long curTime = SystemClock.elapsedRealtime();
         long lastActTime = EdsApplication.getLastActivityTime();

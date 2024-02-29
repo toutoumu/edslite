@@ -852,8 +852,10 @@ application/vnd.recordare.musicxml+xml		musicxml
 # application/vnd.renlearn.rlprint
 application/vnd.rig.cryptonote			cryptonote
 application/vnd.rim.cod				cod
-application/vnd.rn-realmedia			rm
-application/vnd.rn-realmedia-vbr		rmvb
+#application/vnd.rn-realmedia			rm
+#application/vnd.rn-realmedia-vbr		rmvb
+video/vnd.rn-realvideo		rm
+video/vnd.rn-realvideo		rmvb
 application/vnd.route66.link66+xml		link66
 # application/vnd.rs-274x
 # application/vnd.ruckus.download
@@ -1521,9 +1523,9 @@ video/mj2					mj2 mjp2
 # video/mp1s
 # video/mp2p
 # video/mp2t
-video/mp4					mp4 mp4v mpg4
+video/mp4					mp4 mp4v mpg4 MP4
 # video/mp4v-es
-video/mpeg					mpeg mpg mpe m1v m2v
+video/mpeg					mpeg mpg mpe m1v m2v MPG
 # video/mpeg4-generic
 # video/mpv
 # video/nv

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+
 import androidx.core.app.NotificationCompat;
 
 import com.sovworks.eds.android.R;
@@ -80,7 +81,7 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
                 .setContentText(message);
         // Gingerbread compatibility
         final Intent emptyIntent = new Intent();
-        PendingIntent pi = PendingIntent.getActivity(_context, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getActivity(_context, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
         nb.setContentIntent(pi);
 
         NotificationManager nm = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -108,7 +109,7 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
                             _context,
                             _taskId,
                             CancelTaskActivity.getCancelTaskIntent(_context, _taskId),
-                            PendingIntent.FLAG_UPDATE_CURRENT
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE
                     )
             );
         return nb;

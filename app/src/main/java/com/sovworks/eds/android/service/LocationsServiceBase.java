@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
+
 import androidx.core.app.NotificationCompat;
 
 import com.sovworks.eds.android.Logger;
@@ -93,7 +94,7 @@ public class LocationsServiceBase extends Service {
                 context,
                 loc.getId().hashCode(),
                 i,
-                PendingIntent.FLAG_ONE_SHOT
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
         );
         LocationsService.setCheckTimer(context, pi, triggerTime);
     }
@@ -193,9 +194,9 @@ public class LocationsServiceBase extends Service {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CompatHelper.getServiceRunningNotificationsChannelId(this))
                 .setContentTitle(getString(R.string.eds_service_is_running))
-                .setSmallIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? R.drawable.ic_notification_new : R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_notification_new)
                 .setContentText("")
-                .setContentIntent(PendingIntent.getActivity(this, 0, i, 0))
+                .setContentIntent(PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE))
                 .setOngoing(true)
                 .addAction(
                         R.drawable.ic_action_cancel,
@@ -204,7 +205,7 @@ public class LocationsServiceBase extends Service {
                                 this,
                                 0,
                                 new Intent(this, CloseLocationsActivity.class),
-                                PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
                         )
                 );
         Notification n = builder.build();

@@ -6,14 +6,14 @@ import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.dialogs.MasterPasswordDialog;
 import com.sovworks.eds.android.errors.UserException;
 import com.sovworks.eds.android.filemanager.fragments.ExtStorageWritePermisisonCheckFragment;
-import com.trello.rxlifecycle2.components.RxActivity;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.concurrent.CancellationException;
 
 import io.reactivex.CompletableEmitter;
 
 public class AppInitHelper extends AppInitHelperBase {
-    AppInitHelper(RxActivity activity, CompletableEmitter emitter) {
+    AppInitHelper(RxAppCompatActivity activity, CompletableEmitter emitter) {
         super(activity, emitter);
     }
 

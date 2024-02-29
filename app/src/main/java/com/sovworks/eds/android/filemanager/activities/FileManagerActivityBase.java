@@ -13,8 +13,10 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,7 +49,7 @@ import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.locations.Openable;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.trello.rxlifecycle2.android.ActivityEvent;
-import com.trello.rxlifecycle2.components.RxActivity;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.NavigableSet;
 import java.util.TreeSet;
@@ -57,7 +59,7 @@ import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
 
 @SuppressLint({"CommitPrefEdits", "ApplySharedPref"})
-public abstract class FileManagerActivityBase extends RxActivity implements PreviewFragment.Host {
+public abstract class FileManagerActivityBase extends RxAppCompatActivity implements PreviewFragment.Host {
     public static final String TAG = "FileManagerActivity";
     public static final String ACTION_ASK_OVERWRITE = "com.sovworks.eds.android.ACTION_ASK_OVERWRITE";
 
@@ -284,6 +286,7 @@ public abstract class FileManagerActivityBase extends RxActivity implements Prev
             TEST_INIT_OBSERVABLE.onNext(false);
         Util.setTheme(this);
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Logger.debug("fm start intent: " + getIntent());
         _settings = UserSettings.getSettings(this);
         if (_settings.isFlagSecureEnabled())

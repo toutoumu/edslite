@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -188,7 +189,7 @@ class FileRecord extends FsBrowserRecord {
         String mime = FileOpsService.getMimeTypeFromExtension(_context, new StringPathUtil(getName()).getFileExtension());
         Drawable res = null;
         try {
-            res = mime.startsWith("image/") ? getImagePreview(_path) : getDefaultAppIcon(mime);
+            res = mime.startsWith("image/") ? getImagePreview(_path) : getDefaultAppIcon(_path.getPathString(), mime);
             _animateIcon = true;
         } catch (IOException e) {
             Logger.log(e);
@@ -219,11 +220,13 @@ class FileRecord extends FsBrowserRecord {
 
     private boolean _animateIcon, _loadPreviews;
 
-    private Drawable getDefaultAppIcon(String mime) {
+    private Drawable getDefaultAppIcon(String path, String mime) {
         if (mime.equals("*/*"))
             return null;
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setType(mime);
+        // intent.setType(mime);
+
+        intent.setDataAndType(Uri.parse(path), mime);
 
         PackageManager pacMan = _context.getPackageManager();
         try {

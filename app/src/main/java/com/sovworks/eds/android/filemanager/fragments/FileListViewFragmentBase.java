@@ -11,7 +11,9 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
@@ -643,6 +645,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         });
         lv.setOnItemClickListener((adapterView, view, pos, l) ->
         {
+            Logger.debug("点击文件");
             BrowserRecord rec = (BrowserRecord) adapterView.getItemAtPosition(pos);
             if (rec != null) {
                 if (rec.isSelected()) {

@@ -4,24 +4,25 @@
     package="com.sovworks.eds.android">
 
     <application
-        tools:replace="android:label"
         android:label="@string/eds"
-        android:theme="@style/Theme.EDS">
+        android:theme="@style/Theme.EDS"
+        tools:replace="android:label">
         <provider
-            android:authorities="com.sovworks.eds.android.providers.main.lite"
-            android:exported="true"
             android:name=".providers.MainContentProvider"
-            tools:ignore="ExportedContentProvider">
+            android:authorities="com.sovworks.eds.android.providers.main.lite"
+            android:enabled="true"
+            android:exported="true"
+            >
             <grant-uri-permission android:path="selection" />
+            <grant-uri-permission android:path="/" />
         </provider>
         <provider
-            android:authorities="com.sovworks.eds.android.providers.documents.lite"
-            android:exported="true"
             android:name=".providers.ContainersDocumentProvider"
-            android:grantUriPermissions="true"
-            android:permission="android.permission.MANAGE_DOCUMENTS"
+            android:authorities="com.sovworks.eds.android.providers.documents.lite"
             android:enabled="@bool/atLeastKitKat"
-            tools:ignore="ExportedContentProvider">
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS">
             <!--suppress AndroidElementNotAllowed -->
             <intent-filter>
                 <!--suppress AndroidElementNotAllowed -->

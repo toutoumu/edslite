@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat;
 
 import com.sovworks.eds.android.dialogs.AskPrimaryStoragePermissionDialog;
 import com.trello.rxlifecycle2.android.FragmentEvent;
-import com.trello.rxlifecycle2.components.RxActivity;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 import com.trello.rxlifecycle2.components.RxFragment;
 
 import io.reactivex.Completable;
@@ -22,7 +22,7 @@ import io.reactivex.subjects.CompletableSubject;
 public class ExtStorageWritePermisisonCheckFragment extends RxFragment {
     public static final String TAG = "com.sovworks.eds.android.filemanager.fragments.ExtStorageWritePermisisonCheckFragment";
 
-    public static Completable getObservable(RxActivity activity) {
+    public static Completable getObservable(RxAppCompatActivity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || (
                 ContextCompat.checkSelfPermission(
                         activity,
