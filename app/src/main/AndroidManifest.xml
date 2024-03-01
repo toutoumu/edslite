@@ -24,6 +24,17 @@
         android:label="@string/eds"
         android:theme="@style/Theme.EDS">
         <activity
+            android:name=".filemanager.activities.VideoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
             android:name=".filemanager.activities.FileManagerActivity"
             android:label="@string/eds"
             android:exported="true">

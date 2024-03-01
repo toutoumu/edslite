@@ -1,10 +1,12 @@
 package com.sovworks.eds.android.filemanager.records;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.errors.UserException;
+import com.sovworks.eds.android.filemanager.activities.VideoActivity;
 import com.sovworks.eds.android.helpers.TempFilesMonitor;
 import com.sovworks.eds.android.service.FileOpsService;
 import com.sovworks.eds.android.settings.UserSettings;
@@ -38,6 +40,15 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
         String mime = FileOpsService.getMimeTypeFromExtension(_host, new StringPathUtil(getName()).getFileExtension());
         if (mime.startsWith("image/")) {
             openImageFile(_loc, this, false);
+        } else if (
+                mime.startsWith("video/") || mime.startsWith("audio/")
+        ) {
+            // 视频使用内置播放器打开
+            Uri devUri = _loc.getDeviceAccessibleUri(this.getPath());
+            Intent intent = new Intent();
+            intent.putExtra("uri", devUri);
+            intent.setClass(_host.getBaseContext(), VideoActivity.class);
+            _host.startActivity(intent);
         } else {
             startDefaultFileViewer(_loc, this);
         }

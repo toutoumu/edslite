@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!--封面-->
+    <ImageView
+        android:id="@+id/iv_ijk_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="fitXY" />
+
+    <!--开始|暂停播放-->
+    <ImageView
+        android:id="@+id/iv_ijk_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:src="@drawable/ic_ijk_pause_control" />
+    <!--<ImageView
+        android:id="@+id/iv_ijk_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="16dp"
+        android:src="@drawable/ic_ijk_pause_control" />-->
+
+    <!-- 当前未使用 音量,亮度,进度 -->
+    <androidx.ijk.view.IJKCircleProgressView
+        android:id="@+id/ijk_center_progress"
+        android:layout_width="@dimen/ijk_loading_width"
+        android:layout_height="@dimen/ijk_loading_height"
+        android:layout_gravity="center"
+        android:background="@drawable/ijk_voice_brightness_background"
+        android:padding="@dimen/ijk_voice_brightness_padding"
+        app:ijkProgressColor="@color/ijk_voice_brightness_progress_color"
+        app:ijkProgressStrokeWidth="@dimen/ijk_voice_brightness_stroke_width"
+        app:ijkProgressText="音"
+        app:ijkProgressTextColor="@color/ijk_voice_brightness_text_color"
+        app:ijkProgressTextSize="14sp" />
+
+    <!--加载中-->
+    <FrameLayout
+        android:id="@+id/fl_ijk_loading"
+        android:layout_width="@dimen/ijk_loading_width"
+        android:layout_height="@dimen/ijk_loading_height"
+        android:layout_gravity="center"
+        android:background="@drawable/ijk_voice_brightness_background">
+
+        <ImageView
+            android:id="@+id/iv_ijk_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="13dp"
+            android:background="@drawable/ijk_anim_loading" />
+    </FrameLayout>
+
+    <!--左右滑动进度-->
+    <LinearLayout
+        android:id="@+id/progress_scrubber_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ijk_overlay_background"
+        android:clickable="false"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/progress_scrubber_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            android:textColor="@android:color/white"
+            android:typeface="monospace"
+            tools:text="+00:00:10[00:00:20]" />
+
+    </LinearLayout>
+    <!--音量动画-->
+    <LinearLayout
+        android:id="@+id/gesture_volume_layout"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_margin="16dp"
+        android:background="@drawable/ijk_overlay_background"
+        android:clickable="false"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/gesture_volume_text"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginVertical="16dp"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            tools:text="58%" />
+
+        <ProgressBar
+            android:id="@+id/gesture_volume_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="8dp"
+            android:layout_height="125dp"
+            android:progressDrawable="@drawable/ijk_progress_scale_drawable"
+            tools:progress="58" />
+
+        <ImageView
+            android:id="@+id/gesture_volume_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginVertical="16dp"
+            android:src="@drawable/ic_volume_level"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+    <!--亮度动画-->
+    <LinearLayout
+        android:id="@+id/gesture_brightness_layout"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|end"
+        android:layout_margin="16dp"
+        android:background="@drawable/ijk_overlay_background"
+        android:clickable="false"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/gesture_brightness_text"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginVertical="16dp"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            tools:text="58%" />
+
+        <ProgressBar
+            android:id="@+id/gesture_brightness_progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="8dp"
+            android:layout_height="125dp"
+            android:progressDrawable="@drawable/ijk_progress_scale_drawable"
+            tools:progress="58" />
+
+        <ImageView
+            android:id="@+id/gesture_brightness_image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginVertical="16dp"
+            android:src="@drawable/ic_sun_level"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+
+    <!--快进动画-->
+    <ImageView
+        android:id="@+id/image_ffwd_animation_ripple"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical|end"
+        android:alpha="0"
+        android:src="@drawable/ijk_transparent_circle"
+        tools:ignore="ContentDescription" />
+
+    <!--快退动画-->
+    <ImageView
+        android:id="@+id/image_rewind_animation_ripple"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_vertical|start"
+        android:alpha="0"
+        android:src="@drawable/ijk_transparent_circle"
+        tools:ignore="ContentDescription" />
+
+    <!--暂停动画-->
+    <ImageView
+        android:id="@+id/image_playback_animation_ripple"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:alpha="0"
+        android:src="@drawable/ijk_transparent_circle"
+        tools:ignore="ContentDescription" />
+
+    <!--底部进度-->
+    <LinearLayout
+        android:id="@+id/progress_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/ijk_overlay_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="16dp">
+
+        <!--<ImageView
+            android:id="@+id/iv_ijk_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/ic_ijk_pause_control" />-->
+
+        <TextView
+            android:id="@+id/tv_ijk_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:typeface="monospace" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" / "
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_ijk_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:typeface="monospace" />
+
+        <SeekBar
+            android:id="@+id/seek_ijk_bar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:maxHeight="2dp"
+            android:minHeight="2dp"
+            android:paddingRight="4dp"
+            android:progressDrawable="@drawable/ijk_layer_seek_bar"
+            android:thumb="@drawable/ijk_seek_dot" />
+
+        <ImageView
+            android:id="@+id/iv_ijk_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/ic_ijk_screen_fill" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:progressDrawable="@drawable/ijk_layer_seek_bar"
+        tools:progress="58" />
+</FrameLayout>

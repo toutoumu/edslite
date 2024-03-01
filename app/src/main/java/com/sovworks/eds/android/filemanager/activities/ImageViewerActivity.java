@@ -23,13 +23,14 @@ import com.sovworks.eds.fs.util.Util;
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.settings.Settings;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
 @SuppressLint({"CommitPrefEdits", "ApplySharedPref", "InlinedApi"})
-public class ImageViewerActivity extends Activity implements PreviewFragment.Host {
+public class ImageViewerActivity extends RxAppCompatActivity implements PreviewFragment.Host {
     public static final String INTENT_PARAM_CURRENT_PATH = "current_path";
 
     public static class RestorePathsTask extends TaskFragment {

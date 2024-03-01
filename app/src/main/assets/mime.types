@@ -1100,7 +1100,8 @@ application/x-rar-compressed			rar
 application/x-research-info-systems		ris
 application/x-sh				sh
 application/x-shar				shar
-application/x-shockwave-flash			swf
+#application/x-shockwave-flash			swf
+video/vnd.sealed.swf                    swf
 application/x-silverlight-app			xap
 application/x-sql				sql
 application/x-stuffit				sit

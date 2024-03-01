@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/ijk_voice_brightness_background" />
+    <corners android:radius="90dp" />
+    <size
+        android:width="@dimen/ijk_loading_width"
+        android:height="@dimen/ijk_loading_height" />
+</shape>

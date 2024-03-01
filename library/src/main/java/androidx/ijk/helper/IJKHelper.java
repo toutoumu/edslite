@@ -1,0 +1,264 @@
+package androidx.ijk.helper;
+
+import static android.content.Context.MODE_PRIVATE;
+
+import android.app.Activity;
+import android.app.Service;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
+import android.provider.Settings;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import androidx.ijk.view.IJKVideoView;
+
+
+/**
+ * Author: Relin
+ * Describe:ijk视频助手
+ * Date:2020/5/20 14:21
+ */
+public class IJKHelper extends PlayerGestureHelper {
+
+    /**
+     * 标识
+     */
+    private static String TAG = "IJKHelper";
+    /**
+     * 按下坐标
+     */
+    private float downX, downY;
+    /**
+     * 视频当前位置
+     */
+    private long position;
+    /**
+     * 是否改变进度
+     */
+    private boolean isChangeVideoProgress;
+    /**
+     * 竖屏布局参数
+     */
+    private ViewGroup.LayoutParams portraitParams;
+    private int portraitWidth = -3;
+    private int portraitHeight = -3;
+    /**
+     * 是否有ActionBar
+     */
+    private boolean isHaveActionBar;
+
+    public IJKHelper(Context context, IJKVideoView playerView, OnIjkVideoTouchListener listener) {
+        super(context,
+                playerView,
+                new AppPreferences(context.getSharedPreferences("sp", MODE_PRIVATE)),
+                listener,
+                (AudioManager) context.getSystemService(Service.AUDIO_SERVICE));
+        Log.i(TAG, "->IJKHelper INIT");
+    }
+
+    /**
+     * 保持屏幕常亮
+     * 要在setContentView()之前调用
+     */
+    public void keepScreenOn(Context context) {
+        Activity activity = (Activity) context;
+        if (activity == null) {
+            return;
+        }
+        if (activity.findViewById(android.R.id.content) != null) {
+            new RuntimeException("Setting screen constants requires a call before the setContentView () method super");
+            return;
+        }
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON, WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    /**
+     * 找到容器视图
+     *
+     * @param context 上下文对象
+     * @return
+     */
+    public FrameLayout findContent(Context context) {
+        Activity activity = (Activity) context;
+        if (activity == null) {
+            return null;
+        }
+        return activity.findViewById(android.R.id.content);
+    }
+
+    /**
+     * 转换屏幕
+     *
+     * @param orientation 方向
+     */
+    public void switchScreen(Context context, IJKVideoView videoView, Orientation orientation) {
+        AppCompatActivity activity = (AppCompatActivity) context;
+        FrameLayout content = findContent(context);
+        if (content == null) {
+            new RuntimeException("switch screen failed,find activity content is null.");
+            return;
+        }
+        if (videoView == null) {
+            new RuntimeException("switch screen failed,don't find view to do anything.");
+            return;
+        }
+        // 切换横屏
+        if (orientation == Orientation.LANDSCAPE) {
+            Log.i(TAG, "->switchScreen Horizontal");
+            // 隐藏ActionBar
+            if (activity.getSupportActionBar() != null) {
+                isHaveActionBar = activity.getSupportActionBar().isShowing();
+                activity.getSupportActionBar().hide();
+            }
+            // 横屏
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            // 全屏标识
+            activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            // 隐藏状态栏
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            // 显示ActionBar
+            if (isHaveActionBar) {
+                activity.getSupportActionBar().show();
+            }
+            // 竖屏
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            // 清除全屏标识
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
+        switchSettingViews(content, orientation);
+    }
+
+    /**
+     * 设置屏幕切换对应View
+     *
+     * @param context     上下文
+     * @param orientation 是否横屏
+     */
+    public void switchSettingViews(Context context, Orientation orientation) {
+        switchSettingViews(findContent(context), orientation);
+    }
+
+    /**
+     * 递归设置页面所有控件
+     *
+     * @param parent
+     * @param orientation
+     */
+    public void switchSettingViews(ViewGroup parent, Orientation orientation) {
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                if (child instanceof IJKVideoView) {
+                    ViewGroup.LayoutParams params = child.getLayoutParams();
+                    if (orientation == Orientation.LANDSCAPE && portraitWidth == -3) {
+                        portraitWidth = params.width;
+                        portraitHeight = params.height;
+                    }
+                    params.width = orientation == Orientation.LANDSCAPE ? FrameLayout.LayoutParams.MATCH_PARENT : portraitWidth;
+                    params.height = orientation == Orientation.LANDSCAPE ? FrameLayout.LayoutParams.MATCH_PARENT : portraitHeight;
+                    child.setLayoutParams(params);
+                    Log.i(TAG, "->child instanceof IJKVideoView portrait params width=" + portraitWidth + ",height=" + portraitHeight);
+                } else {
+                    switchSettingViews((ViewGroup) child, orientation);
+                }
+            } else {
+                child.setVisibility(orientation == Orientation.LANDSCAPE ? View.GONE : View.VISIBLE);
+            }
+        }
+    }
+
+    /**
+     * 是否存在视频播放的View
+     *
+     * @param parent
+     * @return
+     */
+    private boolean hasVideoViewChild(ViewGroup parent) {
+        int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            if (parent.getChildAt(i) instanceof IJKVideoView) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 当前屏幕亮度
+     *
+     * @param context 上下文
+     * @return
+     */
+    public float currentBrightness(Context context) {
+        Activity activity = (Activity) context;
+        if (activity == null) {
+            return 0.0f;
+        }
+        Window window = activity.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        float brightness = lp.screenBrightness;
+        if (brightness == 0.0F || brightness == 1.0F) {
+            try {
+                brightness = Settings.System.getInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS) / 255.0F;
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return brightness;
+    }
+
+    /**
+     * 改变亮度
+     *
+     * @param brightness [0-1]
+     */
+    public void changeBrightness(Context context, float brightness) {
+        Activity activity = (Activity) context;
+        if (activity == null) {
+            return;
+        }
+        Window window = activity.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.screenBrightness = brightness;
+        window.setAttributes(lp);
+    }
+
+    /**
+     * 当前音量值
+     *
+     * @param context 上下文对象
+     * @return
+     */
+    public float currentVoice(Context context) {
+        return getAudioManager().getStreamVolume(AudioManager.STREAM_MUSIC);
+    }
+
+    /**
+     * 最大音量
+     *
+     * @param context
+     * @return
+     */
+    public float maxVoice(Context context) {
+        return getAudioManager().getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+    }
+
+    /**
+     * 改变声音
+     *
+     * @param voiceValue 0-1
+     */
+    public void changeVoice(Context context, float voiceValue) {
+        getAudioManager().setStreamVolume(AudioManager.STREAM_MUSIC, (int) voiceValue, AudioManager.FLAG_PLAY_SOUND);
+    }
+}
