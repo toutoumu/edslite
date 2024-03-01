@@ -63,10 +63,10 @@ public class FolderRecord extends FsBrowserRecord {
 
     private static synchronized Drawable getFolderIcon(Context context) {
         if (_folderIcon == null && context != null) {
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.folderIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // context.getTheme().resolveAttribute(R.attr.folderIcon, typedValue, true);
             // noinspection deprecation
-            _folderIcon = context.getResources().getDrawable(typedValue.resourceId);
+            _folderIcon = context.getResources().getDrawable(R.drawable.ic_folder_dark);
         }
         return _folderIcon;
     }

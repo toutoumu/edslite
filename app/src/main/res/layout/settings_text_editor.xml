@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/PropertyRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="64dp"
+    android:padding="5dp"
     android:descendantFocusability="blocksDescendants">
 
     <LinearLayout
@@ -13,17 +16,29 @@
             android:id="@+id/title_edit"
             android:layout_width="0dp"
             android:layout_weight="1"
-            style="@style/PropertyTitle" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@android:id/button1"
             android:text="@string/edit"
-            style="?attr/propertyButtonStyle" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/desc"
-        style="@style/PropertyDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textSize="13sp"
         android:layout_below="@id/title_layout" />
 
     <TextView
@@ -31,5 +46,8 @@
         android:layout_below="@id/desc"
         android:layout_marginTop="4dp"
         android:textStyle="bold"
-        style="@style/PropertyDesc" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textSize="13sp" />
 </RelativeLayout>

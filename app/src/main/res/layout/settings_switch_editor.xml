@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:mode="twoLine"
     android:descendantFocusability="blocksDescendants"
-    style="@style/PropertyRow">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="64dp"
+    android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/title_layout"
@@ -15,7 +18,11 @@
             android:id="@+id/title_edit"
             android:layout_width="0dp"
             android:layout_weight="1"
-            style="@style/PropertyTitle" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <Switch
             android:id="@android:id/button1"
@@ -25,6 +32,9 @@
 
     <TextView
         android:id="@+id/desc"
-        style="@style/PropertyDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textSize="13sp"
         android:layout_below="@id/title_layout" />
 </RelativeLayout>

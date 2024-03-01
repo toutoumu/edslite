@@ -284,7 +284,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     public void onCreate(Bundle savedInstanceState) {
         if (GlobalConfig.isTest())
             TEST_INIT_OBSERVABLE.onNext(false);
-        Util.setTheme(this);
+        // Util.setTheme(this);
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Logger.debug("fm start intent: " + getIntent());

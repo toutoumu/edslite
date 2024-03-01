@@ -43,10 +43,10 @@ public abstract class DrawerManageLocationMenuItem extends DrawerMenuItemBase {
 
     private synchronized static Drawable getIcon(Context context) {
         if (_icon == null) {
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.manageLocationsIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // context.getTheme().resolveAttribute(R.attr.manageLocationsIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(typedValue.resourceId);
+            _icon = context.getResources().getDrawable(R.drawable.ic_manage_locations_dark);
         }
         return _icon;
     }

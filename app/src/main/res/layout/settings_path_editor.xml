@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:descendantFocusability="blocksDescendants"
-    style="@style/PropertyRow">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="64dp"
+    android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/title_layout"
@@ -13,22 +16,40 @@
             android:id="@+id/title_edit"
             android:layout_width="0dp"
             android:layout_weight="1"
-            style="@style/PropertyTitle" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="4dp"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@android:id/button1"
             android:text="@string/edit"
-            style="?attr/propertyButtonStyle" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
 
         <Button
+            android:layout_marginLeft="12dp"
             android:id="@android:id/button2"
             android:text="@string/select_path"
-            style="?attr/propertyButtonStyle" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/desc"
-        style="@style/PropertyDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textSize="13sp"
         android:layout_below="@id/title_layout" />
 
     <TextView
@@ -36,5 +57,8 @@
         android:layout_below="@id/desc"
         android:layout_marginTop="4dp"
         android:textStyle="bold"
-        style="@style/PropertyDesc" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textSize="13sp" />
 </RelativeLayout>

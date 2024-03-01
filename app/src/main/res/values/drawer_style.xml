@@ -1,0 +1,80 @@
+<resources>
+
+    <style name="LeftDrawer">
+        <item name="android:layout_width">280dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:choiceMode">singleChoice</item>
+        <item name="android:background">?attr/drawerBackground</item>
+    </style>
+
+    <style name="LeftDrawer.Dark">
+        <item name="android:layout_width">280dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:choiceMode">singleChoice</item>
+        <item name="android:background">?attr/drawerBackground</item>
+    </style>
+
+    <style name="DrawerRow">
+        <item name="android:background">?attr/drawerRowBackground</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/drawer_list_row_height</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
+    </style>
+
+
+    <style name="DrawerMainTitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/drawerMenuTitleTextColor</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="DrawerCloseLocationIcon">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="DrawerRow.Sub" />
+
+    <style name="DrawerMainTitle.Sub">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/drawerMenuItemTextColor</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle" />
+    </style>
+
+    <style name="EmptyListText">
+        <!--<item name="android:id">@id/android:empty</item>-->
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:inputType">none</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="LocationListRow">
+        <item name="android:paddingLeft">14dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">?android:attr/listPreferredItemHeight</item>
+    </style>
+
+    <style name="LocationListText">
+        <item name="android:paddingLeft">6dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="LocationListIcon">
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+</resources>

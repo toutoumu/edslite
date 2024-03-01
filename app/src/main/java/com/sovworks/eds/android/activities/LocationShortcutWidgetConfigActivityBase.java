@@ -152,7 +152,7 @@ public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsB
 
     @Override
     public void onCreate(Bundle icicle) {
-        Util.setTheme(this);
+        // Util.setTheme(this);
         super.onCreate(icicle);
         setResult(RESULT_CANCELED);
     }

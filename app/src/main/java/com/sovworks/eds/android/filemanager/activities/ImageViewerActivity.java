@@ -69,7 +69,7 @@ public class ImageViewerActivity extends Activity implements PreviewFragment.Hos
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        com.sovworks.eds.android.helpers.Util.setTheme(this);
+        // com.sovworks.eds.android.helpers.Util.setTheme(this);
         super.onCreate(savedInstanceState);
         UserSettings us = UserSettings.getSettings(this);
         if (us.isFlagSecureEnabled())

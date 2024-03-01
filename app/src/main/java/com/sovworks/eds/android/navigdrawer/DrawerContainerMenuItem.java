@@ -65,20 +65,20 @@ public class DrawerContainerMenuItem extends DrawerLocationMenuItem {
 
     private synchronized static Drawable getOpenedIcon(Context context) {
         if (_openedIcon == null) {
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.lockOpenIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // context.getTheme().resolveAttribute(R.attr.lockOpenIcon, typedValue, true);
             // noinspection deprecation
-            _openedIcon = context.getResources().getDrawable(typedValue.resourceId);
+            _openedIcon = context.getResources().getDrawable(R.drawable.ic_lock_open_dark);
         }
         return _openedIcon;
     }
 
     private synchronized static Drawable getClosedIcon(Context context) {
         if (_closedIcon == null) {
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.lockIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // context.getTheme().resolveAttribute(R.attr.lockIcon, typedValue, true);
             // noinspection deprecation
-            _closedIcon = context.getResources().getDrawable(typedValue.resourceId);
+            _closedIcon = context.getResources().getDrawable(R.drawable.ic_lock_dark);
         }
         return _closedIcon;
     }

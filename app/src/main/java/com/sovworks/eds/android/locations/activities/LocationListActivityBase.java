@@ -12,14 +12,16 @@ import com.sovworks.eds.android.locations.fragments.ContainerListFragment;
 import com.sovworks.eds.android.locations.fragments.DocumentTreeLocationsListFragment;
 import com.sovworks.eds.android.locations.fragments.LocationListBaseFragment;
 import com.sovworks.eds.android.settings.UserSettings;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
-public abstract class LocationListActivityBase extends Activity {
+public abstract class LocationListActivityBase extends RxAppCompatActivity {
     public static final String EXTRA_LOCATION_TYPE = "com.sovworks.eds.android.LOCATION_TYPE";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Util.setTheme(this);
+        // Util.setTheme(this);
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (UserSettings.getSettings(this).isFlagSecureEnabled())
             CompatHelper.setWindowFlagSecure(this);
         if (savedInstanceState == null)
@@ -40,4 +42,9 @@ public abstract class LocationListActivityBase extends Activity {
         }
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
 }

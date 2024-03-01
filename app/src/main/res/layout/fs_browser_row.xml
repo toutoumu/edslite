@@ -5,59 +5,65 @@
 
     <ImageView
         android:id="@android:id/icon"
-        android:src="?attr/storageIcon"
-        android:layout_alignParentLeft="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        style="@style/FileIcon"
+        android:scaleType="center"
+        android:src="@drawable/ic_storage_dark"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@android:id/icon1"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
         android:layout_alignBottom="@android:id/icon"
-        android:layout_toRightOf="@android:id/icon"
+        android:layout_marginLeft="2dp"
+        android:layout_marginRight="2dp"
         android:layout_toEndOf="@android:id/icon"
-        style="@style/MiniIcon"
+        android:layout_toRightOf="@android:id/icon"
         tools:ignore="ContentDescription" />
 
     <CheckBox
         android:id="@android:id/checkbox"
-        android:layout_alignParentRight="true"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        style="?attr/fmCheckBoxStyle" />
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
 
     <RadioButton
         android:id="@+id/radio"
-        android:layout_alignParentRight="true"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        style="?attr/fmRadioStyle" />
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
 
     <LinearLayout
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_toLeftOf="@android:id/checkbox"
+        android:layout_centerVertical="true"
         android:layout_toStartOf="@android:id/checkbox"
-        android:layout_toRightOf="@android:id/icon1"
+        android:layout_toLeftOf="@android:id/checkbox"
         android:layout_toEndOf="@android:id/icon1"
-        android:layout_centerVertical="true">
+        android:layout_toRightOf="@android:id/icon1"
+        android:orientation="vertical">
 
         <TextView
             android:id="@android:id/text1"
+            style="@style/FileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="middle"
-            style="@style/FileName"
-            android:maxLines="2"
-            />
+            android:maxLines="2" />
 
         <TextView
             android:id="@android:id/text2"
+            style="@style/FileDesc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/FileDesc" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </RelativeLayout>

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
-    style="@style/PropertyRow">
+    android:minHeight="64dp"
+    android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/title_layout"
@@ -12,24 +15,39 @@
         <TextView
             android:id="@+id/title_edit"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="4dp"
             android:layout_weight="1"
-            style="@style/PropertyTitle" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@android:id/button1"
-            android:text="@string/change"
-            style="?attr/propertyButtonStyle" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingTop="5dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="5dp"
+            android:text="@string/change" />
     </LinearLayout>
 
     <TextView
         android:id="@+id/desc"
-        style="@style/PropertyDesc"
-        android:layout_below="@id/title_layout" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_layout"
+        android:layout_marginStart="4dp"
+        android:textSize="13sp" />
 
     <TextView
         android:id="@android:id/text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/desc"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:textStyle="bold"
-        style="@style/PropertyDesc" />
+        android:textSize="13sp"
+        android:textStyle="bold" />
 </RelativeLayout>

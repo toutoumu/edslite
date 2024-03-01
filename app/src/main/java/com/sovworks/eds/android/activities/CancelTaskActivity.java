@@ -30,7 +30,7 @@ public class CancelTaskActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Util.setDialogStyle(this);
+        // Util.setDialogStyle(this);
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.cancel_task_activity);

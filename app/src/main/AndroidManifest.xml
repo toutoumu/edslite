@@ -90,7 +90,6 @@
         <activity
             android:name=".activities.CancelTaskActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/Dialog"
             android:label="@string/eds"
             android:exported="true">
             <intent-filter>

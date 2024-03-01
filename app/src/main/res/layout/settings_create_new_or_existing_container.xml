@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
-    style="@style/PropertyRow">
+    android:minHeight="64dp"
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <TextView
         android:id="@+id/title_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="4dp"
         android:text="@string/create_new_container_or_add_existing_container"
-        style="@style/PropertyTitle" />
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,15 +27,21 @@
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="0.5"
-            android:text="@string/create_new_container"
-            style="?attr/propertyButtonStyle" />
+            android:paddingLeft="16dp"
+            android:paddingTop="5dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="5dp"
+            android:text="@string/create_new_container" />
 
         <Button
             android:id="@+id/add_existing_container_button"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_weight="0.5"
-            android:text="@string/add_container"
-            style="?attr/propertyButtonStyle" />
+            android:paddingLeft="16dp"
+            android:paddingTop="5dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="5dp"
+            android:text="@string/add_container" />
     </LinearLayout>
 </LinearLayout>

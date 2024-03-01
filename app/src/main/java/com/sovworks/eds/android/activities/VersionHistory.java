@@ -17,7 +17,7 @@ public class VersionHistory extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Util.setTheme(this);
+        // Util.setTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.changes_dialog);
         // setStyle(STYLE_NO_TITLE, R.style.Dialog);

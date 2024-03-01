@@ -23,15 +23,15 @@ import java.util.List;
 
 public class UtilBase {
     public static void setDialogStyle(DialogFragment df) {
-        TypedValue typedValue = new TypedValue();
-        df.getActivity().getTheme().resolveAttribute(R.attr.dialogStyle, typedValue, true);
-        df.setStyle(DialogFragment.STYLE_NO_TITLE, typedValue.resourceId);
+        // TypedValue typedValue = new TypedValue();
+        // df.getActivity().getTheme().resolveAttribute(R.attr.dialogStyle, typedValue, true);
+        // df.setStyle(DialogFragment.STYLE_NO_TITLE, typedValue.resourceId);
     }
 
-    public static void setDialogStyle(Activity act) {
+    /* public static void setDialogStyle(Activity act) {
         int theme = UserSettings.getSettings(act.getApplicationContext()).getCurrentTheme();
         act.setTheme(theme == SettingsCommon.THEME_DARK ? R.style.Dialog_Dark : R.style.Dialog);
-    }
+    } */
 
     public static String getSystemInfoString() {
         // noinspection deprecation

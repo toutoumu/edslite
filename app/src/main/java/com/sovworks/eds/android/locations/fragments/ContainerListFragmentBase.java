@@ -41,20 +41,20 @@ public class ContainerListFragmentBase extends LocationListBaseFragment {
 
     private synchronized Drawable getOpenedContainerIcon() {
         if (_openedContainerIcon == null) {
-            TypedValue typedValue = new TypedValue();
-            getActivity().getTheme().resolveAttribute(R.attr.lockOpenIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // getActivity().getTheme().resolveAttribute(R.attr.lockOpenIcon, typedValue, true);
             // noinspection deprecation
-            _openedContainerIcon = getActivity().getResources().getDrawable(typedValue.resourceId);
+            _openedContainerIcon = getActivity().getResources().getDrawable(R.drawable.ic_lock_open_dark);
         }
         return _openedContainerIcon;
     }
 
     private synchronized Drawable getClosedContainerIcon() {
         if (_closedContainerIcon == null) {
-            TypedValue typedValue = new TypedValue();
-            getActivity().getTheme().resolveAttribute(R.attr.lockIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // getActivity().getTheme().resolveAttribute(R.attr.lockIcon, typedValue, true);
             // noinspection deprecation
-            _closedContainerIcon = getActivity().getResources().getDrawable(typedValue.resourceId);
+            _closedContainerIcon = getActivity().getResources().getDrawable(R.drawable.ic_lock_dark);
         }
         return _closedContainerIcon;
     }

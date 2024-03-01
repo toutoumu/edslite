@@ -7,13 +7,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
         <FrameLayout
             android:id="@+id/fragment1"
-            android:maxWidth="400dp"
-            style="@style/MainFrame" />
+            style="@style/MainFrame"
+            android:maxWidth="400dp" />
 
         <FrameLayout
             android:id="@+id/fragment2"
@@ -22,5 +22,9 @@
     <!-- The navigation drawer -->
     <ListView
         android:id="@+id/left_drawer"
-        style="?attr/leftDrawerStyle" />
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#000000"
+        android:choiceMode="singleChoice" />
 </androidx.drawerlayout.widget.DrawerLayout>

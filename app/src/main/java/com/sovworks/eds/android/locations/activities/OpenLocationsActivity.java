@@ -101,7 +101,7 @@ public class OpenLocationsActivity extends RxAppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        Util.setTheme(this);
+        // Util.setTheme(this);
         super.onCreate(savedInstanceState);
         setResult(RESULT_CANCELED);
         AppInitHelper.

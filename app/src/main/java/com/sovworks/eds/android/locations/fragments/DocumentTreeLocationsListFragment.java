@@ -92,10 +92,10 @@ public class DocumentTreeLocationsListFragment extends LocationListBaseFragment 
 
     private synchronized Drawable getLoadedIcon() {
         if (_icon == null) {
-            TypedValue typedValue = new TypedValue();
-            getActivity().getTheme().resolveAttribute(R.attr.storageIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // getActivity().getTheme().resolveAttribute(R.attr.storageIcon, typedValue, true);
             // noinspection deprecation
-            _icon = getActivity().getResources().getDrawable(typedValue.resourceId);
+            _icon = getActivity().getResources().getDrawable(R.drawable.ic_storage_dark);
         }
         return _icon;
     }

@@ -21,13 +21,13 @@ public class Util extends UtilBase {
         return args.getParcelable(Openable.PARAM_PASSWORD);
     }
 
-    public static void setTheme(Activity act) {
+    /* public static void setTheme(Activity act) {
         int theme = UserSettings.getSettings(act.getApplicationContext()).getCurrentTheme();
         act.setTheme(theme == SettingsCommon.THEME_DARK ?
                 R.style.Theme_EDS_Dark :
                 R.style.Theme_EDS
         );
-    }
+    } */
 
     public static String getDefaultSettingsPassword(Context context) {
         try {

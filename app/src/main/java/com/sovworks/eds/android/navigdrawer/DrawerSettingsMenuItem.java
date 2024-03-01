@@ -32,10 +32,10 @@ public class DrawerSettingsMenuItem extends DrawerMenuItemBase {
 
     private synchronized static Drawable getIcon(Context context) {
         if (_icon == null) {
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.settingsIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // context.getTheme().resolveAttribute(R.attr.settingsIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(typedValue.resourceId);
+            _icon = context.getResources().getDrawable(R.drawable.ic_settings_dark);
         }
         return _icon;
     }

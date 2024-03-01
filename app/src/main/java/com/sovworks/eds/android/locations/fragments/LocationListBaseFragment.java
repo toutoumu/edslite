@@ -59,10 +59,10 @@ public abstract class LocationListBaseFragment extends ListFragment {
     public class ListViewAdapter extends ArrayAdapter<LocationInfo> {
         ListViewAdapter(Context context, List<LocationInfo> backingList) {
             super(context, R.layout.locations_list_row, backingList);
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.selectedItemBackground, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // context.getTheme().resolveAttribute(R.attr.selectedItemBackground, typedValue, true);
             // noinspection deprecation
-            _selectedItemBackgroundColor = context.getResources().getColor(typedValue.resourceId);
+            _selectedItemBackgroundColor = context.getResources().getColor(R.color.gray_dark);
             // noinspection deprecation
             _notSelectedItemBackground = context.getResources().getColor(android.R.color.transparent);
         }

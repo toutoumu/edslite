@@ -20,10 +20,10 @@ public class DrawerInternalSDMenuItem extends DrawerLocationMenuItem {
 
     private synchronized static Drawable getIcon(Context context) {
         if (_icon == null) {
-            TypedValue typedValue = new TypedValue();
-            context.getTheme().resolveAttribute(R.attr.deviceMemoryIcon, typedValue, true);
+            // TypedValue typedValue = new TypedValue();
+            // context.getTheme().resolveAttribute(R.attr.deviceMemoryIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(typedValue.resourceId);
+            _icon = context.getResources().getDrawable(R.drawable.ic_device_memory_dark);
         }
         return _icon;
     }
