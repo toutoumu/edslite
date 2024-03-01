@@ -12,12 +12,16 @@
 
         <FrameLayout
             android:id="@+id/fragment1"
-            style="@style/MainFrame"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
             android:maxWidth="400dp" />
 
         <FrameLayout
             android:id="@+id/fragment2"
-            style="@style/SecondaryFrame" />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6" />
     </LinearLayout>
     <!-- The navigation drawer -->
     <ListView

@@ -4,5 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:hint="smb://host-name-or-ip/share-path/"
-    style="@style/PropertyEditText"
+    android:layout_marginHorizontal="4dp"
     tools:ignore="HardcodedText" />

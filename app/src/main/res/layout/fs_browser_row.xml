@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="60dp"
@@ -15,6 +16,7 @@
         android:layout_centerVertical="true"
         android:scaleType="center"
         android:src="@drawable/ic_storage_dark"
+        app:tint="?attr/colorPrimary"
         tools:ignore="ContentDescription" />
 
     <ImageView
@@ -53,16 +55,16 @@
 
         <TextView
             android:id="@android:id/text1"
-            style="@style/FileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="middle"
-            android:maxLines="2" />
+            android:maxLines="2"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@android:id/text2"
-            style="@style/FileDesc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="10sp" />
     </LinearLayout>
 </RelativeLayout>
