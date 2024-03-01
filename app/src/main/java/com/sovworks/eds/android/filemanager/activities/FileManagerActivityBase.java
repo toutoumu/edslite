@@ -280,6 +280,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
             showPreviewFragment(contextPath);
     }
 
+    @SuppressLint("CheckResult")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (GlobalConfig.isTest())
