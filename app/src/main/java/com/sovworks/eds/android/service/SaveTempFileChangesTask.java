@@ -22,11 +22,13 @@ class SaveTempFileChangesTask extends CopyFilesTask {
     protected boolean copyFile(SrcDstCollection.SrcDst record) throws IOException {
         if (super.copyFile(record)) {
             Path dstPath = calcDstPath(record.getSrcLocation().getCurrentPath().getFile(), record.getDstLocation().getCurrentPath().getDirectory());
-            if (dstPath != null && dstPath.isFile())
+            if (dstPath != null && dstPath.isFile()) {
                 TempFilesMonitor.getMonitor(_context).updateMonitoredInfo(record.getSrcLocation(), dstPath.getFile().getLastModified());
+            }
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     @Override
@@ -34,8 +36,9 @@ class SaveTempFileChangesTask extends CopyFilesTask {
         try {
             File tmpFile = copyToTempFile(srcFile, targetFolder);
             Path dstPath = calcDstPath(srcFile, targetFolder);
-            if (dstPath != null && dstPath.exists())
+            if (dstPath != null && dstPath.exists()) {
                 prepareBackupCopy(dstPath.getFile(), targetFolder);
+            }
             tmpFile.rename(srcFile.getName());
             return true;
         } catch (IOException e) {
@@ -46,11 +49,13 @@ class SaveTempFileChangesTask extends CopyFilesTask {
     protected File copyToTempFile(File srcFile, Directory targetFolder) throws IOException {
         String tmpName = srcFile.getName() + TMP_EXTENSION;
         Path tmpPath = calcPath(targetFolder, tmpName);
-        if (tmpPath != null && tmpPath.isFile())
+        if (tmpPath != null && tmpPath.isFile()) {
             tmpPath.getFile().delete();
+        }
         File dstFile = targetFolder.createFile(tmpName);
-        if (!super.copyFile(srcFile, dstFile))
+        if (!super.copyFile(srcFile, dstFile)) {
             throw new IOException("Failed copying to temp file");
+        }
         return dstFile;
     }
 
@@ -58,11 +63,13 @@ class SaveTempFileChangesTask extends CopyFilesTask {
         if (!UserSettings.getSettings(_context).disableModifiedFilesBackup() && dstFile.getSize() > 0) {
             String bakName = dstFile.getName() + BAK_EXTENSION;
             Path bakPath = calcPath(targetFolder, bakName);
-            if (bakPath != null && bakPath.isFile())
+            if (bakPath != null && bakPath.isFile()) {
                 bakPath.getFile().delete();
+            }
             dstFile.rename(bakName);
-        } else
+        } else {
             dstFile.delete();
+        }
     }
 
     @Override

@@ -32,11 +32,13 @@ import java.util.List;
 public abstract class EdsContainerBase implements Closeable {
 
     public static ContainerFormatInfo findFormatByName(List<ContainerFormatInfo> supportedFormats, String name) {
-        if (name != null)
+        if (name != null) {
             for (ContainerFormatInfo cfi : supportedFormats) {
-                if (cfi.getFormatName().equalsIgnoreCase(name))
+                if (cfi.getFormatName().equalsIgnoreCase(name)) {
                     return cfi;
+                }
             }
+        }
         return null;
     }
 
@@ -46,24 +48,28 @@ public abstract class EdsContainerBase implements Closeable {
                 byte[] tmp = pass;
                 pass = new byte[maxLength];
                 System.arraycopy(tmp, 0, pass, 0, maxLength);
-            } else
+            } else {
                 pass = pass.clone();
+            }
         }
         return pass;
     }
 
     public static FileSystem loadFileSystem(RandomAccessIO io, boolean isReadOnly) throws IOException, UserException {
         if (ExFat.isExFATImage(io)) {
-            if (ExFat.isModuleInstalled())
+            if (ExFat.isModuleInstalled()) {
                 return new ExFat(io, isReadOnly);
-            if (ExFat.isModuleIncompatible())
+            }
+            if (ExFat.isModuleIncompatible()) {
                 throw new UserException("Please update the exFAT module.", R.string.update_exfat_module);
+            }
             throw new UserException("Please install the exFAT module", R.string.exfat_module_required);
         }
 
         FatFS fs = FatFS.getFat(io);
-        if (isReadOnly)
+        if (isReadOnly) {
             fs.setReadOnlyMode(true);
+        }
         return fs;
     }
 
@@ -81,11 +87,13 @@ public abstract class EdsContainerBase implements Closeable {
         RandomAccessIO t = openFile();
         try {
             if (_containerFormat == null) {
-                if (tryLayout(t, password, false) || tryLayout(t, password, true))
+                if (tryLayout(t, password, false) || tryLayout(t, password, true)) {
                     return;
+                }
             } else {
-                if (tryLayout(_containerFormat, t, password, false) || tryLayout(_containerFormat, t, password, true))
+                if (tryLayout(_containerFormat, t, password, false) || tryLayout(_containerFormat, t, password, true)) {
                     return;
+                }
             }
         } finally {
             t.close();
@@ -99,8 +107,9 @@ public abstract class EdsContainerBase implements Closeable {
     }
 
     public RandomAccessIO initEncryptedFile(boolean isReadOnly) throws IOException {
-        if (_layout == null)
+        if (_layout == null) {
             throw new IOException("The container is closed");
+        }
         EncryptionEngine enc = _layout.getEngine();
         return allowLocalXTS() ?
                 new LocalEncryptedFileXTS(_pathToContainer.getPathString(), isReadOnly, _layout.getEncryptedDataOffset(), (XTS) enc)
@@ -166,8 +175,9 @@ public abstract class EdsContainerBase implements Closeable {
     }
 
     public RandomAccessIO getEncryptedFile(boolean isReadOnly) throws IOException {
-        if (_encryptedFile == null)
+        if (_encryptedFile == null) {
             _encryptedFile = initEncryptedFile(isReadOnly);
+        }
         return _encryptedFile;
     }
 
@@ -190,7 +200,7 @@ public abstract class EdsContainerBase implements Closeable {
 
     protected boolean tryLayout(RandomAccessIO containerFile, byte[] password, boolean isHidden) throws IOException, ApplicationException {
         List<ContainerFormatInfo> cfs = getFormats();
-        if (cfs.size() > 1)
+        if (cfs.size() > 1) {
             Collections.sort(cfs, new Comparator<ContainerFormatInfo>() {
                 @Override
                 public int compare(ContainerFormatInfo lhs, ContainerFormatInfo rhs) {
@@ -198,20 +208,24 @@ public abstract class EdsContainerBase implements Closeable {
                 }
 
             });
+        }
 
         for (ContainerFormatInfo cf : cfs) {
             // Don't try too slow container formats
-            if (cf.getOpeningPriority() < 0)
+            if (cf.getOpeningPriority() < 0) {
                 continue;
-            if (tryLayout(cf, containerFile, password, isHidden))
+            }
+            if (tryLayout(cf, containerFile, password, isHidden)) {
                 return true;
+            }
         }
         return false;
     }
 
     protected boolean tryLayout(ContainerFormatInfo cf, RandomAccessIO containerFile, byte[] password, boolean isHidden) throws IOException, ApplicationException {
-        if (isHidden && !cf.hasHiddenContainerSupport())
+        if (isHidden && !cf.hasHiddenContainerSupport()) {
             return false;
+        }
         Logger.debug(String.format("Trying %s container format%s", cf.getFormatName(), isHidden ? " (hidden)" : ""));
         if (_progressReporter != null) {
             _progressReporter.setContainerFormatName(cf.getFormatName());
@@ -219,14 +233,17 @@ public abstract class EdsContainerBase implements Closeable {
         }
         VolumeLayout vl = isHidden ? cf.getHiddenVolumeLayout() : cf.getVolumeLayout();
         vl.setOpeningProgressReporter(_progressReporter);
-        if (_encryptionEngine != null)
+        if (_encryptionEngine != null) {
             vl.setEngine(_encryptionEngine);
-        if (_messageDigest != null)
+        }
+        if (_messageDigest != null) {
             vl.setHashFunc(_messageDigest);
+        }
 
         vl.setPassword(cutPassword(password, cf.getMaxPasswordLength()));
-        if (cf.hasCustomKDFIterationsSupport() && _numKDFIterations > 0)
+        if (cf.hasCustomKDFIterationsSupport() && _numKDFIterations > 0) {
             vl.setNumKDFIterations(_numKDFIterations);
+        }
         if (vl.readHeader(containerFile)) {
             _containerFormat = cf;
             _layout = vl;
@@ -248,8 +265,9 @@ public abstract class EdsContainerBase implements Closeable {
         List<VolumeLayout> vll = new ArrayList<>();
         for (ContainerFormatInfo cf : getFormats()) {
             VolumeLayout vl = isHidden ? cf.getHiddenVolumeLayout() : cf.getVolumeLayout();
-            if (vl != null)
+            if (vl != null) {
                 vll.add(vl);
+            }
         }
         return vll;
     }

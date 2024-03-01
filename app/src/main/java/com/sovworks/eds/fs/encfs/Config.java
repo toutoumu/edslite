@@ -36,18 +36,20 @@ public class Config {
 
     public static Path getConfigFilePath(com.sovworks.eds.fs.Directory dir) throws IOException {
         Path p = PathUtil.buildPath(dir.getPath(), CONFIG_FILENAME);
-        if (p != null && p.isFile())
+        if (p != null && p.isFile()) {
             return p;
+        }
         p = PathUtil.buildPath(dir.getPath(), CONFIG_FILENAME2);
         return p != null && p.isFile() ? p : null;
     }
 
     public void read(Path pathToRootFolder) throws IOException, ApplicationException {
         Path p = getConfigFilePath(pathToRootFolder.getDirectory());
-        if (p != null)
+        if (p != null) {
             read(p.getFile());
-        else
+        } else {
             throw new ApplicationException("EncFs config file doesn't exist");
+        }
 
     }
 
@@ -70,11 +72,13 @@ public class Config {
             // read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
             doc.getDocumentElement().normalize();
             NodeList nl = doc.getElementsByTagName("cfg");
-            if (nl.getLength() == 0)
+            if (nl.getLength() == 0) {
                 throw new IllegalArgumentException("cfg element not found");
+            }
             Node n = nl.item(0);
-            if (n.getNodeType() != Node.ELEMENT_NODE)
+            if (n.getNodeType() != Node.ELEMENT_NODE) {
                 throw new IllegalArgumentException("wrong document structure");
+            }
             readCfgElement((org.w3c.dom.Element) n);
         } catch (Exception e) {
             throw new ApplicationException("Failed reading the config file", e);
@@ -285,35 +289,40 @@ public class Config {
 
         _keyData = getBytes(cfg, "encodedKeyData");
         int size = getParam(cfg, "encodedKeySize", 0);
-        if (size > 0 && size != _keyData.length)
+        if (size > 0 && size != _keyData.length) {
             throw new IllegalArgumentException("Failed decoding key data");
+        }
 
         _salt = getBytes(cfg, "saltData");
         size = getParam(cfg, "saltLen", 0);
-        if (size > 0 && size != _salt.length)
+        if (size > 0 && size != _salt.length) {
             throw new IllegalArgumentException("Failed decoding salt data");
+        }
         _kdfIterations = getParam(cfg, "kdfIterations", 0);
         _desiredKDFDuration = getParam(cfg, "desiredKDFDuration", 0);
     }
 
     private int getParam(Element cfg, String paramName, int defaultValue) {
         String s = getParam(cfg, paramName, null);
-        if (s == null)
+        if (s == null) {
             return defaultValue;
+        }
         return Integer.valueOf(s);
     }
 
     private boolean getParam(Element cfg, String paramName, boolean defaultValue) {
         String s = getParam(cfg, paramName, null);
-        if (s == null)
+        if (s == null) {
             return defaultValue;
+        }
         return !"0".equals(s);
     }
 
     private String getParam(Element cfg, String paramName, String defaultValue) {
         NodeList nl = cfg.getElementsByTagName(paramName);
-        if (nl.getLength() == 0)
+        if (nl.getLength() == 0) {
             return defaultValue;
+        }
         Node n = nl.item(0);
         String data = n.getTextContent();
         return data == null ? defaultValue : data;
@@ -321,26 +330,31 @@ public class Config {
 
     private byte[] getBytes(Element cfg, String paramName) {
         String encoded = getParam(cfg, paramName, null);
-        if (encoded == null)
+        if (encoded == null) {
             return null;
+        }
         return Base64.decode(encoded, Base64.DEFAULT);
     }
 
     private AlgInfo loadAlgInfo(Element cfg, String paramName, Iterable<? extends AlgInfo> supportedAlgs, AlgInfo defaultValue) {
         NodeList nl = cfg.getElementsByTagName(paramName);
-        if (nl.getLength() == 0)
+        if (nl.getLength() == 0) {
             return defaultValue;
+        }
         Node n = nl.item(0);
-        if (n.getNodeType() != Node.ELEMENT_NODE)
+        if (n.getNodeType() != Node.ELEMENT_NODE) {
             throw new IllegalArgumentException("Wrong document structure");
+        }
         String algName = getParam((Element) n, "name", null);
-        if (algName == null)
+        if (algName == null) {
             throw new IllegalArgumentException("Name is not specified for " + paramName);
+        }
         int major = getParam((Element) n, "major", 0);
         int minor = getParam((Element) n, "minor", 0);
         for (AlgInfo info : supportedAlgs) {
-            if (algName.equals(info.getName()) && info.getVersion1() >= major && info.getVersion2() >= minor)
+            if (algName.equals(info.getName()) && info.getVersion1() >= major && info.getVersion2() >= minor) {
                 return info.select(this);
+            }
         }
         throw new IllegalArgumentException("Unsupported algorithm: " + algName + " major=" + major + " minor=" + minor);
     }
@@ -446,8 +460,9 @@ public class Config {
     }
 
     private String makeCreatorString(Context context) {
-        if (context == null)
+        if (context == null) {
             return "EDS";
+        }
         String verName = "";
         try {
             verName = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;

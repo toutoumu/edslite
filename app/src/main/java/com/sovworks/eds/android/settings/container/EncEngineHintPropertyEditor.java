@@ -24,10 +24,11 @@ public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor {
 
     @Override
     protected void saveValue(int value) {
-        if (value == 0)
+        if (value == 0) {
             getHost().getLocation().getExternalSettings().setEncEngineName(null);
-        else
+        } else {
             getHost().getLocation().getExternalSettings().setEncEngineName(getEncEngineName(getSupportedEncEngines().get(value - 1)));
+        }
         getHost().saveExternalSettings();
     }
 
@@ -36,8 +37,9 @@ public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor {
         String name = getHost().getLocation().getExternalSettings().getEncEngineName();
         if (name != null) {
             int i = findEngineIndexByName(name);
-            if (i >= 0)
+            if (i >= 0) {
                 return i + 1;
+            }
         }
         return 0;
     }
@@ -58,8 +60,9 @@ public class EncEngineHintPropertyEditor extends ChoiceDialogPropertyEditor {
     private int findEngineIndexByName(String name) {
         int i = 0;
         for (EncryptionEngine ee : getSupportedEncEngines()) {
-            if (name.equalsIgnoreCase(getEncEngineName(ee)))
+            if (name.equalsIgnoreCase(getEncEngineName(ee))) {
                 return i;
+            }
             i++;
         }
         return -1;

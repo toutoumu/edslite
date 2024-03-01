@@ -48,8 +48,9 @@ public abstract class TransOutputStream extends OutputStream implements DataOutp
 
     public void close(boolean closeBase) throws IOException {
         writeCurrentBuffer();
-        if (closeBase)
+        if (closeBase) {
             _base.close();
+        }
     }
 
     protected final OutputStream _base;
@@ -91,8 +92,9 @@ public abstract class TransOutputStream extends OutputStream implements DataOutp
     }
 
     protected void log(String msg, Object... params) {
-        if (ENABLE_DEBUG_LOG && GlobalConfig.isDebug())
+        if (ENABLE_DEBUG_LOG && GlobalConfig.isDebug()) {
             Logger.log(String.format("TransInputStream: " + msg, params));
+        }
     }
 
     protected void setCurrentBufferWritten(int numBytes) {

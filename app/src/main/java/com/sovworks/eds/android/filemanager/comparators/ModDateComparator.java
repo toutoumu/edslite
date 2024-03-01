@@ -13,11 +13,13 @@ public class ModDateComparator<T extends CachedPathInfo> extends FileNamesCompar
     @Override
     protected int compareImpl(T o1, T o2) throws IOException {
         Date aDate = o1.getModificationDate();
-        if (aDate == null)
+        if (aDate == null) {
             aDate = new Date();
+        }
         Date bDate = o2.getModificationDate();
-        if (bDate == null)
+        if (bDate == null) {
             bDate = new Date();
+        }
         int res = _asc * aDate.compareTo(bDate);
         return res == 0 ? super.compareImpl(o1, o2) : res;
     }

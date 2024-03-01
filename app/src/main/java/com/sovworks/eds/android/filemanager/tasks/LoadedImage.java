@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.PowerManager;
+
 import androidx.exifinterface.media.ExifInterface;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -30,15 +31,17 @@ public class LoadedImage {
         return Single.create(emitter -> {
             PowerManager pm = (PowerManager) context.getApplicationContext().getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wl = pm == null ? null : pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LoadImageTask");
-            if (wl != null)
+            if (wl != null) {
                 wl.acquire(10000);
+            }
             try {
                 LoadedImage loadedImage = new LoadedImage(imagePath, viewRect, regionRect);
                 loadedImage.loadImage();
                 emitter.onSuccess(loadedImage);
             } finally {
-                if (wl != null)
+                if (wl != null) {
                     wl.release();
+                }
             }
 
         });
@@ -95,28 +98,34 @@ public class LoadedImage {
             _isOptimSupported = isJpg || "image/png".equalsIgnoreCase(params.outMimeType);
             loadFull = true;
         } else {
-            if (_regionRect.top < 0)
+            if (_regionRect.top < 0) {
                 _regionRect.top = 0;
-            if (_regionRect.left < 0)
+            }
+            if (_regionRect.left < 0) {
                 _regionRect.left = 0;
-            if (_regionRect.width() > params.outWidth)
+            }
+            if (_regionRect.width() > params.outWidth) {
                 _regionRect.right -= (_regionRect.width() - params.outWidth);
-            if (_regionRect.height() > params.outHeight)
+            }
+            if (_regionRect.height() > params.outHeight) {
                 _regionRect.bottom -= (_regionRect.height() - params.outHeight);
+            }
             loadFull = false;
         }
         _sampleSize = calcSampleSize(_viewRect, _regionRect);
         for (int i = 0; i < 5; i++, _sampleSize *= 2) {
             try {
-                if (loadFull)
+                if (loadFull) {
                     _image = loadDownsampledImage(_imagePath, _sampleSize);
-                else
+                } else {
                     _image = CompatHelper.loadBitmapRegion(_imagePath, _sampleSize, _regionRect);
+                }
 
                 _flipX = _flipY = false;
                 _rotation = 0;
-                if (isJpg)
+                if (isJpg) {
                     loadInitOrientation(_imagePath);
+                }
                 return;
             } catch (OutOfMemoryError e) {
                 System.gc();
@@ -170,8 +179,9 @@ public class LoadedImage {
                 s.close();
             }
         } catch (Exception e) {
-            if (GlobalConfig.isDebug())
+            if (GlobalConfig.isDebug()) {
                 Logger.log(e);
+            }
         }
     }
 }

@@ -15,10 +15,11 @@ public class FileIO extends ClusterChainIO {
         _fileEntry = fileEntry;
         _basePath = (FatPath) path.getParentPath();
         _opTag = opTag;
-        if (mode == AccessMode.WriteAppend)
+        if (mode == AccessMode.WriteAppend) {
             seek(length());
-        else if (mode == AccessMode.ReadWriteTruncate)
+        } else if (mode == AccessMode.ReadWriteTruncate) {
             setLength(0);
+        }
     }
 
     @Override
@@ -55,8 +56,9 @@ public class FileIO extends ClusterChainIO {
     }
 
     private void updateFileEntry() throws IOException {
-        if (_mode == AccessMode.Read)
+        if (_mode == AccessMode.Read) {
             return;
+        }
         _fileEntry.startCluster = _clusterChain.isEmpty() ? FatFS.LAST_CLUSTER : _clusterChain.get(0);
         _fileEntry.fileSize = _maxStreamPosition;
         _fileEntry.writeEntry(_fat, _basePath, _opTag);

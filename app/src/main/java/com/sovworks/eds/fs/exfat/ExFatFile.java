@@ -33,23 +33,28 @@ class ExFatFile extends ExFatRecord implements File {
     public synchronized RandomAccessIO getRandomAccessIO(AccessMode accessMode) throws IOException {
         synchronized (_exFat._sync) {
             FileStat fs = _path.getAttr();
-            if (accessMode == AccessMode.Read && (fs == null || fs.isDir))
+            if (accessMode == AccessMode.Read && (fs == null || fs.isDir)) {
                 throw new FileNotFoundException();
+            }
             if (fs == null) {
                 int res = _exFat.makeFile(_path.getPathString());
-                if (res != 0)
+                if (res != 0) {
                     throw new IOException("Failed creating file. Error code = " + res);
+                }
                 fs = _path.getAttr();
-                if (fs == null)
+                if (fs == null) {
                     throw new IOException("File node is null");
+                }
             }
             long startPos = 0;
-            if (accessMode == AccessMode.WriteAppend)
+            if (accessMode == AccessMode.WriteAppend) {
                 startPos = fs.size;
+            }
 
             long handle = _exFat.openFile(_path.getPathString());
-            if (handle == 0)
+            if (handle == 0) {
                 throw new IOException("Failed getting file handle");
+            }
             if (accessMode == AccessMode.Write || accessMode == AccessMode.ReadWriteTruncate) {
                 int res = _exFat.truncate(handle, 0);
                 if (res != 0) {
@@ -65,8 +70,9 @@ class ExFatFile extends ExFatRecord implements File {
     public void delete() throws IOException {
         synchronized (_exFat._sync) {
             int res = _exFat.delete(_path.getPathString());
-            if (res != 0)
+            if (res != 0) {
                 throw new IOException("Delete failed. Error code = " + res);
+            }
         }
     }
 

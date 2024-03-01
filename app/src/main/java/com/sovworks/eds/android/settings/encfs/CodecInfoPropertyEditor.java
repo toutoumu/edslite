@@ -20,8 +20,9 @@ public abstract class CodecInfoPropertyEditor extends ChoiceDialogPropertyEditor
         int i = 0;
         for (AlgInfo ci : getCodecs()) {
             if (name.equals(ci.getName())) {
-                if (codec != null)
+                if (codec != null) {
                     codec.value = ci;
+                }
                 return i;
             }
             i++;

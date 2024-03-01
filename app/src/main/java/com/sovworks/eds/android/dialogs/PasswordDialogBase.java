@@ -60,8 +60,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
             if (label != null) {
                 _labelTextView.setText(label);
                 _labelTextView.setVisibility(View.VISIBLE);
-            } else
+            } else {
                 _labelTextView.setVisibility(View.GONE);
+            }
         }
         _passwordEditText = v.findViewById(R.id.password_et);
         _repeatPasswordEditText = v.findViewById(R.id.repeat_password_et);
@@ -75,8 +76,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
                 _passwordResult = null;
                 _passwordEditText.setVisibility(View.GONE);
             }
-        } else
+        } else {
             _passwordResult = null;
+        }
 
         if (_repeatPasswordEditText != null) {
             if (hasPassword() && isPasswordVerificationRequired()) {
@@ -87,8 +89,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
                 _repeatPasswordSB = null;
                 _repeatPasswordEditText.setVisibility(View.GONE);
             }
-        } else
+        } else {
             _repeatPasswordSB = null;
+        }
 
         View passwordLayout = v.findViewById(R.id.password_layout);
         if (passwordLayout != null) {
@@ -103,13 +106,15 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
                                 imm.showSoftInput(_passwordEditText, InputMethodManager.SHOW_FORCED);
                             //_passwordEditText.requestFocus();
                         });*/
-            } else
+            } else {
                 passwordLayout.setVisibility(hasPassword() ? View.VISIBLE : View.GONE);
+            }
         }
 
         Button b = v.findViewById(android.R.id.button1);
-        if (b != null)
+        if (b != null) {
             b.setOnClickListener(view -> confirm());
+        }
 
         ImageButton ib = v.findViewById(R.id.toggle_show_pass);
         if (ib != null) {
@@ -118,8 +123,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
 
         ib = v.findViewById(R.id.settings);
         if (ib != null) {
-            if (_location == null)
+            if (_location == null) {
                 ib.setVisibility(View.GONE);
+            }
             ib.setOnClickListener(v1 -> openOptions());
         }
         return v;
@@ -149,8 +155,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_OPTIONS:
-                if (resultCode == Activity.RESULT_OK)
+                if (resultCode == Activity.RESULT_OK) {
                     _options = data.getExtras();
+                }
                 break;
             default:
                 super.onActivityResult(requestCode, resultCode, data);
@@ -170,8 +177,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (_options != null)
+        if (_options != null) {
             outState.putAll(_options);
+        }
     }
 
     public boolean hasPassword() {
@@ -193,8 +201,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
 
     protected void setWidthHeight() {
         Window w = getDialog().getWindow();
-        if (w != null)
+        if (w != null) {
             w.setLayout(calcWidth(), calcHeight());
+        }
     }
 
     protected int calcWidth() {
@@ -223,21 +232,24 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
         int inputType = _passwordEditText.getInputType();
         if ((inputType & EditorInfo.TYPE_MASK_VARIATION) == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
             _passwordEditText.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
-            if (_repeatPasswordEditText != null)
+            if (_repeatPasswordEditText != null) {
                 _repeatPasswordEditText.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
+            }
             b.setImageResource(R.drawable.ic_show_pass);
         } else {
             _passwordEditText.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            if (_repeatPasswordEditText != null)
+            if (_repeatPasswordEditText != null) {
                 _repeatPasswordEditText.setInputType(EditorInfo.TYPE_CLASS_TEXT | EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            }
             b.setImageResource(R.drawable.ic_hide_pass);
         }
     }
 
     protected void openOptions() {
         Intent i = new Intent(getActivity(), OpeningOptionsActivity.class);
-        if (_location != null)
+        if (_location != null) {
             LocationsManager.storePathsInIntent(i, _location, null);
+        }
         i.putExtras(_options);
         startActivityForResult(i, REQUEST_OPTIONS);
     }
@@ -259,8 +271,9 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
     }
 
     protected void confirm() {
-        if (!checkInput())
+        if (!checkInput()) {
             return;
+        }
 
         onPasswordEntered();
         dismiss();
@@ -272,12 +285,13 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
 
     protected void onPasswordEntered() {
         PasswordReceiver r = getResultReceiver();
-        if (r != null)
+        if (r != null) {
             r.onPasswordEntered((PasswordDialog) this);
-        else {
+        } else {
             Activity act = getActivity();
-            if (act instanceof PasswordReceiver)
+            if (act instanceof PasswordReceiver) {
                 ((PasswordReceiver) act).onPasswordEntered((PasswordDialog) this);
+            }
         }
     }
 
@@ -288,12 +302,13 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
 
     protected void onPasswordNotEntered() {
         PasswordReceiver r = getResultReceiver();
-        if (r != null)
+        if (r != null) {
             r.onPasswordNotEntered((PasswordDialog) this);
-        else {
+        } else {
             Activity act = getActivity();
-            if (act instanceof PasswordReceiver)
+            if (act instanceof PasswordReceiver) {
                 ((PasswordReceiver) act).onPasswordNotEntered((PasswordDialog) this);
+            }
         }
     }
 }

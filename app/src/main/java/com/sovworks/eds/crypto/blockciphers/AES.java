@@ -15,26 +15,30 @@ public class AES implements BlockCipherNative {
 
     @Override
     public void init(byte[] key) throws EncryptionEngineException {
-        if (key.length != getKeySize())
+        if (key.length != getKeySize()) {
             throw new IllegalArgumentException(String.format("Wrong key length. Required: %d. Provided: %d", _keySize, key.length));
+        }
         _contextPtr = initContext(key);
-        if (_contextPtr == 0)
+        if (_contextPtr == 0) {
             throw new EncryptionEngineException("AES context initialization failed");
+        }
 
     }
 
     @Override
     public void encryptBlock(byte[] data) throws EncryptionEngineException {
-        if (_contextPtr == 0)
+        if (_contextPtr == 0) {
             throw new EncryptionEngineException("Cipher is closed");
+        }
         encrypt(data, _contextPtr);
 
     }
 
     @Override
     public void decryptBlock(byte[] data) throws EncryptionEngineException {
-        if (_contextPtr == 0)
+        if (_contextPtr == 0) {
             throw new EncryptionEngineException("Cipher is closed");
+        }
         decrypt(data, _contextPtr);
     }
 

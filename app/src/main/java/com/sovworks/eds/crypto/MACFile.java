@@ -30,18 +30,20 @@ public class MACFile extends TransRandomAccessIO {
             boolean forceDecode) throws IOException {
         int resCount = count - macBytes - randBytes;
         System.arraycopy(baseBuffer, offset + macBytes + randBytes, dstBuffer, offset, resCount);
-        if (macBytes == 0 || (allowSkip && count > macBytes && EncryptedFile.isBufferEmpty(baseBuffer, offset, count)))
+        if (macBytes == 0 || (allowSkip && count > macBytes && EncryptedFile.isBufferEmpty(baseBuffer, offset, count))) {
             return resCount;
+        }
         byte fail = 0;
         byte[] mac = macCalc.calcChecksum(baseBuffer, offset + macBytes, count - macBytes);
         for (int i = 0; i < macBytes; i++)
             fail |= mac[i] ^ baseBuffer[macBytes - i - 1];
         if (fail != 0) {
             String msg = "MAC comparison failure for the block at " + bufferPosition;
-            if (forceDecode)
+            if (forceDecode) {
                 Logger.log(msg);
-            else
+            } else {
                 throw new IOException(msg);
+            }
         }
         return resCount;
     }
@@ -114,10 +116,11 @@ public class MACFile extends TransRandomAccessIO {
     @Override
     protected int readFromBaseAndTransformBuffer(byte[] buf, int offset, int count, long bufferPosition) throws IOException {
         int bc = readFromBase(_transBuffer, offset, count + _overhead, bufferPosition);
-        if (bc > 0)
+        if (bc > 0) {
             return transformBufferFromBase(_transBuffer, offset, bc, bufferPosition, buf);
-        else
+        } else {
             return 0;
+        }
     }
 
     @Override

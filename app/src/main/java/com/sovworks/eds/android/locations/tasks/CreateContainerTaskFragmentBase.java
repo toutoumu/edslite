@@ -18,8 +18,9 @@ import com.sovworks.eds.locations.Openable;
 public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationTaskFragment {
     public static ContainerFormatInfo getContainerFormatByName(String name) {
         for (ContainerFormatInfo ci : EdsContainer.getSupportedFormats())
-            if (ci.getFormatName().equals(name))
+            if (ci.getFormatName().equals(name)) {
                 return ci;
+            }
         return null;
     }
 
@@ -44,15 +45,18 @@ public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationT
         cf.setContainerSize(args.getInt(ARG_SIZE) * 1024L * 1024L);
         cf.setNumKDFIterations(args.getInt(Openable.PARAM_KDF_ITERATIONS, 0));
         FileSystemInfo fst = args.getParcelable(ARG_FILE_SYSTEM_TYPE);
-        if (fst != null)
+        if (fst != null) {
             cf.setFileSystemType(fst);
+        }
         String encAlgName = args.getString(ARG_CIPHER_NAME);
         String encModeName = args.getString(ARG_CIPHER_MODE_NAME);
-        if (encAlgName != null && encModeName != null)
+        if (encAlgName != null && encModeName != null) {
             cf.setEncryptionEngine(encAlgName, encModeName);
+        }
         String hashAlgName = args.getString(ARG_HASHING_ALG);
-        if (hashAlgName != null)
+        if (hashAlgName != null) {
             cf.setHashFunc(hashAlgName);
+        }
         cf.enableFreeSpaceRand(args.getBoolean(ARG_FILL_FREE_SPACE));
     }
 
@@ -60,12 +64,14 @@ public abstract class CreateContainerTaskFragmentBase extends CreateEDSLocationT
     protected boolean checkParams(TaskState state, Location locationLocation) throws Exception {
         Bundle args = getArguments();
         Path path = locationLocation.getCurrentPath();
-        if (path.exists() && path.isDirectory())
+        if (path.exists() && path.isDirectory()) {
             throw new UserException(_context,
                     R.string.container_file_name_is_not_specified);
-        if (args.getInt(ARG_SIZE) < 1)
+        }
+        if (args.getInt(ARG_SIZE) < 1) {
             throw new UserException(getActivity(),
                     R.string.err_container_size_is_too_small);
+        }
 
         if (!getArguments().getBoolean(ARG_OVERWRITE, false)) {
             if (path.exists()

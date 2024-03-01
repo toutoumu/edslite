@@ -54,11 +54,13 @@ public class CreateEncFsTaskFragment extends CreateEDSLocationTaskFragment {
     protected boolean checkParams(TaskState state, Location locationLocation) throws Exception {
         Bundle args = getArguments();
         Path path = locationLocation.getCurrentPath();
-        if (path.isFile())
+        if (path.isFile()) {
             path = path.getParentPath();
-        if (path == null || !path.isDirectory())
+        }
+        if (path == null || !path.isDirectory()) {
             throw new UserException(_context,
                     R.string.wrong_encfs_root_path);
+        }
         if (!args.getBoolean(ARG_OVERWRITE, false)) {
             Path cfgPath = PathUtil.buildPath(path, Config.CONFIG_FILENAME);
             if (cfgPath != null && cfgPath.isFile()

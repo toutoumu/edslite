@@ -30,10 +30,11 @@ public class SavePIMPropertyEditor extends SwitchPropertyEditor implements TextE
     @Override
     public void setResult(String text) throws Exception {
         int val = text.isEmpty() ? 0 : Integer.valueOf(text);
-        if (val < 0)
+        if (val < 0) {
             val = 0;
-        else if (val > 100000)
+        } else if (val > 100000) {
             val = 100000;
+        }
         getHost().getLocation().getExternalSettings().setCustomKDFIterations(val);
         getHost().saveExternalSettings();
     }

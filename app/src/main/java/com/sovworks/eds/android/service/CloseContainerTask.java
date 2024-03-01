@@ -2,6 +2,7 @@ package com.sovworks.eds.android.service;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.core.app.NotificationCompat;
 
 import com.sovworks.eds.android.R;
@@ -16,8 +17,9 @@ public class CloseContainerTask extends ServiceTaskWithNotificationBase {
     public Object doWork(Context context, Intent i) throws Throwable {
         super.doWork(context, i);
         EDSLocation cont = (EDSLocation) LocationsManager.getLocationsManager(context).getFromIntent(i, null);
-        if (cont != null)
+        if (cont != null) {
             OMLocationCloserFragment.unmountAndClose(context, cont, UserSettings.getSettings(context).alwaysForceClose());
+        }
         return null;
     }
 

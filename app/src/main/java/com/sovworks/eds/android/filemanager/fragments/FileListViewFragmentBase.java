@@ -109,8 +109,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         setHasOptionsMenu(true);
         _locationsManager = LocationsManager.getLocationsManager(getActivity());
         initListView();
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             _scrollPosition = savedInstanceState.getInt(ARG_SCROLL_POSITION, 0);
+        }
     }
 
     @Override
@@ -123,18 +124,21 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
             _selectedFileEditText.setVisibility(View.VISIBLE);
             _selectedFileEditText.addTextChangedListener(new TextWatcher() {
                 public void afterTextChanged(Editable arg0) {
-                    if (arg0 == null || _changingSelectedFileText)
+                    if (arg0 == null || _changingSelectedFileText) {
                         return;
+                    }
                     String s = arg0.toString();
                     if (s.isEmpty()) {
-                        if (isInSelectionMode())
+                        if (isInSelectionMode()) {
                             stopSelectionMode();
+                        }
                     } else {
                         if (isInSelectionMode()) {
                             clearSelectedFlag();
                             _actionMode.invalidate();
-                        } else
+                        } else {
                             startSelectionMode();
+                        }
                     }
                 }
 
@@ -144,8 +148,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
                 }
             });
-        } else
+        } else {
             _selectedFileEditText.setVisibility(View.GONE);
+        }
         _currentPathTextView = view.findViewById(R.id.current_path_text);
         return view;
     }
@@ -168,19 +173,22 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                             setStartedLoading(loadInfo);
                             break;
                         case Loading:
-                            if (!_isReadingLocation)
+                            if (!_isReadingLocation) {
                                 setStartedLoading(loadInfo);
+                            }
                             setLocationLoading(loadInfo);
                             break;
                         case FinishedLoading:
-                            if (_isReadingLocation)
+                            if (_isReadingLocation) {
                                 setLocationNotLoading();
+                            }
                             break;
                     }
                 }, err ->
                 {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.log(err);
+                    }
                 });
     }
 
@@ -259,8 +267,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                             Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 }
             }
-        } else
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -269,7 +278,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         if (haveSelectedFiles()) {
             startSelectionMode();
             if (_actionMode != null) // sometimes it is null
+            {
                 _actionMode.invalidate();
+            }
         }
         _cleanSelectionOnModeFinish = true;
         ExtendedFileInfoLoader.getInstance().resumeViewUpdate();
@@ -280,8 +291,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         super.onPause();
         ExtendedFileInfoLoader.getInstance().pauseViewUpdate();
         _cleanSelectionOnModeFinish = false;
-        if (isInSelectionMode())
+        if (isInSelectionMode()) {
             stopSelectionMode();
+        }
     }
 
 
@@ -304,10 +316,11 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         SharedPreferences.Editor e = UserSettings.getSettings(getActivity())
                 .getSharedPreferences()
                 .edit();
-        if (sortMode == 0)
+        if (sortMode == 0) {
             e.remove(FILE_BROWSER_SORT_MODE);
-        else
+        } else {
             e.putInt(UserSettings.FILE_BROWSER_SORT_MODE, sortMode);
+        }
         e.commit();
         getFileListDataFragment().reSortFiles();
         updateSelectionMode();
@@ -337,13 +350,15 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 compose(bindToLifecycle()).
                 subscribe(res -> {
                     FileListViewAdapter adapter = getAdapter();
-                    if (adapter != null)
+                    if (adapter != null) {
                         adapter.add(res);
+                    }
                     newRecordCreated(res);
                 }, err ->
                 {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.log(err);
+                    }
                 });
     }
 
@@ -362,21 +377,24 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
 
 
     public void selectFile(BrowserRecord file) {
-        if (isSelectAction() && isSingleSelectionMode())
+        if (isSelectAction() && isSingleSelectionMode()) {
             clearSelectedFlag();
+        }
         file.setSelected(true);
-        if (_actionMode == null)
+        if (_actionMode == null) {
             startSelectionMode();
+        }
         file.updateView();
         onSelectionChanged();
     }
 
     public void unselectFile(BrowserRecord file) {
         file.setSelected(false);
-        if (!haveSelectedFiles() && !isSelectAction())
+        if (!haveSelectedFiles() && !isSelectAction()) {
             stopSelectionMode();
-        else
+        } else {
             file.updateView();
+        }
         onSelectionChanged();
     }
 
@@ -386,15 +404,17 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
             public void onCompleted(Bundle args, TaskFragment.Result result) {
                 try {
                     final Location locToOpen = (Location) result.getResult();
-                    if (locToOpen != null)
+                    if (locToOpen != null) {
                         lifecycle().
                                 filter(event -> event == FragmentEvent.RESUME).
                                 firstElement().
                                 subscribe(res -> openLocation(locToOpen), err ->
                                 {
-                                    if (!(err instanceof CancellationException))
+                                    if (!(err instanceof CancellationException)) {
                                         Logger.log(err);
+                                    }
                                 });
+                    }
                 } catch (Throwable e) {
                     Logger.showAndLog(getActivity(), e);
                 }
@@ -479,15 +499,17 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     }
 
     static {
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_READING_OBSERVABLE = BehaviorSubject.createDefault(false);
+        }
     }
 
     public static Subject<Boolean> TEST_READING_OBSERVABLE;
 
     private void setStartedLoading(FileListDataFragment.LoadLocationInfo loadInfo) {
-        if (TEST_READING_OBSERVABLE != null)
+        if (TEST_READING_OBSERVABLE != null) {
             TEST_READING_OBSERVABLE.onNext(true);
+        }
         Logger.debug(TAG + ": Started loading " + loadInfo.location.getLocationUri());
         _isReadingLocation = true;
         FileListViewAdapter adapter = getAdapter();
@@ -495,10 +517,11 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         adapter.setCurrentLocationId(loadInfo.location.getId());
         _currentPathTextView.setText("");
         _selectedFileEditText.setVisibility(View.GONE);
-        if (_actionMode != null)
+        if (_actionMode != null) {
             _actionMode.invalidate();
-        else
+        } else {
             updateOptionsMenu();
+        }
     }
 
     private void setLocationLoading(FileListDataFragment.LoadLocationInfo loadInfo) {
@@ -506,10 +529,11 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         FileListViewAdapter adapter = getAdapter();
         adapter.clear();
         if (_loadingRecordObserver != null && !_loadingRecordObserver.isDisposed()) {
-            if (GlobalConfig.isDebug())
+            if (GlobalConfig.isDebug()) {
                 throw new RuntimeException("Loading record observer was not disposed!");
-            else
+            } else {
                 _loadingRecordObserver.dispose();
+            }
         }
         _loadingRecordObserver = getFileListDataFragment().getLoadRecordObservable().
                 compose(bindToLifecycle()).
@@ -519,26 +543,30 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(adapter::addAll, err ->
                 {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.log(err);
+                    }
                 });
-        if (loadInfo.folder != null)
+        if (loadInfo.folder != null) {
             updateCurrentFolderLabel(loadInfo.folder);
+        }
         showFileIfNeeded(loadInfo.file);
     }
 
     private void setLocationNotLoading() {
         Logger.debug(TAG + ": Finished loading");
-        if (_loadingRecordObserver != null)
+        if (_loadingRecordObserver != null) {
             _loadingRecordObserver.dispose();
+        }
         FileListViewAdapter adapter = getAdapter();
         getFileListDataFragment().copyToAdapter(adapter);
         _isReadingLocation = false;
         _selectedFileEditText.setVisibility(showSelectedFilenameEditText() ? View.VISIBLE : View.GONE);
-        if (_actionMode != null)
+        if (_actionMode != null) {
             _actionMode.invalidate();
-        else
+        } else {
             updateSelectionMode();
+        }
         if (_scrollPosition > 0) {
             int sp = _scrollPosition;
             _scrollPosition = 0;
@@ -549,8 +577,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                     subscribe(() -> scrollList(sp), err -> {
                     });
         }
-        if (TEST_READING_OBSERVABLE != null)
+        if (TEST_READING_OBSERVABLE != null) {
             TEST_READING_OBSERVABLE.onNext(false);
+        }
     }
 
     private void readLocation(FileListDataFragment df, Location loc, int scrollPosition) {
@@ -588,19 +617,22 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
             if (lv.getFirstVisiblePosition() == 0) {
                 int num = lv.getCount();
                 int sp = scrollPosition;
-                if (scrollPosition >= num)
+                if (scrollPosition >= num) {
                     sp = num - 1;
+                }
                 if (sp >= 0)
-                    // lv.setSelection(sp);
+                // lv.setSelection(sp);
+                {
                     lv.smoothScrollToPosition(sp);
+                }
             }
         }
     }
 
     private void updateSelectionMode() {
-        if (haveSelectedFiles())
+        if (haveSelectedFiles()) {
             startSelectionMode();
-        else {
+        } else {
             getFileManagerActivity().showProperties(null, true);
             updateOptionsMenu();
         }
@@ -639,8 +671,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         lv.setOnItemLongClickListener((adapterView, view, pos, itemId) ->
         {
             BrowserRecord rec = (BrowserRecord) adapterView.getItemAtPosition(pos);
-            if (rec != null && rec.allowSelect())
+            if (rec != null && rec.allowSelect()) {
                 selectFile(rec);
+            }
             return true;
         });
         lv.setOnItemClickListener((adapterView, view, pos, l) ->
@@ -649,22 +682,25 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
             BrowserRecord rec = (BrowserRecord) adapterView.getItemAtPosition(pos);
             if (rec != null) {
                 if (rec.isSelected()) {
-                    if (!isSelectAction() || !isSingleSelectionMode())
+                    if (!isSelectAction() || !isSingleSelectionMode()) {
                         unselectFile(rec);
-                } else if (rec.allowSelect() && (_actionMode != null || (isSelectAction() && rec.isFile())))
+                    }
+                } else if (rec.allowSelect() && (_actionMode != null || (isSelectAction() && rec.isFile()))) {
                     selectFile(rec);
-                else
+                } else {
                     onFileClicked(rec);
+                }
             }
         });
     }
 
     protected void onFileClicked(BrowserRecord file) {
         try {
-            if (getFileManagerActivity().isWideScreenLayout())
+            if (getFileManagerActivity().isWideScreenLayout()) {
                 file.openInplace();
-            else
+            } else {
                 file.open();
+            }
         } catch (Exception e) {
             Logger.showAndLog(getActivity(), e);
         }
@@ -681,8 +717,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         int count = lv.getCount();
         for (int i = 0; i < count; i++) {
             BrowserRecord file = (BrowserRecord) lv.getItemAtPosition(i);
-            if (file.isSelected())
+            if (file.isSelected()) {
                 selectedRecordsList.add(file);
+            }
         }
         return selectedRecordsList;
     }
@@ -693,8 +730,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         int count = lv.getCount();
         for (int i = 0; i < count; i++) {
             BrowserRecord file = (BrowserRecord) lv.getItemAtPosition(i);
-            if (file != null && file.allowSelect())
+            if (file != null && file.allowSelect()) {
                 selectableFilesList.add(file);
+            }
         }
         return selectableFilesList;
     }
@@ -708,8 +746,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         int count = lv.getCount();
         for (int i = 0; i < count; i++) {
             BrowserRecord file = (BrowserRecord) lv.getItemAtPosition(i);
-            if (file.isSelected())
+            if (file.isSelected()) {
                 return true;
+            }
         }
         return false;
     }
@@ -718,8 +757,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         _actionMode = getListView().startActionMode(new ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                if (isSendAction() || _isReadingLocation)
+                if (isSendAction() || _isReadingLocation) {
                     return false;
+                }
                 mode.getMenuInflater().inflate(R.menu.file_list_context_menu, menu);
                 ((FileListViewAdapter) getListView().getAdapter()).notifyDataSetChanged();
                 return true;
@@ -766,8 +806,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 MenuHandlerInfo mhi = new MenuHandlerInfo();
                 mhi.menuItemId = item.getItemId();
                 boolean res = handleMenu(mhi);
-                if (res && mhi.clearSelection)
+                if (res && mhi.clearSelection) {
                     mode.finish();
+                }
 
                 return res;
             }
@@ -778,16 +819,18 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                     clearSelectedFlag();
                     _actionMode = null;
                     onSelectionChanged();
-                } else
+                } else {
                     _actionMode = null;
+                }
             }
 
         });
     }
 
     protected void stopSelectionMode() {
-        if (_actionMode != null)
+        if (_actionMode != null) {
             _actionMode.finish();
+        }
     }
 
     protected void clearSelectedFlag() {
@@ -795,8 +838,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         int count = lv.getCount();
         for (int i = 0; i < count; i++) {
             BrowserRecord file = (BrowserRecord) lv.getItemAtPosition(i);
-            if (file.isSelected())
+            if (file.isSelected()) {
                 file.setSelected(false);
+            }
         }
         ((FileListViewAdapter) lv.getAdapter()).notifyDataSetChanged();
     }
@@ -834,10 +878,11 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 mhi.clearSelection = true;
                 return true;
             case R.id.copy:
-                if (isSendAction())
+                if (isSendAction()) {
                     pasteSentFiles();
-                else
+                } else {
                     pasteFiles(false);
+                }
                 return true;
             case R.id.move:
                 pasteFiles(true);
@@ -977,10 +1022,11 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         ArrayList<BrowserRecord> sr = getSelectedFiles();
         if (showSelectedFilenameEditText()) {
             String name;
-            if (sr.isEmpty())
+            if (sr.isEmpty()) {
                 name = "";
-            else
+            } else {
                 name = sr.get(0).getName();
+            }
 
             _changingSelectedFileText = true;
             try {
@@ -989,8 +1035,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 _changingSelectedFileText = false;
             }
         }
-        if (_actionMode != null)
+        if (_actionMode != null) {
             _actionMode.invalidate();
+        }
         updateOptionsMenu();
         getFileManagerActivity().showProperties(null, true);
     }
@@ -1014,8 +1061,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                             compose(bindToLifecycle()).
                             subscribe(rec -> {
                                 FileListViewAdapter adapter = getAdapter();
-                                if (adapter != null)
+                                if (adapter != null) {
                                     adapter.add(rec);
+                                }
                                 FileManagerActivity act = getFileManagerActivity();
                                 if (act != null) {
                                     Location loc = act.getRealLocation().copy();
@@ -1032,8 +1080,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
 
                             }, err ->
                             {
-                                if (!(err instanceof CancellationException))
+                                if (!(err instanceof CancellationException)) {
                                     Logger.log(err);
+                                }
                             });
                     return;
                 }
@@ -1049,9 +1098,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     protected Intent getSelectResult(List<Path> paths) {
         Location loc = getRealLocation();
         Intent intent = new Intent();
-        if (!isSingleSelectionMode())
+        if (!isSingleSelectionMode()) {
             intent.setData(loc.getLocationUri());
-        else if (paths.size() > 0) {
+        } else if (paths.size() > 0) {
             Location res = loc.copy();
             res.setCurrentPath(paths.get(0));
             intent.setData(res.getLocationUri());
@@ -1116,10 +1165,11 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                             move
                     );
                     if (recs != null) {
-                        if (move)
+                        if (move) {
                             FileOpsService.moveFiles(getActivity(), recs, false);
-                        else
+                        } else {
                             FileOpsService.copyFiles(getActivity(), recs, false);
+                        }
                         Toast.makeText(getActivity(), R.string.file_operation_started, Toast.LENGTH_SHORT).show();
                     }
                     // cr.delete(MainContentProvider.getCurrentSelectionUri(), null, null);
@@ -1151,12 +1201,13 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
             Collection<SrcDstCollection> cols,
             boolean move) throws Exception {
         Uri uri = item.getUri();
-        if (uri == null || !MainContentProvider.isClipboardUri(uri))
+        if (uri == null || !MainContentProvider.isClipboardUri(uri)) {
             return;
+        }
         Location srcLoc = lm.getLocation(MainContentProvider.getLocationUriFromProviderUri(uri));
-        if (move && srcLoc.getFS() == dstLocation.getFS())
+        if (move && srcLoc.getFS() == dstLocation.getFS()) {
             cols.add(new SrcDstSingle(srcLoc, dstLocation));
-        else {
+        } else {
             SrcDstRec sdr = new SrcDstRec(new SrcDstSingle(srcLoc, dstLocation));
             sdr.setIsDirLast(false);// move);
             cols.add(sdr);
@@ -1193,8 +1244,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
 
     private void copyToTemp() {
         ArrayList<Path> filesToCopy = getSelectedPaths();
-        if (filesToCopy.size() > 0)
+        if (filesToCopy.size() > 0) {
             FileOpsService.prepareTempFile(getActivity(), getRealLocation(), filesToCopy);
+        }
     }
 
     private void changeSortMode() {
@@ -1205,8 +1257,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     private void openFileAsContainer() {
         BrowserRecord br = getSelectedFiles().get(0);
         Location loc = getRealLocation();
-        if (loc == null)
+        if (loc == null) {
             return;
+        }
         loc = loc.copy();
         loc.setCurrentPath(br.getPath());
         getFragmentManager().

@@ -69,10 +69,11 @@ class DirEntry {
     }
 
     public void setDir(boolean val) {
-        if (val)
+        if (val) {
             attributes |= Attributes.subDir;
-        else
+        } else {
             attributes &= ~Attributes.subDir;
+        }
     }
 
     public boolean isReadOnly() {
@@ -80,10 +81,11 @@ class DirEntry {
     }
 
     public void setReadOnly(boolean val) {
-        if (val)
+        if (val) {
             attributes |= Attributes.readOnly;
-        else
+        } else {
             attributes &= ~Attributes.readOnly;
+        }
     }
 
     public boolean isVolumeLabel() {
@@ -91,10 +93,11 @@ class DirEntry {
     }
 
     public void setVolume(boolean val) {
-        if (val)
+        if (val) {
             attributes |= Attributes.volumeLabel;
-        else
+        } else {
             attributes &= ~Attributes.volumeLabel;
+        }
     }
 
     public boolean isFile() {
@@ -118,19 +121,24 @@ class DirEntry {
         int lfns = 0;
 
         for (; ; ) {
-            if (Util.readBytes(input, buf) != RECORD_SIZE) return null;
+            if (Util.readBytes(input, buf) != RECORD_SIZE) {
+                return null;
+            }
             int fb = Util.unsignedByteToInt(buf[0]);
             // if (fb == 0) return null;
             if (fb == 0xE5 || fb == 0) // deleted record
+            {
                 continue;
+            }
             if (buf[0x0B] == 0x0F) // LFN record
             {
                 if (seq < 0) {
                     pSeq = -1;
                     expectedChecksum = 0;
                     lfnSb = null;
-                } else
+                } else {
                     pSeq = seq;
+                }
 
                 seq = fb;
                 if (lfnSb == null) {
@@ -147,17 +155,21 @@ class DirEntry {
                         seq = -1;
                         continue;
                     }
-                } else
+                } else {
                     expectedChecksum = buf[0x0d];
+                }
                 lfnSb.insert(0, new String(buf, 1, 10, "UTF-16LE") + new String(buf, 0x0E, 12, "UTF-16LE") + new String(buf, 0x1C, 4, "UTF-16LE"));
                 lfns++;
             } else {
                 if (seq == 1) {
                     lfn = lfnSb.toString();
                     int idx = lfn.indexOf(0);
-                    if (idx >= 0) lfn = lfn.substring(0, idx);
-                } else
+                    if (idx >= 0) {
+                        lfn = lfn.substring(0, idx);
+                    }
+                } else {
                     lfn = null;
+                }
                 // if (fb == 0x05 || fb == 0xE5)
                 //	seq = -1;
                 // else
@@ -170,7 +182,9 @@ class DirEntry {
 
                 if (lfn != null) {
                     byte cs = calcChecksum(buf, 0);
-                    if (expectedChecksum != cs) lfn = null;
+                    if (expectedChecksum != cs) {
+                        lfn = null;
+                    }
                 }
 
 
@@ -178,12 +192,16 @@ class DirEntry {
                 if (lfn == null) {
                     String tmp = entry.dosName.substring(0, 8).trim();
                     if ((buf[0x0C] & 0x8) != 0) // lower case base name
+                    {
                         tmp = FileName.toLowerCase(tmp);
+                    }
                     entry.name = tmp;
                     tmp = entry.dosName.substring(8, 11).trim();
                     if (tmp.length() > 0) {
                         if ((buf[0x0C] & 0x4) != 0) // lower case extension
+                        {
                             tmp = FileName.toLowerCase(tmp);
+                        }
                         entry.name += '.' + tmp;
                     }
                 } else {
@@ -224,14 +242,16 @@ class DirEntry {
         try {
             boolean isLast = false;
             FileName fn = new FileName(name);
-            if (dosName == null)
+            if (dosName == null) {
                 initDosName(fn, fat, basePath, opTag);
+            }
             if (offset >= 0 && numLFNRecords == 0 && fn.isLFN) {
                 deleteEntry(fat, basePath, opTag);
                 offset = -1;
             }
-            if (offset < 0)
+            if (offset < 0) {
                 isLast = getFreeDirEntryOffset(fat, basePath, fn.isLFN ? (getNumLFNRecords() + 1) : 1, opTag);
+            }
 
             DirWriter os = fat.getDirWriter(basePath, opTag);
             try {
@@ -239,8 +259,9 @@ class DirEntry {
                 // Log.d("EDS", String.format("Writing dir entry %s at offset %d",name,offset));
                 os.seek(offset);
                 writeEntry(fn, os);
-                if (isLast)
+                if (isLast) {
                     os.write(0);
+                }
                 // zeroRemainingClusterSpace(fat, os, ((IFSStream) os).getPosition());
 
             } finally {
@@ -254,11 +275,16 @@ class DirEntry {
 
     public void writeEntry(FileName fn, DataOutput output) throws IOException {
         byte[] record = new byte[32];
-        if (dosName == null)
+        if (dosName == null) {
             dosName = fn.getDosName(0);
+        }
         putDosName(record);
-        if (fn.isLowerCaseName) record[0x0C] |= 0x8;
-        if (fn.isLowerCaseExtension) record[0x0C] |= 0x4;
+        if (fn.isLowerCaseName) {
+            record[0x0C] |= 0x8;
+        }
+        if (fn.isLowerCaseExtension) {
+            record[0x0C] |= 0x4;
+        }
         if (fn.isLFN) {
             // DEBUG
             // Log.d("EDS", "Entry is lfn");
@@ -287,7 +313,9 @@ class DirEntry {
     }
 
     public synchronized void deleteEntry(DirWriter output) throws IOException {
-        if (offset < 0) throw new IOException("deleteEntry error: can't delete new entry");
+        if (offset < 0) {
+            throw new IOException("deleteEntry error: can't delete new entry");
+        }
 
         for (int i = 0; i <= numLFNRecords; i++) {
             output.seek(offset + i * 32);
@@ -314,8 +342,9 @@ class DirEntry {
                             }
                     ) >= 0
             );
-        } else
+        } else {
             dosName = fn.getDosName(0);
+        }
     }
 
 
@@ -333,7 +362,9 @@ class DirEntry {
         } finally {
             dirStream.close();
         }
-        if (!r) throw new EOFException("getFreeDirEntryOffset error: no more free space");
+        if (!r) {
+            throw new EOFException("getFreeDirEntryOffset error: no more free space");
+        }
         offset = res - numDeletedEntries * DirEntry.RECORD_SIZE;
         return buf[0] == 0;
     }
@@ -350,7 +381,9 @@ class DirEntry {
         Calendar calend = new GregorianCalendar();
         calend.setTime(date);
         int val = calend.get(Calendar.SECOND);
-        if (val % 2 != 0) val = 1000;
+        if (val % 2 != 0) {
+            val = 1000;
+        }
         val += calend.get(Calendar.MILLISECOND);
         return (byte) (val / 10);
     }
@@ -385,10 +418,11 @@ class DirEntry {
             DirEntry entry;
             while (true) {
                 entry = DirEntry.readEntry(stream);
-                if (entry != null)
+                if (entry != null) {
                     res.add(entry.dosName.toUpperCase());
-                else
+                } else {
                     break;
+                }
             }
         } finally {
             stream.close();
@@ -399,7 +433,9 @@ class DirEntry {
 
     private void putDosName(byte[] recordData) {
         System.arraycopy(dosName.getBytes(), 0, recordData, 0, 11);
-        if (Util.unsignedByteToInt(recordData[0]) == 0xE5) recordData[0] = 0x05;
+        if (Util.unsignedByteToInt(recordData[0]) == 0xE5) {
+            recordData[0] = 0x05;
+        }
     }
 
     private void writeLFNRecords(DataOutput output, int checkSum) throws IOException {
@@ -413,7 +449,9 @@ class DirEntry {
         int numChars = name.length();
         int numRecords = numChars / 13;
         int lastChar = numChars % 13;
-        if (lastChar != 0) numRecords++;
+        if (lastChar != 0) {
+            numRecords++;
+        }
 
         byte[] recData = new byte[RECORD_SIZE];
         recData[0x0b] = 0x0f;
@@ -426,8 +464,9 @@ class DirEntry {
                 if (charIdx < numChars) {
                     recData[idx] = bytes[charIdx * 2];
                     recData[idx + 1] = bytes[charIdx * 2 + 1];
-                } else
+                } else {
                     Util.shortToBytesLE(charIdx == numChars ? 0 : (short) 0xFFFF, recData, idx);
+                }
                 charIdx++;
             }
             // DEBUG

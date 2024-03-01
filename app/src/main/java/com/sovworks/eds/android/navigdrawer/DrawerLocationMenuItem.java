@@ -60,8 +60,9 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
             if (LocationsManager.isOpenableAndOpen(_location)) {
                 iv.setVisibility(View.VISIBLE);
                 iv.setOnClickListener(_closeIconClickListener);
-            } else
+            } else {
                 iv.setVisibility(View.INVISIBLE);
+            }
         }
     }
 
@@ -116,9 +117,9 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
     protected Bundle getOpenerArgs() {
         Bundle b = new Bundle();
         FileListDataFragment.HistoryItem hi = findPrevLocation(_location);
-        if (hi == null)
+        if (hi == null) {
             LocationsManager.storePathsInBundle(b, _location, null);
-        else {
+        } else {
             b.putParcelable(LocationsManager.PARAM_LOCATION_URI, hi.locationUri);
             b.putInt(FileListViewFragmentBase.ARG_SCROLL_POSITION, hi.scrollPosition);
         }
@@ -152,12 +153,14 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
         if (df != null) {
             Stack<FileListDataFragment.HistoryItem> hist = df.getNavigHistory();
             String locId = loc.getId();
-            if (locId != null)
+            if (locId != null) {
                 for (int i = hist.size() - 1; i >= 0; i--) {
                     FileListDataFragment.HistoryItem hi = hist.get(i);
-                    if (locId.equals(hi.locationId))
+                    if (locId.equals(hi.locationId)) {
                         return hi;
+                    }
                 }
+            }
         }
         return null;
     }

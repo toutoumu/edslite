@@ -23,14 +23,15 @@ import java.io.InputStream;
 @SuppressLint("NewApi")
 public class CompatHelperBase {
     public static void setWindowFlagSecure(Activity act) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             act.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+        }
     }
 
     public static void restartActivity(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             activity.recreate();
-        else {
+        } else {
             Intent intent = activity.getIntent();
             activity.overridePendingTransition(0, 0);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -63,8 +64,9 @@ public class CompatHelperBase {
                 } finally {
                     decoder.recycle();
                 }
-            } else
+            } else {
                 return BitmapFactory.decodeStream(data, null, options);
+            }
         } finally {
             data.close();
         }

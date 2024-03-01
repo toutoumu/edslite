@@ -86,12 +86,14 @@ public class B64 {
         for (int cnt = 0; cnt < count; ++cnt) {
             int ch = in[offset + cnt];
             if (ch > 11) {
-                if (ch > 37)
+                if (ch > 37) {
                     ch += 'a' - 38;
-                else
+                } else {
                     ch += 'A' - 12;
-            } else
+                }
+            } else {
                 ch = B642AsciiTable[ch];
+            }
             sb.append((char) ch);
         }
         return sb.toString();
@@ -101,10 +103,11 @@ public class B64 {
         StringBuilder sb = new StringBuilder();
         for (int cnt = 0; cnt < count; ++cnt) {
             int ch = buf[offset + cnt];
-            if (ch >= 0 && ch < 26)
+            if (ch >= 0 && ch < 26) {
                 ch += 'A';
-            else
+            } else {
                 ch += '2' - 26;
+            }
 
             sb.append((char) ch);
         }
@@ -116,10 +119,11 @@ public class B64 {
         int i = 0;
         for (char ch : s.toCharArray()) {
             int lch = Character.toUpperCase(ch);
-            if (lch >= 'A')
+            if (lch >= 'A') {
                 lch -= 'A';
-            else
+            } else {
                 lch += 26 - '2';
+            }
             res[i++] = (byte) (lch & 0xFF);
         }
         return res;
@@ -133,12 +137,14 @@ public class B64 {
         int i = 0;
         for (char ch : s.toCharArray()) {
             if (ch >= 'A') {
-                if (ch >= 'a')
+                if (ch >= 'a') {
                     ch += 38 - 'a';
-                else
+                } else {
                     ch += 12 - 'A';
-            } else
+                }
+            } else {
                 ch = (char) (Ascii2B64Table[ch] - '0');
+            }
             res[i++] = (byte) (ch & 0xFF);
         }
         return res;

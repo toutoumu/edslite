@@ -6,7 +6,9 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+
 import androidx.annotation.NonNull;
+
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -61,10 +63,11 @@ public class GestureImageView extends ImageView {
                                    float velocityY) {
                 if (_navigListener != null && _allowNavig)//&& Math.abs(velocityX) > MIN_NAVIG_VELOCITY)
                 {
-                    if (velocityX < 0)
+                    if (velocityX < 0) {
                         _navigListener.onNext();
-                    else
+                    } else {
                         _navigListener.onPrev();
+                    }
 
                     return true;
                 }
@@ -105,8 +108,9 @@ public class GestureImageView extends ImageView {
 
                 // Only move if the ScaleGestureDetector isn't processing a gesture.
                 if (!_scaleDetector.isInProgress()) {
-                    if (getDrawable() == null)
+                    if (getDrawable() == null) {
                         break;
+                    }
 
                     final float dx = x - _lastTouchX;
                     final float dy = y - _lastTouchY;
@@ -159,8 +163,9 @@ public class GestureImageView extends ImageView {
     }
 
     public void setOptimImage(Bitmap b, int sampleSize) {
-        if (_optimImage != null)
+        if (_optimImage != null) {
             _optimImage.recycle();
+        }
         float sfX = (float) sampleSize / (float) _originalSampleSize * _scaleFactorX;
         float sfy = (float) sampleSize / (float) _originalSampleSize * _scaleFactorY;
         _optimImage = b;
@@ -191,8 +196,9 @@ public class GestureImageView extends ImageView {
             _optimImage = null;
         }
 
-        if (_originalImage != null)
+        if (_originalImage != null) {
             _originalImage.recycle();
+        }
         _originalImage = bm;
         _originalSampleSize = sampleSize;
         _rotation = rotation;
@@ -271,10 +277,12 @@ public class GestureImageView extends ImageView {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         _viewRect.set(0, 0, w, h);
-        if (!_inited)
+        if (!_inited) {
             calcInitParams();
-        if (_onSizeChangedListener != null)
+        }
+        if (_onSizeChangedListener != null) {
             _onSizeChangedListener.run();
+        }
     }
 
 
@@ -340,8 +348,9 @@ public class GestureImageView extends ImageView {
     }
 
     private void startOptimImageLoad() {
-        if (_onLoadOptimImageListener == null)
+        if (_onLoadOptimImageListener == null) {
             return;
+        }
 
         if (_originalSampleSize > 1) {
             RectF rf = new RectF(_imageRect);
@@ -363,8 +372,9 @@ public class GestureImageView extends ImageView {
     }
 
     private void calcInitParams() {
-        if (_imageRect.width() == 0 || _imageRect.height() == 0 || _viewRect.width() == 0 || _viewRect.height() == 0)
+        if (_imageRect.width() == 0 || _imageRect.height() == 0 || _viewRect.width() == 0 || _viewRect.height() == 0) {
             return;
+        }
 
         _scaleX = _scaleY = 0;
         _posX = _posY = 0;
@@ -376,13 +386,14 @@ public class GestureImageView extends ImageView {
         }
 
         float scaleFactor;
-        if (imageRect.width() <= _viewRect.width() && imageRect.height() <= _viewRect.height() && !_autoZoom)
+        if (imageRect.width() <= _viewRect.width() && imageRect.height() <= _viewRect.height() && !_autoZoom) {
             scaleFactor = 1.f;
-        else
+        } else {
             scaleFactor = Math.min(
                     _viewRect.height() / imageRect.height(),
                     _viewRect.width() / imageRect.width()
             );
+        }
 
 
         _scaleFactorX = _flipX ? -scaleFactor : scaleFactor;
@@ -419,20 +430,22 @@ public class GestureImageView extends ImageView {
         RectF imageRect = new RectF(curImageRect);
         curImageMatrix.mapRect(imageRect);
 
-        if (imageRect.height() <= _viewRect.height())
+        if (imageRect.height() <= _viewRect.height()) {
             deltaY = (_viewRect.height() - imageRect.height()) / 2 - imageRect.top;
-        else if (imageRect.top > 0)
+        } else if (imageRect.top > 0) {
             deltaY = -imageRect.top;
-        else if (imageRect.bottom < _viewRect.height())
+        } else if (imageRect.bottom < _viewRect.height()) {
             deltaY = _viewRect.height() - imageRect.bottom;
+        }
 
 
-        if (imageRect.width() <= _viewRect.width())
+        if (imageRect.width() <= _viewRect.width()) {
             deltaX = (_viewRect.width() - imageRect.width()) / 2 - imageRect.left;
-        else if (imageRect.left > 0)
+        } else if (imageRect.left > 0) {
             deltaX = -imageRect.left;
-        else if (imageRect.right < _viewRect.width())
+        } else if (imageRect.right < _viewRect.width()) {
             deltaX = _viewRect.width() - imageRect.right;
+        }
 
         outDelta.offset(deltaX, deltaY);
     }

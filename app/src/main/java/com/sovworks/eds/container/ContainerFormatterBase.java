@@ -51,17 +51,20 @@ public abstract class ContainerFormatterBase extends EDSLocationFormatter {
     protected ContainerFormatterBase(Parcel in) {
         super(in);
         String s = in.readString();
-        if (s != null)
+        if (s != null) {
             _containerFormat = getContainerFormatByName(s);
+        }
         _containerSize = in.readLong();
         _randFreeSpace = in.readByte() != 0;
         s = in.readString();
         String s2 = in.readString();
-        if (s != null && s2 != null)
+        if (s != null && s2 != null) {
             setEncryptionEngine(s, s2);
+        }
         s = in.readString();
-        if (s != null)
+        if (s != null) {
             setHashFunc(s);
+        }
     }
 
     @Override
@@ -130,19 +133,24 @@ public abstract class ContainerFormatterBase extends EDSLocationFormatter {
 
     @Override
     protected EDSLocation createLocation(Location location) throws IOException, ApplicationException, UserException {
-        if (_containerFormat == null)
+        if (_containerFormat == null) {
             throw new IllegalStateException("Container format is not specified");
-        if (_containerSize < 1024L * 1024L)
+        }
+        if (_containerSize < 1024L * 1024L) {
             throw new IllegalStateException("Container size is too small");
+        }
 
         VolumeLayout layout = getLayout();
         setVolumeLayoutPassword(layout);
-        if (_numKDFIterations > 0)
+        if (_numKDFIterations > 0) {
             layout.setNumKDFIterations(_numKDFIterations);
-        if (_encryptionEngine != null)
+        }
+        if (_encryptionEngine != null) {
             layout.setEngine(_encryptionEngine);
-        if (_hashFunc != null)
+        }
+        if (_hashFunc != null) {
             layout.setHashFunc(_hashFunc);
+        }
 
 		/*Path contPath = location.getCurrentPath();
 		if(!contPath.isFile())
@@ -197,20 +205,21 @@ public abstract class ContainerFormatterBase extends EDSLocationFormatter {
     }
 
     protected void format(RandomAccessIO io, VolumeLayout layout) throws IOException, ApplicationException, UserException {
-        if (layout instanceof StdLayout)
+        if (layout instanceof StdLayout) {
             formatTCBasedContainer(
                     io,
                     (com.sovworks.eds.truecrypt.FormatInfo) _containerFormat,
                     (StdLayout) layout,
                     _containerSize,
                     _randFreeSpace);
-        else if (layout instanceof com.sovworks.eds.luks.VolumeLayout)
+        } else if (layout instanceof com.sovworks.eds.luks.VolumeLayout) {
             formatLUKSContainer(
                     io,
                     (com.sovworks.eds.luks.FormatInfo) _containerFormat,
                     (com.sovworks.eds.luks.VolumeLayout) layout,
                     _containerSize,
                     _randFreeSpace);
+        }
     }
 
     protected void formatLUKSContainer(RandomAccessIO io, com.sovworks.eds.luks.FormatInfo containerFormat, com.sovworks.eds.luks.VolumeLayout layout, long containerSize, boolean randFreeSpace) throws IOException, ApplicationException {
@@ -238,16 +247,19 @@ public abstract class ContainerFormatterBase extends EDSLocationFormatter {
                     pass, _containerFormat.getMaxPasswordLength()
             ));
             SecureBuffer.eraseData(pass);
-        } else
+        } else {
             layout.setPassword(new byte[0]);
+        }
     }
 
     protected void setHints(ContainerLocation cont) {
         cont.getExternalSettings().setContainerFormatName(_containerFormat.getFormatName());
-        if (_encryptionEngine != null)
+        if (_encryptionEngine != null) {
             cont.getExternalSettings().setEncEngineName(VolumeLayoutBase.getEncEngineName(_encryptionEngine));
-        if (_hashFunc != null)
+        }
+        if (_hashFunc != null) {
             cont.getExternalSettings().setHashFuncName(_hashFunc.getAlgorithm());
+        }
     }
 
     protected void setExternalContainerSettings(EDSLocation loc) throws ApplicationException, IOException {
@@ -282,8 +294,9 @@ public abstract class ContainerFormatterBase extends EDSLocationFormatter {
                 f.seek(fat.getClusterOffset(i));
                 f.write(buf, 0, buf.length);
             }
-            if (!reportProgress((byte) (i * 100 / clusterTable.length)))
+            if (!reportProgress((byte) (i * 100 / clusterTable.length))) {
                 break;
+            }
         }
     }
 
@@ -294,15 +307,17 @@ public abstract class ContainerFormatterBase extends EDSLocationFormatter {
         for (long i = 0; i < size; i += buf.length) {
             r.nextBytes(buf);
             f.write(buf, 0, buf.length);
-            if (!reportProgress((byte) (i * 100 / size)))
+            if (!reportProgress((byte) (i * 100 / size))) {
                 break;
+            }
         }
     }
 
     private ContainerFormatInfo getContainerFormatByName(String name) {
         for (ContainerFormatInfo ci : EdsContainer.getSupportedFormats())
-            if (ci.getFormatName().equals(name))
+            if (ci.getFormatName().equals(name)) {
                 return ci;
+            }
         return null;
     }
 }

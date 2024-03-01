@@ -35,8 +35,9 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
 
     public static void updateRowView(FileListViewFragment host, Object item) {
         RowViewInfo rvi = getCurrentRowViewInfo(host, item);
-        if (rvi != null)
+        if (rvi != null) {
             updateRowView(rvi);
+        }
     }
 
     public static void updateRowView(RowViewInfo rvi) {
@@ -44,11 +45,13 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
     }
 
     public static RowViewInfo getCurrentRowViewInfo(FileListViewFragment host, Object item) {
-        if (host == null || host.isRemoving() || !host.isResumed())
+        if (host == null || host.isRemoving() || !host.isResumed()) {
             return null;
+        }
         ListView list = host.getListView();
-        if (list == null)
+        if (list == null) {
             return null;
+        }
         int start = list.getFirstVisiblePosition();
         for (int i = start, j = list.getLastVisiblePosition(); i <= j; i++)
             if (j < list.getCount() && item == list.getItemAtPosition(i)) {
@@ -62,8 +65,9 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
     }
 
     public static RowViewInfo getCurrentRowViewInfo(FileManagerActivity host, Object item) {
-        if (host == null)
+        if (host == null) {
             return null;
+        }
         FileListViewFragment f = (FileListViewFragment) host.getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
         return getCurrentRowViewInfo(f, item);
     }
@@ -84,8 +88,9 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
 
     @Override
     public View createView(int position, ViewGroup parent) {
-        if (_host == null)
+        if (_host == null) {
             return null;
+        }
         LayoutInflater inflater = (LayoutInflater) _host.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.fs_browser_row, parent, false);
         ((ViewGroup) v).setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
@@ -106,14 +111,16 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
                 cb.setChecked(isSelected());
                 cb.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 {
-                    if (isChecked)
+                    if (isChecked) {
                         hf.selectFile(FsBrowserRecord.this);
-                    else
+                    } else {
                         hf.unselectFile(FsBrowserRecord.this);
+                    }
                 });
                 cb.setVisibility(View.VISIBLE);
-            } else
+            } else {
                 cb.setVisibility(View.INVISIBLE);
+            }
         }
         RadioButton rb = view.findViewById(R.id.radio);
         if (rb != null) {
@@ -122,14 +129,16 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
                 rb.setChecked(isSelected());
                 rb.setOnCheckedChangeListener((compoundButton, isChecked) ->
                 {
-                    if (isChecked)
+                    if (isChecked) {
                         hf.selectFile(FsBrowserRecord.this);
-                    else
+                    } else {
                         hf.unselectFile(FsBrowserRecord.this);
+                    }
                 });
                 rb.setVisibility(View.VISIBLE);
-            } else
+            } else {
                 rb.setVisibility(View.INVISIBLE);
+            }
         }
 
         TextView tv = view.findViewById(android.R.id.text1);
@@ -151,9 +160,9 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
         }); */
 
         iv = view.findViewById(android.R.id.icon1);
-        if (_miniIcon == null)
+        if (_miniIcon == null) {
             iv.setVisibility(View.INVISIBLE);
-        else {
+        } else {
             iv.setImageDrawable(_miniIcon);
             iv.setVisibility(View.VISIBLE);
         }

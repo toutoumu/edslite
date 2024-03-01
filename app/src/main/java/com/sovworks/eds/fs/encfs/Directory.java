@@ -45,8 +45,9 @@ public class Directory extends DirectoryWrapper {
 
     @Override
     public void rename(String newName) throws IOException {
-        if (getPath().getNamingCodecInfo().useChainedNamingIV() || getPath().getFileSystem().getConfig().useExternalFileIV())
+        if (getPath().getNamingCodecInfo().useChainedNamingIV() || getPath().getFileSystem().getConfig().useExternalFileIV()) {
             throw new UnsupportedOperationException();
+        }
         StringPathUtil newEncodedPath = getPath().getParentPath().calcCombinedEncodedParts(newName);
         super.rename(newEncodedPath.getFileName());
     }
@@ -54,13 +55,15 @@ public class Directory extends DirectoryWrapper {
     @Override
     public File createFile(String name) throws IOException {
         StringPathUtil decodedPath = getPath().getDecodedPath();
-        if (decodedPath != null)
+        if (decodedPath != null) {
             decodedPath = decodedPath.combine(name);
+        }
         StringPathUtil newEncodedPath = getPath().calcCombinedEncodedParts(name);
         com.sovworks.eds.fs.encfs.File res = (com.sovworks.eds.fs.encfs.File) super.createFile(newEncodedPath.getFileName());
         res.getPath().setEncodedPath(newEncodedPath);
-        if (decodedPath != null)
+        if (decodedPath != null) {
             res.getPath().setDecodedPath(decodedPath);
+        }
         res.getOutputStream().close();
         return res;
     }
@@ -68,20 +71,23 @@ public class Directory extends DirectoryWrapper {
     @Override
     public com.sovworks.eds.fs.Directory createDirectory(String name) throws IOException {
         StringPathUtil decodedPath = getPath().getDecodedPath();
-        if (decodedPath != null)
+        if (decodedPath != null) {
             decodedPath = decodedPath.combine(name);
+        }
         StringPathUtil newEncodedPath = getPath().calcCombinedEncodedParts(name);
         Directory res = (Directory) super.createDirectory(newEncodedPath.getFileName());
         res.getPath().setEncodedPath(newEncodedPath);
-        if (decodedPath != null)
+        if (decodedPath != null) {
             res.getPath().setDecodedPath(decodedPath);
+        }
         return res;
     }
 
     @Override
     public void moveTo(com.sovworks.eds.fs.Directory dst) throws IOException {
-        if (getPath().getNamingCodecInfo().useChainedNamingIV() || getPath().getFileSystem().getConfig().useExternalFileIV())
+        if (getPath().getNamingCodecInfo().useChainedNamingIV() || getPath().getFileSystem().getConfig().useExternalFileIV()) {
             throw new UnsupportedOperationException();
+        }
         super.moveTo(dst);
     }
 

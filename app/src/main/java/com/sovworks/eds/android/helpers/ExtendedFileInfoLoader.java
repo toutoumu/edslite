@@ -2,7 +2,9 @@ package com.sovworks.eds.android.helpers;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
+
 import android.util.LruCache;
 
 import com.sovworks.eds.android.Logger;
@@ -35,8 +37,9 @@ public class ExtendedFileInfoLoader implements Closeable {
     }
 
     public static synchronized ExtendedFileInfoLoader getInstance() {
-        if (_instance == null)
+        if (_instance == null) {
             _instance = new ExtendedFileInfoLoader();
+        }
         return _instance;
     }
 
@@ -76,9 +79,9 @@ public class ExtendedFileInfoLoader implements Closeable {
     public void requestExtendedInfo(String locationId, BrowserRecord rec) {
         InfoCache ii = new InfoCache(locationId, rec);
         ExtendedFileInfo data = _loadedInfo.get(ii.getPathKey());
-        if (data != null)
+        if (data != null) {
             data.attach(rec);
-        else {
+        } else {
             synchronized (_loadingQueue) {
                 enqueueRequest(ii);
             }
@@ -89,8 +92,9 @@ public class ExtendedFileInfoLoader implements Closeable {
     public void detachRecord(String locationId, BrowserRecord rec) {
         InfoCache ii = new InfoCache(locationId, rec);
         ExtendedFileInfo data = _loadedInfo.get(ii.getPathKey());
-        if (data != null)
+        if (data != null) {
             data.detach(rec);
+        }
         synchronized (_loadingQueue) {
             _loadingQueue.discard(rec);
         }
@@ -131,12 +135,14 @@ public class ExtendedFileInfoLoader implements Closeable {
             while (!_stop) {
                 try {
                     synchronized (_loadingQueue) {
-                        if (nextTarget == null)
+                        if (nextTarget == null) {
                             _loadingQueue.wait();
+                        }
                         nextTarget = _loadingQueue.getLast();//_loadingQueue.poll();
                     }
-                    if (nextTarget != null && !nextTarget.discard)
+                    if (nextTarget != null && !nextTarget.discard) {
                         processExtInfo(nextTarget);
+                    }
                 } catch (Exception e) {
                     Logger.log(e);
                 }
@@ -151,8 +157,9 @@ public class ExtendedFileInfoLoader implements Closeable {
                 {
                     if (!ii.discard) {
                         data.attach(ii.record);
-                        if (!_pause)
+                        if (!_pause) {
                             ii.record.updateView();
+                        }
                     }
 
                 });
@@ -173,8 +180,9 @@ public class ExtendedFileInfoLoader implements Closeable {
     }
 
     private void enqueueRequest(InfoCache ii) {
-        if (_loadingQueue.size() == _loadingQueue.getCapacity())
+        if (_loadingQueue.size() == _loadingQueue.getCapacity()) {
             removeOldestInfo();
+        }
         _loadingQueue.add(ii);
         _loadingQueue.notify();
     }
@@ -210,15 +218,17 @@ class FileInfoLoadQueue extends AbstractQueue<InfoCache> {
     void discard(BrowserRecord rec) {
         for (int i = 0; i < _usedSlots; i++) {
             InfoCache tmp = _buf[(_headPosition + i) % _buf.length];
-            if (tmp.record == rec)
+            if (tmp.record == rec) {
                 tmp.discard = true;
+            }
         }
     }
 
     @Override
     public boolean offer(InfoCache e) {
-        if (e == null)
+        if (e == null) {
             throw new RuntimeException("Argument cannot be null");
+        }
 
         if (_usedSlots < _buf.length) {
             _buf[(_headPosition + _usedSlots++) % _buf.length] = e;
@@ -234,8 +244,9 @@ class FileInfoLoadQueue extends AbstractQueue<InfoCache> {
 
     @Override
     public InfoCache poll() {
-        if (_usedSlots == 0)
+        if (_usedSlots == 0) {
             return null;
+        }
 
         InfoCache tmp = _buf[_headPosition];
         _buf[_headPosition] = null;
@@ -245,8 +256,9 @@ class FileInfoLoadQueue extends AbstractQueue<InfoCache> {
     }
 
     public InfoCache getLast() {
-        if (_usedSlots == 0)
+        if (_usedSlots == 0) {
             return null;
+        }
 
         int pos = (_headPosition + _usedSlots - 1) % _buf.length;
         InfoCache tmp = _buf[pos];
@@ -273,8 +285,9 @@ class FileInfoLoadQueue extends AbstractQueue<InfoCache> {
 
             @Override
             public InfoCache next() {
-                if (!hasNext())
+                if (!hasNext()) {
                     throw new NoSuchElementException();
+                }
 
                 return _buf[(_headPosition + _proc++) % _buf.length];
             }

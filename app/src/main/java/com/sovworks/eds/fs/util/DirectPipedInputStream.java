@@ -14,8 +14,9 @@ public class DirectPipedInputStream extends InputStream {
     @Override
     public int read(byte[] buf, int offset, int len) throws IOException {
         synchronized (_sync) {
-            if (_finWrite)
+            if (_finWrite) {
                 return -1;
+            }
             _actualBytes = -1;
             _buffer = buf;
             _offset = offset;
@@ -24,11 +25,13 @@ public class DirectPipedInputStream extends InputStream {
         }
         while (true) {
             synchronized (_sync) {
-                if (_actualBytes > 0)
+                if (_actualBytes > 0) {
                     return _actualBytes;
+                }
 
-                if (_finWrite)
+                if (_finWrite) {
                     return -1;
+                }
                 try {
                     _sync.wait();
                 } catch (InterruptedException e) {
@@ -48,8 +51,9 @@ public class DirectPipedInputStream extends InputStream {
     byte[] getBuffer() {
         while (!_finRead) {
             synchronized (_sync) {
-                if (_buffer != null)
+                if (_buffer != null) {
                     break;
+                }
                 try {
                     _sync.wait();
                 } catch (InterruptedException e) {

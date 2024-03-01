@@ -79,8 +79,9 @@ public abstract class SingleChoiceDialog<T> extends DialogFragment {
     protected final void fillList(List<T> items) {
         final ArrayAdapter<T> adapter = initAdapter(items);
         getListView().setAdapter(adapter);
-        if (adapter.getCount() > 0 && _listView.getCheckedItemPosition() < 0)
+        if (adapter.getCount() > 0 && _listView.getCheckedItemPosition() < 0) {
             getListView().setItemChecked(0, true);
+        }
         _okButton.setEnabled(_listView.getCheckedItemPosition() >= 0);
         if (_progressBar != null) {
             _progressBar.setVisibility(View.GONE);

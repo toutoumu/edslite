@@ -20,8 +20,9 @@ public abstract class StdFsRecord implements FSRecord {
 
     @Override
     public void setLastModified(Date dt) throws IOException {
-        if (!_path.getJavaFile().setLastModified(dt.getTime()))
+        if (!_path.getJavaFile().setLastModified(dt.getTime())) {
             throw new IOException("Failed setting last modified date");
+        }
     }
 
     @Override
@@ -31,8 +32,9 @@ public abstract class StdFsRecord implements FSRecord {
 
     @Override
     public void delete() throws IOException {
-        if (_path.exists() && !_path.getJavaFile().delete())
+        if (_path.exists() && !_path.getJavaFile().delete()) {
             throw new IOException(String.format("Failed deleting %s", _path.getPathString()));
+        }
     }
 
     @Override
@@ -51,8 +53,9 @@ public abstract class StdFsRecord implements FSRecord {
     }
 
     public void moveTo(StdFsPath newPath) throws IOException {
-        if (!_path.getJavaFile().renameTo(newPath.getJavaFile()))
+        if (!_path.getJavaFile().renameTo(newPath.getJavaFile())) {
             throw new IOException(String.format("Failed renaming %s to %s", _path.getPathString(), newPath.getPathString()));
+        }
         _path = newPath;
     }
 

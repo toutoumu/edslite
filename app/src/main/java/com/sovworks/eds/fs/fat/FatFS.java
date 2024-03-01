@@ -49,10 +49,12 @@ public class FatFS implements FileSystem {
             if (Util.readBytes(f, buf) == buf.length) {
                 if (!Arrays.equals(cmp, buf)) {
                     f.seek(0x052);
-                    if (Util.readBytes(f, buf) == buf.length)
+                    if (Util.readBytes(f, buf) == buf.length) {
                         return Arrays.equals(cmp, buf);
-                } else
+                    }
+                } else {
                     return true;
+                }
             }
 
         } catch (IOException ignored) {
@@ -79,14 +81,16 @@ public class FatFS implements FileSystem {
 
     private static void logAquired(int id) {
         // noinspection PointlessBooleanExpression,ConstantConditions
-        if (BuildConfig.DEBUG && LOG_ACQUIRE)
+        if (BuildConfig.DEBUG && LOG_ACQUIRE) {
             Log.v(TAG, id + " has been acquired.");
+        }
     }
 
     private static void logReleased(int id) {
         // noinspection PointlessBooleanExpression,ConstantConditions
-        if (BuildConfig.DEBUG && LOG_ACQUIRE)
+        if (BuildConfig.DEBUG && LOG_ACQUIRE) {
             Log.v(TAG, id + " has been released.");
+        }
     }
 
     /**
@@ -107,15 +111,16 @@ public class FatFS implements FileSystem {
             int root_dir_sectors = bpb.rootDirEntries * DirEntry.RECORD_SIZE / bpb.bytesPerSector;
             long data_sectors = sectorsNumber - (bpb.reservedSectors + bpb.numberOfFATs * bpb.getSectorsPerFat() + root_dir_sectors);
             int num_clusters = 1 + (int) (data_sectors / bpb.sectorsPerCluster);
-            if (root_dir_sectors == 0)
+            if (root_dir_sectors == 0) {
                 fat = new Fat32FS(input);
-            else {
-                if (num_clusters < 4085)
+            } else {
+                if (num_clusters < 4085) {
                     fat = new Fat12FS(input);
-                else if (num_clusters < 65525)
+                } else if (num_clusters < 65525) {
                     fat = new Fat16FS(input);
-                else
+                } else {
                     fat = new Fat32FS(input);
+                }
             }
             fat.init();
         }
@@ -123,7 +128,9 @@ public class FatFS implements FileSystem {
     }
 
     public static FatFS formatFat(RandomAccessIO input, long size) throws IllegalArgumentException, IOException {
-        if (size <= 0 || size > 1000000000000L) throw new IllegalArgumentException("Wrong size: " + size);
+        if (size <= 0 || size > 1000000000000L) {
+            throw new IllegalArgumentException("Wrong size: " + size);
+        }
 
         FatFS fat;
         // noinspection SynchronizationOnLocalVariableOrMethodParameter
@@ -132,12 +139,13 @@ public class FatFS implements FileSystem {
             int numClusters = (int) (size / (clustSize * SECTOR_SIZE));
             size = (long) numClusters * clustSize * SECTOR_SIZE;
 
-            if (numClusters < 4085)
+            if (numClusters < 4085) {
                 fat = new Fat12FS(input);
-            else if (numClusters < 65525)
+            } else if (numClusters < 65525) {
                 fat = new Fat16FS(input);
-            else
+            } else {
                 fat = new Fat32FS(input);
+            }
 
             input.seek(size - 1);
             input.write(0);
@@ -163,33 +171,35 @@ public class FatFS implements FileSystem {
 
     public static int getOptimalClusterSize(long volumeSize, int sectorSize) {
         int clusterSize;
-        if (volumeSize >= 2 * 1024L * 1024L * 1024L * 1024L)
+        if (volumeSize >= 2 * 1024L * 1024L * 1024L * 1024L) {
             clusterSize = 256 * 1024;
-        else if (volumeSize >= 512 * 1024L * 1024L * 1024L)
+        } else if (volumeSize >= 512 * 1024L * 1024L * 1024L) {
             clusterSize = 128 * 1024;
-        else if (volumeSize >= 128 * 1024L * 1024L * 1024L)
+        } else if (volumeSize >= 128 * 1024L * 1024L * 1024L) {
             clusterSize = 64 * 1024;
-        else if (volumeSize >= 64 * 1024L * 1024L * 1024L)
+        } else if (volumeSize >= 64 * 1024L * 1024L * 1024L) {
             clusterSize = 32 * 1024;
-        else if (volumeSize >= 32 * 1024L * 1024L * 1024L)
+        } else if (volumeSize >= 32 * 1024L * 1024L * 1024L) {
             clusterSize = 16 * 1024;
-        else if (volumeSize >= 16 * 1024L * 1024L * 1024L)
+        } else if (volumeSize >= 16 * 1024L * 1024L * 1024L) {
             clusterSize = 8 * 1024;
-        else if (volumeSize >= 512 * 1024L * 1024L)
+        } else if (volumeSize >= 512 * 1024L * 1024L) {
             clusterSize = 4 * 1024;
-        else if (volumeSize >= 256 * 1024L * 1024L)
+        } else if (volumeSize >= 256 * 1024L * 1024L) {
             clusterSize = 2 * 1024;
-        else if (volumeSize >= 1024L * 1024L)
+        } else if (volumeSize >= 1024L * 1024L) {
             clusterSize = 1024;
-        else
+        } else {
             clusterSize = 512;
+        }
 
         clusterSize /= sectorSize;
 
-        if (clusterSize == 0)
+        if (clusterSize == 0) {
             clusterSize = 1;
-        else if (clusterSize > 128)
+        } else if (clusterSize > 128) {
             clusterSize = 128;
+        }
 
         return clusterSize;
     }
@@ -198,10 +208,12 @@ public class FatFS implements FileSystem {
 
     @Override
     public synchronized Path getRootPath() {
-        if (_rootPath == null) try {
-            _rootPath = getPath("");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (_rootPath == null) {
+            try {
+                _rootPath = getPath("");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         return _rootPath;
     }
@@ -219,8 +231,9 @@ public class FatFS implements FileSystem {
         FatPath fp = new FatPath(pathString);
         String[] components = fp.getPathUtil().getComponents();
         for (String cmp : components)
-            if (!isValidFileName(cmp))
+            if (!isValidFileName(cmp)) {
                 throw new IOException("Invalid path: " + pathString);
+            }
         return fp;
     }
 
@@ -238,8 +251,9 @@ public class FatFS implements FileSystem {
                         break;
                     }
                     timeLeft -= (int) (System.currentTimeMillis() - curTime);
-                } else
+                } else {
                     break;
+                }
             }
         }
         synchronized (_ioSyncer) {
@@ -252,8 +266,9 @@ public class FatFS implements FileSystem {
                                 sb.append(p.getPathDesc()).append(", ");
                             sb.delete(sb.length() - 2, sb.length());
                             throw new IOException("File system is in use. Opened files list: " + sb.toString());
-                        } else
+                        } else {
                             throw new IOException("File system is in use.");
+                        }
                     }
                 }
             }
@@ -276,11 +291,15 @@ public class FatFS implements FileSystem {
 
     public static boolean isValidFileNameImpl(String fileName) {
         String tfn = fileName.trim();
-        if (tfn.equals("") || tfn.equals(".") || tfn.endsWith("..")) return false;
+        if (tfn.equals("") || tfn.equals(".") || tfn.endsWith("..")) {
+            return false;
+        }
 
         for (int i = 0; i < fileName.length(); i++) {
             char c = fileName.charAt(i);
-            if (c <= 31 || RESERVED_SYMBOLS.indexOf(c) >= 0) return false;
+            if (c <= 31 || RESERVED_SYMBOLS.indexOf(c) >= 0) {
+                return false;
+            }
         }
 
         return true;
@@ -316,8 +335,9 @@ public class FatFS implements FileSystem {
         int timeLeft = PATH_LOCK_TIMEOUT;
         while (timeLeft > 0) {
             synchronized (_openedFiles) {
-                if (_isClosing)
+                if (_isClosing) {
                     throw new FileInUseException("File system is closing");
+                }
 
                 OpenFileInfo ofi = _openedFiles.get(path);
                 if (ofi != null) {
@@ -336,8 +356,9 @@ public class FatFS implements FileSystem {
                         timeLeft -= (int) (System.currentTimeMillis() - curTime);
                     } else {
                         ofi.refCount++;
-                        if (ofi.accessMode != mode && ofi.accessMode == AccessMode.Read)
+                        if (ofi.accessMode != mode && ofi.accessMode == AccessMode.Read) {
                             ofi.accessMode = mode;
+                        }
                         return;
                     }
                 } else {
@@ -357,8 +378,9 @@ public class FatFS implements FileSystem {
             OpenFileInfo ofi = _openedFiles.get(path);
             if (ofi != null) {
                 ofi.refCount--;
-                if (ofi.refCount < 0)
+                if (ofi.refCount < 0) {
                     throw new IllegalStateException(path + " ref count < 0");
+                }
                 if (ofi.refCount == 0) {
                     _openedFiles.remove(path);
                     _openedFiles.notifyAll();
@@ -379,10 +401,13 @@ public class FatFS implements FileSystem {
     }
 
     DirWriter getDirWriterNoLock(FatPath targetPath, Object opTag) throws IOException {
-        if (targetPath.getPathUtil().isEmpty())
+        if (targetPath.getPathUtil().isEmpty()) {
             return getRootDirOutputStream();
+        }
         DirEntry de = getCachedDirEntry(targetPath, opTag);
-        if (de == null || de.isFile()) throw new FileNotFoundException();
+        if (de == null || de.isFile()) {
+            throw new FileNotFoundException();
+        }
         return new DirOutputStream(new ClusterChainIO(de.startCluster, targetPath, -1, AccessMode.Write));
     }
 
@@ -397,10 +422,13 @@ public class FatFS implements FileSystem {
     }
 
     DirReader getDirReaderNoLock(FatPath targetPath, Object opTag) throws IOException {
-        if (targetPath.getPathUtil().isEmpty())
+        if (targetPath.getPathUtil().isEmpty()) {
             return getRootDirInputStream();
+        }
         DirEntry de = getCachedDirEntry(targetPath, opTag);
-        if (de == null || de.isFile()) throw new FileNotFoundException("Path not found: " + targetPath.toString());
+        if (de == null || de.isFile()) {
+            throw new FileNotFoundException("Path not found: " + targetPath.toString());
+        }
         return new DirInputStream(new ClusterChainIO(de.startCluster, targetPath, -1, AccessMode.Read));
     }
 
@@ -430,18 +458,21 @@ public class FatFS implements FileSystem {
 
         @Override
         public void setLastModified(Date dt) throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException(String.format("Can't update file %s: file system is opened in read only mode", _path.getPathString()));
+            }
 
             FatPath parentPath = (FatPath) _path.getParentPath();
-            if (parentPath == null)
+            if (parentPath == null) {
                 throw new IOException("Can't update last modified time of the root directory");
+            }
 
             Object tag = lockPath(_path, AccessMode.Write);
             try {
                 DirEntry entry = _path.getEntry(tag);
-                if (entry == null)
+                if (entry == null) {
                     throw new IOException("setLastModified error: failed opening source path: " + _path);
+                }
                 entry.lastModifiedDateTime = dt;
                 entry.writeEntry(FatFS.this, parentPath, tag);
             } finally {
@@ -457,24 +488,29 @@ public class FatFS implements FileSystem {
 
         @Override
         public void rename(String newName) throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException(String.format("Can't rename file %s: file system is opened in read only mode", _path.getPathString()));
+            }
 
             FatPath parentPath = (FatPath) _path.getParentPath();
-            if (parentPath == null)
+            if (parentPath == null) {
                 throw new IOException("Can't rename root directory");
+            }
 
             Object tag = lockPath(parentPath, AccessMode.Write);
             try {
                 DirEntry entry = _path.getEntry(tag);
-                if (entry == null) throw new IOException("rename error: failed opening source path: " + _path);
+                if (entry == null) {
+                    throw new IOException("rename error: failed opening source path: " + _path);
+                }
                 FatPath newPath = (FatPath) parentPath.combine(newName);
                 DirEntry destEntry = newPath.getEntry(tag);
                 if (destEntry != null && destEntry != entry) {
-                    if (entry.isDir())
+                    if (entry.isDir()) {
                         throw new IOException("rename error: destination path already exists: " + newPath);
-                    else
+                    } else {
                         deleteEntry(destEntry, parentPath, tag);
+                    }
                 }
                 if (entry.offset >= 0) {
                     entry.deleteEntry(FatFS.this, parentPath, tag);
@@ -493,32 +529,39 @@ public class FatFS implements FileSystem {
 
         @Override
         public void moveTo(Directory newParent) throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException(String.format("Can't rename file %s: file system is opened in read only mode", _path.getPathString()));
+            }
 
             FatPath parentPath = (FatPath) _path.getParentPath();
-            if (parentPath == null)
+            if (parentPath == null) {
                 throw new IOException("Can't rename root directory");
+            }
 
             FatPath newParentPath = (FatPath) newParent.getPath();
-            if (newParentPath.equals(parentPath))
+            if (newParentPath.equals(parentPath)) {
                 return;
+            }
 
             Object tag = lockPath(parentPath, AccessMode.Write);
             try {
                 lockPath(newParentPath, AccessMode.Write, tag);
                 try {
                     DirEntry entry = _path.getEntry(tag);
-                    if (entry == null) throw new IOException("rename error: failed opening source path: " + _path);
+                    if (entry == null) {
+                        throw new IOException("rename error: failed opening source path: " + _path);
+                    }
                     FatPath newPath = (FatPath) newParentPath.combine(getName());
-                    if (entry.isDir() && _path.getPathUtil().isParentDir(newParentPath.getPathUtil()))
+                    if (entry.isDir() && _path.getPathUtil().isParentDir(newParentPath.getPathUtil())) {
                         throw new IOException("rename error: can't move directory to it's subdirectory: " + _path);
+                    }
                     DirEntry destEntry = newPath.getEntry(tag);
                     if (destEntry != null && destEntry != entry) {
-                        if (entry.isDir())
+                        if (entry.isDir()) {
                             throw new IOException("rename error: destination path already exists: " + newPath);
-                        else
+                        } else {
                             deleteEntry(destEntry, parentPath, tag);
+                        }
                     }
                     if (entry.offset >= 0) {
                         entry.deleteEntry(FatFS.this, parentPath, tag);
@@ -565,7 +608,9 @@ public class FatFS implements FileSystem {
          */
         @Override
         public Path next() {
-            if (_next == null) throw new NoSuchElementException();
+            if (_next == null) {
+                throw new NoSuchElementException();
+            }
 
             FatPath res;
             try {
@@ -578,8 +623,9 @@ public class FatFS implements FileSystem {
             try {
                 synchronized (_dirEntriesCache) {
                     logAquired(li);
-                    if (!_dirEntriesCache.containsKey(res))
+                    if (!_dirEntriesCache.containsKey(res)) {
                         cacheDirEntry(res, _next);
+                    }
                 }
             } finally {
                 logReleased(li);
@@ -614,7 +660,9 @@ public class FatFS implements FileSystem {
         }
 
         DirEntry nextDirEntry() throws IOException, NoSuchElementException {
-            if (_next == null) throw new NoSuchElementException();
+            if (_next == null) {
+                throw new NoSuchElementException();
+            }
             DirEntry res = _next;
             _next = DirEntry.readEntry(_dirStream);
             return res;
@@ -646,21 +694,29 @@ public class FatFS implements FileSystem {
 
         @Override
         public void delete() throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException(String.format("Can't delete directory %s: file system is opened in read only mode", _path.getPathString()));
-            if (_path.isRootDirectory()) throw new IOException("Can't delete root directory");
+            }
+            if (_path.isRootDirectory()) {
+                throw new IOException("Can't delete root directory");
+            }
 
             Object tag = lockPath(_path, AccessMode.Write);
             try {
                 DirEntry entry = _path.getEntry(tag);
-                if (entry == null) return;
-                if (!entry.isDir()) throw new IOException("Specified path is not a directory: " + _path.getPathString());
+                if (entry == null) {
+                    return;
+                }
+                if (!entry.isDir()) {
+                    throw new IOException("Specified path is not a directory: " + _path.getPathString());
+                }
 
                 Directory.Contents dc = list(tag);
                 try {
                     for (Path rec : dc)
-                        if (!((FatPath) rec).getPathUtil().isSpecial())
+                        if (!((FatPath) rec).getPathUtil().isSpecial()) {
                             throw new DirectoryIsNotEmptyException(_path.getPathString(), "Directory is not empty: " + _path.getPathString());
+                        }
                 } finally {
                     dc.close();
                 }
@@ -673,18 +729,21 @@ public class FatFS implements FileSystem {
 
         @Override
         public Directory createDirectory(String name) throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException("Can't create directory: file system is opened in read only mode");
-            if (!isValidFileName(name))
+            }
+            if (!isValidFileName(name)) {
                 throw new IOException("Invalid file name: " + name);
+            }
 
             Object tag = lockPath(_path, AccessMode.Write);
             try {
                 FatPath newPath = (FatPath) _path.combine(name);
                 DirEntry entry = getCachedDirEntry(newPath, tag);
                 // if (entry != null) throw new IOException("File record with the specified name already exists: " + _path.getPathString());
-                if (entry == null)
+                if (entry == null) {
                     makeNewDir(_path, name, tag);
+                }
                 return newPath.getDirectory();
             } finally {
                 releasePathLock(_path);
@@ -693,19 +752,22 @@ public class FatFS implements FileSystem {
 
         @Override
         public File createFile(String name) throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException("Can't create directory: file system is opened in read only mode");
-            if (!isValidFileName(name))
+            }
+            if (!isValidFileName(name)) {
                 throw new IOException("Invalid file name: " + name);
+            }
 
             Object tag = lockPath(_path, AccessMode.Write);
             try {
                 FatPath newPath = (FatPath) _path.combine(name);
                 DirEntry entry = newPath.getEntry(tag);
-                if (entry != null && entry.isDir())
+                if (entry != null && entry.isDir()) {
                     throw new IOException("Can't create file: there is a directory with the same name.");
-                else if (entry != null && entry.isFile())
+                } else if (entry != null && entry.isFile()) {
                     deleteEntry(entry, _path, tag);
+                }
                 makeNewFile(_path, name, tag);
                 return newPath.getFile();
             } finally {
@@ -729,11 +791,15 @@ public class FatFS implements FileSystem {
             long freeSpace = 0;
             int bytesPerCluster = _bpb.sectorsPerCluster * _bpb.bytesPerSector;
             synchronized (_ioSyncer) {
-                if (_input == null) throw new FileSystemClosedException();
+                if (_input == null) {
+                    throw new FileSystemClosedException();
+                }
                 for (int i = 2; i < _totalClusterNumber; i++) {
                     int clusterIndex = (_clusterTable == null ? readNextClusterIndex(i) : _clusterTable[i]);
                     if (clusterIndex == 0)// clusterIndex >=0 && clusterIndex!=LAST_CLUSTER)
+                    {
                         freeSpace += bytesPerCluster;
+                    }
                 }
             }
             return freeSpace;// totalSpace - usedSpace;
@@ -767,8 +833,9 @@ public class FatFS implements FileSystem {
         @Override
         public long getSize() throws IOException {
             DirEntry entry = _path.getEntry();
-            if (entry == null || !entry.isFile())
+            if (entry == null || !entry.isFile()) {
                 throw new FileNotFoundException("File not found: " + _path.getPathString());
+            }
             return entry.fileSize;
         }
 
@@ -789,8 +856,9 @@ public class FatFS implements FileSystem {
 
         @Override
         public void delete() throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException(String.format("Can't delete file %s: file system is opened in read only mode", _path.getPathString()));
+            }
             Object tag = lockPath(_path, AccessMode.Write);
             try {
                 delete(tag);
@@ -832,26 +900,34 @@ public class FatFS implements FileSystem {
 
         private FileIO getRandomAccessIO(AccessMode accessMode, Object tag)
                 throws IOException {
-            if (_readOnlyMode && accessMode != AccessMode.Read)
+            if (_readOnlyMode && accessMode != AccessMode.Read) {
                 throw new IOException(String.format("Can't open file %s for writing: file system is opened in read only mode", _path.getPathString()));
+            }
             DirEntry entry = _path.getEntry(tag);
             if (entry == null) {
                 if (accessMode != AccessMode.Read) {
                     FatPath newFilePath = (FatPath) _path.getParentPath().getDirectory().createFile(getName()).getPath();
                     entry = newFilePath.getEntry(tag);
-                } else
+                } else {
                     throw new FileNotFoundException("File not found: " + _path);
-            } else if (entry.isDir())
+                }
+            } else if (entry.isDir()) {
                 throw new FileNotFoundException("File name conflicts with directory name: " + _path);
+            }
             return new FileIO(FatFS.this, entry, _path, accessMode, tag);
         }
 
         void delete(Object tag) throws IOException {
-            if (_readOnlyMode)
+            if (_readOnlyMode) {
                 throw new IOException(String.format("Can't delete file %s: file system is opened in read only mode", _path.getPathString()));
+            }
             DirEntry entry = _path.getEntry(tag);
-            if (entry == null) return;
-            if (!entry.isFile()) throw new IOException("deleteFile error: specified path is not a file: " + _path.getPathString());
+            if (entry == null) {
+                return;
+            }
+            if (!entry.isFile()) {
+                throw new IOException("deleteFile error: specified path is not a file: " + _path.getPathString());
+            }
             deleteEntry(entry, (FatPath) _path.getParentPath(), tag);
             cacheDirEntry(_path, null);
         }
@@ -877,8 +953,9 @@ public class FatFS implements FileSystem {
 
         @Override
         public boolean isDirectory() throws IOException {
-            if (getPathUtil().isEmpty())
+            if (getPathUtil().isEmpty()) {
                 return true;
+            }
             DirEntry entry = getEntry();
             return entry != null && entry.isDir();
         }
@@ -886,16 +963,18 @@ public class FatFS implements FileSystem {
         @Override
         public Directory getDirectory() throws IOException {
             DirEntry entry = getEntry();
-            if (entry != null && !entry.isDir())
+            if (entry != null && !entry.isDir()) {
                 throw new IOException(getPathString() + " is not a directory");
+            }
             return new FatDirectory(this);
         }
 
         @Override
         public File getFile() throws IOException {
             DirEntry entry = getEntry();
-            if (entry != null && !entry.isFile())
+            if (entry != null && !entry.isFile()) {
                 throw new IOException(getPathString() + " is not a file");
+            }
             return new FatFile(this);
         }
 
@@ -1110,8 +1189,9 @@ public class FatFS implements FileSystem {
             dotEntry.setDir(true);
             if (!parentPath.isRootDirectory()) {
                 DirEntry parentEntry = getCachedDirEntry(parentPath, opTag);
-                if (parentEntry != null)
+                if (parentEntry != null) {
                     dotEntry.startCluster = parentEntry.startCluster;
+                }
             }
             dotEntry.writeEntry(new FileName(".."), s);
             s.write(0);
@@ -1159,8 +1239,9 @@ public class FatFS implements FileSystem {
         try {
             synchronized (_dirEntriesCache) {
                 logAquired(li);
-                if (_dirEntriesCache.size() > MAX_DIR_ENTRIES_CACHE)
+                if (_dirEntriesCache.size() > MAX_DIR_ENTRIES_CACHE) {
                     _dirEntriesCache.clear();
+                }
                 _dirEntriesCache.put(path, entry);
             }
         } finally {
@@ -1192,7 +1273,9 @@ public class FatFS implements FileSystem {
 
     protected DirEntry getDirEntry(FatPath targetPath, Object opTag) throws IOException {
         String[] pathComponents = targetPath.getPathUtil().getComponents();
-        if (pathComponents.length == 0) return null;
+        if (pathComponents.length == 0) {
+            return null;
+        }
 
         DirEntry res = null;
         DirIterator it = new DirIterator();
@@ -1201,15 +1284,16 @@ public class FatFS implements FileSystem {
             DirReader dirStream;
             lockPath(p, AccessMode.Read, opTag);
             try {
-                if (res == null)
+                if (res == null) {
                     dirStream = getRootDirInputStream();
-                else {
-                    if (res.isFile())
+                } else {
+                    if (res.isFile()) {
                         return null;
-                    else if (res.name.equals("..") && res.startCluster == 0)
+                    } else if (res.name.equals("..") && res.startCluster == 0) {
                         dirStream = getRootDirInputStream();
-                    else
+                    } else {
                         dirStream = new DirInputStream(new ClusterChainIO(res.startCluster, p, -1, AccessMode.Read));
+                    }
                 }
             } catch (IOException e) {
                 releasePathLock(p);
@@ -1229,7 +1313,9 @@ public class FatFS implements FileSystem {
                 dirStream.close();
             }
 
-            if (res == null) return null;
+            if (res == null) {
+                return null;
+            }
 
             p = (FatPath) p.combine(dir);
         }
@@ -1240,7 +1326,9 @@ public class FatFS implements FileSystem {
         ArrayList<Integer> res = new ArrayList<>();
         int idx = startClusterIndex;
         synchronized (_ioSyncer) {
-            if (_input == null) throw new FileSystemClosedException();
+            if (_input == null) {
+                throw new FileSystemClosedException();
+            }
 
             try {
                 while (idx > 0 && idx != LAST_CLUSTER) {
@@ -1276,16 +1364,24 @@ public class FatFS implements FileSystem {
     }
 
     protected void setNextClusterIndex(int clusterPosition, int clusterIndex, boolean commit) throws IOException {
-        if (commit) writeClusterIndex(clusterPosition, clusterIndex);
-        if (_clusterTable != null) _clusterTable[clusterPosition] = clusterIndex;
+        if (commit) {
+            writeClusterIndex(clusterPosition, clusterIndex);
+        }
+        if (_clusterTable != null) {
+            _clusterTable[clusterPosition] = clusterIndex;
+        }
 
     }
 
     protected int attachFreeCluster(int lastClusterIndex, boolean commit) throws IOException {
         synchronized (_ioSyncer) {
-            if (_input == null) throw new FileSystemClosedException();
+            if (_input == null) {
+                throw new FileSystemClosedException();
+            }
             int freeCluster = getFreeClusterIndex();
-            if (lastClusterIndex > 0 && lastClusterIndex != LAST_CLUSTER) setNextClusterIndex(lastClusterIndex, freeCluster, commit);
+            if (lastClusterIndex > 0 && lastClusterIndex != LAST_CLUSTER) {
+                setNextClusterIndex(lastClusterIndex, freeCluster, commit);
+            }
             setNextClusterIndex(freeCluster, LAST_CLUSTER, commit);
             return freeCluster;
         }
@@ -1298,7 +1394,9 @@ public class FatFS implements FileSystem {
 
     protected int getFreeClusterIndex() throws IOException {
         for (int i = 2; i < _totalClusterNumber; i++) {
-            if (getNextClusterIndex(i) == 0) return i;
+            if (getNextClusterIndex(i) == 0) {
+                return i;
+            }
         }
 
         throw new NoFreeSpaceLeftException();
@@ -1323,8 +1421,12 @@ public class FatFS implements FileSystem {
 
         @Override
         public int read() throws IOException {
-            if (bufferOffset == bytesAvail) fillBuffer();
-            if (bytesAvail <= 0) return -1;
+            if (bufferOffset == bytesAvail) {
+                fillBuffer();
+            }
+            if (bytesAvail <= 0) {
+                return -1;
+            }
             return (buffer[bufferOffset++] & 0xFF);
         }
 
@@ -1348,14 +1450,20 @@ public class FatFS implements FileSystem {
 
         private void fillBuffer() throws IOException {
             synchronized (_ioSyncer) {
-                if (_input == null) throw new FileSystemClosedException();
+                if (_input == null) {
+                    throw new FileSystemClosedException();
+                }
 
                 bytesRead += bytesAvail;
                 _input.seek(_startPosition + bytesRead);
                 bufferOffset = 0;
                 bytesAvail = length - bytesRead;
-                if (bytesAvail <= 0) return;
-                if (bytesAvail > buffer.length) bytesAvail = buffer.length;
+                if (bytesAvail <= 0) {
+                    return;
+                }
+                if (bytesAvail > buffer.length) {
+                    bytesAvail = buffer.length;
+                }
                 Util.readBytes(_input, buffer, bytesAvail);
             }
         }
@@ -1365,13 +1473,16 @@ public class FatFS implements FileSystem {
     class ClusterChainIO implements RandomAccessIO {
         @Override
         public void seek(long position) throws IOException {
-            if (position < 0) return;
+            if (position < 0) {
+                return;
+            }
             synchronized (_rwSync) {
                 if (_isBufferLoaded) {
                     long dif = position - getBufferPosition();
                     if (dif < 0 || dif >= _bufferSize) {
-                        if (_isBufferDirty)
+                        if (_isBufferDirty) {
                             writeBuffer();
+                        }
                         _isBufferLoaded = false;
                     }
                 }
@@ -1381,20 +1492,24 @@ public class FatFS implements FileSystem {
 
         @Override
         public void setLength(long newLength) throws IOException {
-            if (_mode == AccessMode.Read)
+            if (_mode == AccessMode.Read) {
                 throw new IOException("The file is opened in read only mode");
-            if (newLength < 0)
+            }
+            if (newLength < 0) {
                 throw new IllegalArgumentException();
-            if (newLength > MAX_FILE_SIZE)
+            }
+            if (newLength > MAX_FILE_SIZE) {
                 throw new IOException("File size is too large for FAT.");
+            }
             synchronized (_rwSync) {
                 long curOffset = _currentStreamPosition;
                 seek(newLength);
                 int clusterIndex = _currentStreamPosition == 0 ? -1 : getClusterIndexInChain();
-                if (clusterIndex >= _clusterChain.size())
+                if (clusterIndex >= _clusterChain.size()) {
                     addMissingClusters(clusterIndex - _clusterChain.size() + 1);
-                else if (clusterIndex < _clusterChain.size() - 1)
+                } else if (clusterIndex < _clusterChain.size() - 1) {
                     removeExcessClusters(clusterIndex);
+                }
                 _lastCluster = clusterIndex < 0 ? LAST_CLUSTER : _clusterChain.get(clusterIndex);
                 _maxStreamPosition = _currentStreamPosition;
                 _currentStreamPosition = curOffset > _maxStreamPosition ? _maxStreamPosition : curOffset;
@@ -1409,8 +1524,9 @@ public class FatFS implements FileSystem {
 
         public void flush() throws IOException {
             synchronized (_rwSync) {
-                if (_isBufferDirty)
+                if (_isBufferDirty) {
                     writeBuffer();
+                }
                 commitAddedClusters();
             }
         }
@@ -1427,8 +1543,9 @@ public class FatFS implements FileSystem {
         }
 
         public void write(int data) throws IOException {
-            if (_mode == AccessMode.Read)
+            if (_mode == AccessMode.Read) {
                 throw new IOException("Writing disabled");
+            }
 
             synchronized (_rwSync) {
                 _oneByteBuf[0] = (byte) (data & 0xFF);
@@ -1437,16 +1554,21 @@ public class FatFS implements FileSystem {
         }
 
         public void write(byte[] b, int off, int len) throws IOException {
-            if (_mode == AccessMode.Read)
+            if (_mode == AccessMode.Read) {
                 throw new IOException("Writing disabled");
-            if (len <= 0) return;
+            }
+            if (len <= 0) {
+                return;
+            }
 
             synchronized (_rwSync) {
-                if (_currentStreamPosition + len > MAX_FILE_SIZE)
+                if (_currentStreamPosition + len > MAX_FILE_SIZE) {
                     throw new IOException("File size is too large for FAT.");
+                }
                 while (len > 0) {
-                    if (!_isBufferLoaded)
+                    if (!_isBufferLoaded) {
                         loadBuffer();
+                    }
                     int currentPositionInBuffer = getPositionInBuffer();
                     int avail = _bufferSize - currentPositionInBuffer;
                     int written = Math.min(avail, len);
@@ -1460,38 +1582,47 @@ public class FatFS implements FileSystem {
                     len -= written;
                     _currentStreamPosition += written;
                 }
-                if (_currentStreamPosition > _maxStreamPosition)
+                if (_currentStreamPosition > _maxStreamPosition) {
                     _maxStreamPosition = _currentStreamPosition;
+                }
             }
         }
 
 
         public int read() throws IOException {
-            if (_mode == AccessMode.Write || _mode == AccessMode.WriteAppend)
+            if (_mode == AccessMode.Write || _mode == AccessMode.WriteAppend) {
                 throw new IOException("The file is opened in write only mode");
+            }
             synchronized (_rwSync) {
-                if (_currentStreamPosition >= _maxStreamPosition) return -1;
+                if (_currentStreamPosition >= _maxStreamPosition) {
+                    return -1;
+                }
                 return read(_oneByteBuf, 0, 1) == 1 ? (_oneByteBuf[0] & 0xFF) : -1;
             }
         }
 
         public int read(byte[] b, int off, int len) throws IOException {
-            if (_mode == AccessMode.Write || _mode == AccessMode.WriteAppend)
+            if (_mode == AccessMode.Write || _mode == AccessMode.WriteAppend) {
                 throw new IOException("The file is opened in write only mode");
-            if (len <= 0)
+            }
+            if (len <= 0) {
                 return 0;
+            }
             synchronized (_rwSync) {
-                if (!_isBufferLoaded)
+                if (!_isBufferLoaded) {
                     loadBuffer();
+                }
                 int currentPositionInBuffer = getPositionInBuffer();
                 int avail = _bufferSize - currentPositionInBuffer;
                 int read = (int) Math.min(Math.min(avail, len), _maxStreamPosition - _currentStreamPosition);
-                if (read <= 0)
+                if (read <= 0) {
                     return -1;
+                }
                 System.arraycopy(_buffer, currentPositionInBuffer, b, off, read);
                 if (avail == read) {
-                    if (_isBufferDirty)
+                    if (_isBufferDirty) {
                         writeBuffer();
+                    }
                     _isBufferLoaded = false;
                 }
                 _currentStreamPosition += read;
@@ -1531,16 +1662,18 @@ public class FatFS implements FileSystem {
 
         protected void writeBuffer() throws IOException {
             synchronized (_ioSyncer) {
-                if (_input == null) throw new FileSystemClosedException();
+                if (_input == null) {
+                    throw new FileSystemClosedException();
+                }
                 try {
                     int numClusters = _clusterChain.size();
                     int cluster;
                     int clusterIndex = getClusterIndexInChain();
-                    if (clusterIndex < numClusters)
+                    if (clusterIndex < numClusters) {
                         cluster = _clusterChain.get(clusterIndex);
-                    else if (clusterIndex == numClusters)
+                    } else if (clusterIndex == numClusters) {
                         cluster = addCluster();
-                    else {
+                    } else {
                         addMissingClusters(clusterIndex - numClusters);
                         cluster = addCluster();
                     }
@@ -1557,13 +1690,16 @@ public class FatFS implements FileSystem {
 
         protected void loadBuffer() throws IOException {
             synchronized (_ioSyncer) {
-                if (_input == null) throw new FileSystemClosedException();
+                if (_input == null) {
+                    throw new FileSystemClosedException();
+                }
                 int cluster;
                 int clusterIndex = getClusterIndexInChain();
-                if (clusterIndex >= _clusterChain.size())
+                if (clusterIndex >= _clusterChain.size()) {
                     cluster = 0;
-                else
+                } else {
                     cluster = _clusterChain.get(clusterIndex);
+                }
 
                 int read = 0;
                 if (cluster != LAST_CLUSTER && cluster != 0) {
@@ -1616,15 +1752,18 @@ public class FatFS implements FileSystem {
         }
 
         private void commitAddedClusters() throws IOException {
-            if (_addedClusters.isEmpty())
+            if (_addedClusters.isEmpty()) {
                 return;
+            }
             synchronized (_ioSyncer) {
-                if (_input == null)
+                if (_input == null) {
                     throw new FileSystemClosedException();
+                }
 
                 int numAddedClusters = _addedClusters.size();
-                if (_lastCluster != LAST_CLUSTER)
+                if (_lastCluster != LAST_CLUSTER) {
                     setNextClusterIndex(_lastCluster, _addedClusters.get(0), true);
+                }
                 for (int i = 0; i < numAddedClusters - 1; i++)
                     setNextClusterIndex(_addedClusters.get(i), _addedClusters.get(i + 1), true);
                 setNextClusterIndex(_addedClusters.get(numAddedClusters - 1), LAST_CLUSTER, true);
@@ -1658,9 +1797,13 @@ public class FatFS implements FileSystem {
 
         @Override
         public void write(int oneByte) throws IOException {
-            if (_bufferOffset >= _bytesAvail) writeBuffer();
+            if (_bufferOffset >= _bytesAvail) {
+                writeBuffer();
+            }
 
-            if (_bytesAvail <= 0) throw new EOFException();
+            if (_bytesAvail <= 0) {
+                throw new EOFException();
+            }
 
             _buffer[_bufferOffset++] = (byte) oneByte;
         }
@@ -1695,15 +1838,21 @@ public class FatFS implements FileSystem {
 
         private void writeBuffer() throws IOException {
             synchronized (_ioSyncer) {
-                if (_input == null) throw new FileSystemClosedException();
+                if (_input == null) {
+                    throw new FileSystemClosedException();
+                }
                 _input.seek(_startPosition + _bytesWritten);
                 _input.write(_buffer, 0, _bufferOffset);
             }
             _bytesWritten += _bufferOffset;
             _bufferOffset = 0;
             _bytesAvail = _length - _bytesWritten;
-            if (_bytesAvail <= 0) return;
-            if (_bytesAvail > _buffer.length) _bytesAvail = _buffer.length;
+            if (_bytesAvail <= 0) {
+                return;
+            }
+            if (_bytesAvail > _buffer.length) {
+                _bytesAvail = _buffer.length;
+            }
         }
 
 
@@ -1746,14 +1895,18 @@ class Fat12FS extends FatFS {
     @Override
     protected void writeClusterIndex(int clusterPosition, int clusterIndex) throws IOException {
         super.writeClusterIndex(clusterPosition, clusterIndex);
-        if (clusterIndex == LAST_CLUSTER) clusterIndex = 0xFFF;
+        if (clusterIndex == LAST_CLUSTER) {
+            clusterIndex = 0xFFF;
+        }
         int val = Util.readWordLE(_input);
         int byteOffset = (clusterPosition * _clusterIndexSize) % 8;
         if (byteOffset == 0)
-            // val = clusterIndex | (val & 0xF00);
+        // val = clusterIndex | (val & 0xF00);
+        {
             val = clusterIndex | (val & 0xF000);
-        else
+        } else {
             val = ((clusterIndex << 4) | (val & 0xF));
+        }
         super.writeClusterIndex(clusterPosition, clusterIndex);
         Util.writeWordLE(_input, (short) val);
     }
@@ -1789,7 +1942,9 @@ class Fat16FS extends FatFS {
     @Override
     protected void writeClusterIndex(int clusterPosition, int clusterIndex) throws IOException {
         super.writeClusterIndex(clusterPosition, clusterIndex);
-        if (clusterIndex == LAST_CLUSTER) clusterIndex = 0xFFFF;
+        if (clusterIndex == LAST_CLUSTER) {
+            clusterIndex = 0xFFFF;
+        }
         Util.writeWordLE(_input, (short) clusterIndex);
     }
 
@@ -1832,11 +1987,13 @@ class Fat32FS extends FatFS {
     public void close(boolean force) throws IOException {
         synchronized (_ioSyncer) {
             try {
-                if (_input != null && !_readOnlyMode)
+                if (_input != null && !_readOnlyMode) {
                     fsInfo.write(_input);
+                }
             } catch (IOException e) {
-                if (!force)
+                if (!force) {
                     throw e;
+                }
             }
             super.close(force);
 
@@ -1900,7 +2057,9 @@ class Fat32FS extends FatFS {
     @Override
     protected void writeClusterIndex(int clusterPosition, int clusterIndex) throws IOException {
         super.writeClusterIndex(clusterPosition, clusterIndex);
-        if (clusterIndex == LAST_CLUSTER) clusterIndex = 0x0FFFFFFF;
+        if (clusterIndex == LAST_CLUSTER) {
+            clusterIndex = 0x0FFFFFFF;
+        }
         Util.writeDoubleWordLE(_input, clusterIndex);
     }
 

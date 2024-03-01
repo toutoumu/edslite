@@ -6,6 +6,7 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.android.settings.ChoiceDialogPropertyEditor;
@@ -26,8 +27,9 @@ public class ChoiceDialog extends DialogFragment {
         args.putStringArrayList(ARG_VARIANTS, new ArrayList<>(variants));
         args.putString(ARG_TITLE, title);
         args.putInt(PropertyEditor.ARG_PROPERTY_ID, propertyId);
-        if (hostFragmentTag != null)
+        if (hostFragmentTag != null) {
             args.putString(PropertyEditor.ARG_HOST_FRAGMENT_TAG, hostFragmentTag);
+        }
         DialogFragment newFragment = new ChoiceDialog();
         newFragment.setArguments(args);
         newFragment.show(fm, TAG);

@@ -24,8 +24,9 @@ public class TransRandomAccessIO extends BufferedRandomAccessIO {
 
     @Override
     public synchronized void write(byte[] buf, int offset, int count) throws IOException {
-        if (!_allowSkip && _currentPosition > _length)
+        if (!_allowSkip && _currentPosition > _length) {
             fillFreeSpace();
+        }
         super.write(buf, offset, count);
     }
 
@@ -62,16 +63,18 @@ public class TransRandomAccessIO extends BufferedRandomAccessIO {
                 _bufferPosition = calcBufferPosition();
                 _isBufferLoaded = false;
             }
-        } else
+        } else {
             _bufferPosition = calcBufferPosition();
+        }
         loadCurrentBuffer();
         return _buffer;
     }
 
     @Override
     protected void writeCurrentBuffer() throws IOException {
-        if (!_isBufferChanged)
+        if (!_isBufferChanged) {
             return;
+        }
         long bp = getBufferPosition();
         int count = Math.min((int) (_length - bp), _bufferSize);
         transformBufferAndWriteToBase(_buffer, 0, count, bp);
@@ -79,8 +82,9 @@ public class TransRandomAccessIO extends BufferedRandomAccessIO {
     }
 
     protected void loadCurrentBuffer() throws IOException {
-        if (_isBufferLoaded)
+        if (_isBufferLoaded) {
             return;
+        }
         long bp = getBufferPosition();
         int space = (int) Math.min(_length - bp, _bufferSize);
         if (space > 0) {
@@ -137,8 +141,9 @@ public class TransRandomAccessIO extends BufferedRandomAccessIO {
         int t = 0;
         while (t < len) {
             int n = getBase().read(buf, off + t, len - t);
-            if (n < 0)
+            if (n < 0) {
                 return t;
+            }
             t += n;
         }
         return t;
@@ -147,8 +152,9 @@ public class TransRandomAccessIO extends BufferedRandomAccessIO {
     protected void fillFreeSpace() throws IOException {
         long pos = _length;
         int rem = (int) (_length % _bufferSize);
-        if (rem != 0)
+        if (rem != 0) {
             pos += _bufferSize - rem;
+        }
         byte[] tbuf = new byte[_bufferSize];
         // this method should be called when the current buffer is modified so
         // the ending position would be the start position of the current buffer

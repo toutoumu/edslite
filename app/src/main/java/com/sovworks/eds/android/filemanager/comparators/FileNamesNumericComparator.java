@@ -13,11 +13,13 @@ public class FileNamesNumericComparator<T extends CachedPathInfo> extends FileNa
 
     protected int compareImpl(T o1, T o2) throws IOException {
         String n1 = o1.getName();
-        if (n1 == null)
+        if (n1 == null) {
             n1 = "";
+        }
         String n2 = o2.getName();
-        if (n2 == null)
+        if (n2 == null) {
             n2 = "";
+        }
 
         boolean b1 = false, b2 = false;
         int v1 = 0, v2 = 0;
@@ -35,10 +37,12 @@ public class FileNamesNumericComparator<T extends CachedPathInfo> extends FileNa
             int res = _asc * Integer.valueOf(v1).compareTo(v2);
             return res == 0 ? super.compareImpl(o1, o2) : res;
         }
-        if (b1)
+        if (b1) {
             return -_asc;
-        if (b2)
+        }
+        if (b2) {
             return _asc;
+        }
         return super.compareImpl(o1, o2);
     }
 

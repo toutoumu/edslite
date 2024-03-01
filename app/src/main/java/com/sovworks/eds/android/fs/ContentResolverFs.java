@@ -11,6 +11,7 @@ import android.os.Parcelable;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.fs.FileSystem;
@@ -30,17 +31,19 @@ import java.util.Iterator;
 public class ContentResolverFs implements FileSystem {
     public static String getFileNameByUri(ContentResolver cr, Uri uri) {
         String fileName = uri.getLastPathSegment();
-        if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme()))
+        if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(uri.getScheme())) {
             fileName = uri.getLastPathSegment();
-        else {
+        } else {
             Cursor cursor = cr.query(uri, null, null, null, null);
-            if (cursor != null)
+            if (cursor != null) {
                 try {
-                    if (cursor.moveToFirst())
+                    if (cursor.moveToFirst()) {
                         return getFileNameFromCursor(cursor);
+                    }
                 } finally {
                     cursor.close();
                 }
+            }
         }
 
         return fileName;
@@ -49,9 +52,9 @@ public class ContentResolverFs implements FileSystem {
     public static String getFileNameFromCursor(Cursor cursor) {
         if (cursor.moveToFirst()) {
             int columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            if (columnIndex >= 0)
+            if (columnIndex >= 0) {
                 return cursor.getString(columnIndex);
-            else {
+            } else {
                 columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA);// Instead of "_data"
                 if (columnIndex >= 0) {
                     Uri filePathUri = Uri.parse(cursor.getString(columnIndex));
@@ -67,13 +70,14 @@ public class ContentResolverFs implements FileSystem {
         ArrayList<com.sovworks.eds.fs.Path> paths = new ArrayList<>();
         Bundle extras = intent.getExtras();
         if (extras.containsKey(Intent.EXTRA_STREAM)) {
-            if (Intent.ACTION_SEND.equals(intent.getAction()))
+            if (Intent.ACTION_SEND.equals(intent.getAction())) {
                 paths.add(fs.new Path((Uri) extras.getParcelable(Intent.EXTRA_STREAM)));
-            else if (Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
+            } else if (Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
                 ArrayList<Parcelable> s = extras.getParcelableArrayList(Intent.EXTRA_STREAM);
-                if (s != null)
+                if (s != null) {
                     for (Parcelable uri : s)
                         paths.add(fs.new Path((Uri) uri));
+                }
             }
         }
 
@@ -119,14 +123,16 @@ public class ContentResolverFs implements FileSystem {
         public Date getLastModified() throws IOException {
             Cursor cursor = queryPath();
             if (cursor != null) {
-                if (cursor.moveToFirst())
+                if (cursor.moveToFirst()) {
                     try {
                         int columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATE_MODIFIED);
-                        if (columnIndex >= 0)
+                        if (columnIndex >= 0) {
                             return new Date(cursor.getLong(columnIndex));
+                        }
                     } finally {
                         cursor.close();
                     }
+                }
             }
             if (ContentResolver.SCHEME_FILE.equals(getUri().getScheme())) {
                 java.io.File f = new java.io.File(getUri().getPath());
@@ -158,12 +164,13 @@ public class ContentResolverFs implements FileSystem {
         @Override
         public boolean exists() throws IOException {
             Cursor cursor = _contentResolver.query(_uri, null, null, null, null);
-            if (cursor != null)
+            if (cursor != null) {
                 try {
                     return cursor.moveToFirst();
                 } finally {
                     cursor.close();
                 }
+            }
 
             if (ContentResolver.SCHEME_FILE.equalsIgnoreCase(_uri.getScheme())) {
                 java.io.File f = new java.io.File(_uri.getPath());
@@ -210,11 +217,13 @@ public class ContentResolverFs implements FileSystem {
         @Override
         public com.sovworks.eds.fs.Path getParentPath() throws IOException {
             String pathString = _uri.getPath();
-            if (pathString == null)
+            if (pathString == null) {
                 return null;
+            }
             StringPathUtil pu = new StringPathUtil(pathString).getParentPath();
-            if (pu == null)
+            if (pu == null) {
                 return getRootPath();
+            }
             Uri.Builder ub = _uri.buildUpon();
             ub.path(pu.toString());
             return new Path(ub.build());
@@ -223,8 +232,9 @@ public class ContentResolverFs implements FileSystem {
         @Override
         public com.sovworks.eds.fs.Path combine(String part) throws IOException {
             final Cursor cursor = queryPath();
-            if (cursor == null)
+            if (cursor == null) {
                 throw new IOException("Can't make path");
+            }
             final int columnIndex = cursor.getColumnIndex(BaseColumns._ID);
             while (cursor.moveToNext()) {
                 String name = getFileNameFromCursor(cursor);
@@ -309,8 +319,9 @@ public class ContentResolverFs implements FileSystem {
         @Override
         public com.sovworks.eds.fs.Directory.Contents list() throws IOException {
             final Cursor cursor = _path.queryPath();
-            if (cursor == null)
+            if (cursor == null) {
                 return null;
+            }
             final int columnIndex = cursor.getColumnIndex(BaseColumns._ID);
             cursor.moveToFirst();
             return new com.sovworks.eds.fs.Directory.Contents() {
@@ -403,15 +414,17 @@ public class ContentResolverFs implements FileSystem {
 
         @Override
         public InputStream getInputStream() throws IOException {
-            if (!_path.isFile())
+            if (!_path.isFile()) {
                 throw new FileNotFoundException(_path.getPathString());
+            }
             return _contentResolver.openInputStream(_path.getUri());
         }
 
         @Override
         public OutputStream getOutputStream() throws IOException {
-            if (!_path.isFile())
+            if (!_path.isFile()) {
                 throw new FileNotFoundException(_path.getPathString());
+            }
             return _contentResolver.openOutputStream(_path.getUri());
         }
 
@@ -419,8 +432,9 @@ public class ContentResolverFs implements FileSystem {
         public RandomAccessIO getRandomAccessIO(AccessMode accessMode)
                 throws IOException {
             ParcelFileDescriptor pfd = getFileDescriptor(accessMode);
-            if (pfd == null)
+            if (pfd == null) {
                 throw new UnsupportedOperationException();
+            }
             return new PFDRandomAccessIO(pfd);
         }
 
@@ -431,8 +445,9 @@ public class ContentResolverFs implements FileSystem {
                 try {
                     if (cursor.moveToFirst()) {
                         int columnIndex = cursor.getColumnIndex(OpenableColumns.SIZE);
-                        if (columnIndex >= 0 && !cursor.isNull(columnIndex))
+                        if (columnIndex >= 0 && !cursor.isNull(columnIndex)) {
                             return cursor.getLong(columnIndex);
+                        }
                     }
                 } finally {
                     cursor.close();

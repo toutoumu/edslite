@@ -18,8 +18,9 @@ import java.io.IOException;
 public class EncFsFormatter extends EDSLocationFormatter {
     public static AlgInfo findInfoByName(Config config, Iterable<? extends AlgInfo> supportedAlgs, String name) {
         for (AlgInfo info : supportedAlgs) {
-            if (name.equals(info.getName()))
+            if (name.equals(info.getName())) {
                 return info.select(config);
+            }
         }
         throw new IllegalArgumentException("Unsupported codec: " + name);
     }
@@ -64,10 +65,12 @@ public class EncFsFormatter extends EDSLocationFormatter {
 					parentPath.getDirectory().createDirectory(fn);
 			}
 		}*/
-        if (_dataCodecName != null)
+        if (_dataCodecName != null) {
             _config.setDataCodecInfo((DataCodecInfo) findInfoByName(_config, FS.getSupportedDataCodecs(), _dataCodecName));
-        if (_nameCodecName != null)
+        }
+        if (_nameCodecName != null) {
             _config.setNameCodecInfo((NameCodecInfo) findInfoByName(_config, FS.getSupportedNameCodecs(), _nameCodecName));
+        }
         byte[] pd = _password == null ? new byte[0] : _password.getDataArray();
         try {
             return new EncFsLocation(

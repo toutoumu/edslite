@@ -44,19 +44,22 @@ public class SrcDstGroup implements SrcDstCollection {
             }
 
             public SrcDst next() {
-                if (!_hasNext)
+                if (!_hasNext) {
                     throw new NoSuchElementException();
+                }
                 _hasNext = false;
                 return _next;
             }
 
             public boolean hasNext() {
-                if (_hasNext)
+                if (_hasNext) {
                     return true;
+                }
 
                 while (_curCol == null || !_curCol.hasNext()) {
-                    if (!_cols.hasNext())
+                    if (!_cols.hasNext()) {
                         return false;
+                    }
                     _curCol = _cols.next().iterator();
                 }
                 _next = _curCol.next();

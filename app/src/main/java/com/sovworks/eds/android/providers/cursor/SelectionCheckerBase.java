@@ -17,14 +17,16 @@ class SelectionCheckerBase implements Predicate<CachedPathInfo> {
             String[] filtNames = selectionString.split(" ");
             int i = 0;
             for (String filtName : filtNames) {
-                if (selectionArgs == null || i >= selectionArgs.length)
+                if (selectionArgs == null || i >= selectionArgs.length) {
                     break;
+                }
                 Predicate<CachedPathInfo> f = getFilter(filtName, selectionArgs[i++]);
                 // if (f == null)
                 //    throw new IllegalArgumentException("Unsupported search filter: " + filtName);
                 // else
-                if (f != null)
+                if (f != null) {
                     _filters.add(f);
+                }
             }
         }
     }
@@ -32,8 +34,9 @@ class SelectionCheckerBase implements Predicate<CachedPathInfo> {
     @Override
     public boolean test(CachedPathInfo cachedPathInfo) throws Exception {
         for (Predicate<CachedPathInfo> pc : _filters)
-            if (!pc.test(cachedPathInfo))
+            if (!pc.test(cachedPathInfo)) {
                 return false;
+            }
         return true;
     }
 
@@ -48,8 +51,9 @@ class SelectionCheckerBase implements Predicate<CachedPathInfo> {
 
     private Predicate<CachedPathInfo> getFilter(String filtName, String arg) {
         for (SearchFilter f : getAllFilters())
-            if (f.getName().equals(filtName))
+            if (f.getName().equals(filtName)) {
                 return f.getChecker(_location, arg);
+            }
         return null;
     }
 }

@@ -27,18 +27,21 @@ public class ProgressDialog extends DialogFragment {
     }
 
     public void setProgress(int progress) {
-        if (_progressBar != null)
+        if (_progressBar != null) {
             _progressBar.setProgress(progress);
+        }
     }
 
     public void setTitle(CharSequence title) {
-        if (_titleTextView != null)
+        if (_titleTextView != null) {
             _titleTextView.setText(title);
+        }
     }
 
     public void setText(CharSequence text) {
-        if (_statusTextView != null)
+        if (_statusTextView != null) {
             _statusTextView.setText(text);
+        }
     }
 
     public void setOnCancelListener(DialogInterface.OnCancelListener listener) {
@@ -64,8 +67,9 @@ public class ProgressDialog extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        if (_cancelListener != null)
+        if (_cancelListener != null) {
             _cancelListener.onCancel(dialog);
+        }
     }
 
     private DialogInterface.OnCancelListener _cancelListener;

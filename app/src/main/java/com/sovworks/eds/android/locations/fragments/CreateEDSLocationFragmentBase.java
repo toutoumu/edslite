@@ -35,8 +35,9 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
 
     @Override
     public void onCreate(Bundle state) {
-        if (state != null)
+        if (state != null) {
             _state.putAll(state);
+        }
         super.onCreate(state);
         setHasOptionsMenu(true);
     }
@@ -72,10 +73,11 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.confirm:
-                if (_state.getBoolean(ARG_ADD_EXISTING_LOCATION))
+                if (_state.getBoolean(ARG_ADD_EXISTING_LOCATION)) {
                     startAddLocationTask();
-                else
+                } else {
                     startCreateLocationTask();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(menuItem);
@@ -207,7 +209,9 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
                 public void onCancel(DialogInterface dialog) {
                     CreateEDSLocationTaskFragment f = (CreateEDSLocationTaskFragment) getFragmentManager()
                             .findFragmentByTag(CreateContainerTaskFragmentBase.TAG);
-                    if (f != null) f.cancel();
+                    if (f != null) {
+                        f.cancel();
+                    }
                 }
             });
             _dialog.show();
@@ -220,13 +224,15 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
 
         @Override
         public void onCompleted(Bundle args, TaskFragment.Result result) {
-            if (result.isCancelled()) return;
+            if (result.isCancelled()) {
+                return;
+            }
             try {
                 int res = (Integer) result.getResult();
-                if (res == CreateContainerTaskFragmentBase.RESULT_REQUEST_OVERWRITE)
+                if (res == CreateContainerTaskFragmentBase.RESULT_REQUEST_OVERWRITE) {
                     OverwriteContainerDialog
                             .showDialog(getFragmentManager());
-                else {
+                } else {
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 }
@@ -250,12 +256,14 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
         createExtProperties();
 
         if (_state.containsKey(ARG_ADD_EXISTING_LOCATION)) {
-            if (_state.getBoolean(ARG_ADD_EXISTING_LOCATION))
+            if (_state.getBoolean(ARG_ADD_EXISTING_LOCATION)) {
                 showAddExistingLocationProperties();
-            else
+            } else {
                 showCreateNewLocationProperties();
-        } else
+            }
+        } else {
             showAddExistingLocationRequestProperties();
+        }
     }
 
     protected void createStartProperties() {

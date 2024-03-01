@@ -43,8 +43,9 @@ public class Util {
                 f.close();
                 throw new IOException(e);
             }
-        } else
+        } else {
             input = file.getInputStream();
+        }
         try {
             return copyStream(input, output, count, pi);
         } finally {
@@ -63,8 +64,9 @@ public class Util {
                 f.close();
                 throw new IOException(e);
             }
-        } else
+        } else {
             output = file.getOutputStream();
+        }
         try {
             return copyStream(input, output, count, pi);
         } finally {
@@ -81,8 +83,9 @@ public class Util {
             dst.write(buf, 0, n);
             bytesRead += n;
             if (pi != null) {
-                if (pi.isCancelled())
+                if (pi.isCancelled()) {
                     break;
+                }
                 pi.setProcessed(bytesRead);
             }
 
@@ -109,12 +112,15 @@ public class Util {
     public static AccessMode getAccessModeFromString(String mode) {
         boolean read = mode.contains("r");
         boolean write = mode.contains("w");
-        if (read && write)
+        if (read && write) {
             return mode.contains("t") ? AccessMode.ReadWriteTruncate : AccessMode.ReadWrite;
-        if (read)
+        }
+        if (read) {
             return AccessMode.Read;
-        if (write)
+        }
+        if (write) {
             return mode.contains("a") ? AccessMode.WriteAppend : AccessMode.Write;
+        }
         throw new IllegalArgumentException("Unsupported mode: " + mode);
     }
 
@@ -153,11 +159,13 @@ public class Util {
     public static RandomAccessIO appendFile(Path path) throws IOException {
         long pos;
         if (path.exists()) {
-            if (!path.isFile())
+            if (!path.isFile()) {
                 throw new IOException("getFileWriter error: path exists and it is not a file: " + path.getPathString());
+            }
             pos = path.getFile().getSize();
-        } else
+        } else {
             pos = 0;
+        }
 
         RandomAccessIO res = path.getFile().getRandomAccessIO(AccessMode.ReadWrite);
         res.seek(pos);
@@ -167,12 +175,14 @@ public class Util {
     public static String getNewFileName(Directory baseDir, String startName) throws IOException {
         String res = startName;
         Path testPath = PathUtil.buildPath(baseDir.getPath(), startName);
-        if (testPath == null || !testPath.exists())
+        if (testPath == null || !testPath.exists()) {
             return res;
+        }
         String baseName = StringPathUtil.getFileNameWithoutExtension(startName) + " ";
         String ext = StringPathUtil.getFileExtension(startName);
-        if (ext.length() > 0)
+        if (ext.length() > 0) {
             ext = "." + ext;
+        }
         int i = 1;
         do {
             res = baseName + (i++) + ext;
@@ -187,10 +197,11 @@ public class Util {
     public static Path makePath(FileSystem fs, Object... els) throws IOException {
         Path cur = null;
         for (Object o : els) {
-            if (cur == null)
+            if (cur == null) {
                 cur = o instanceof Path ? (Path) o : fs.getPath(o.toString());
-            else
+            } else {
                 cur = cur.combine(o.toString());
+            }
         }
         return cur;
     }
@@ -215,8 +226,9 @@ public class Util {
         Directory.Contents dc = dir.list();
         try {
             for (Path p : dc)
-                if (!dirProc.procPath(p))
+                if (!dirProc.procPath(p)) {
                     break;
+                }
         } finally {
             dc.close();
         }
@@ -230,8 +242,9 @@ public class Util {
             if (tmp >= 0) {
                 res += tmp;
                 dst.write(buf, 0, tmp);
-            } else
+            } else {
                 break;
+            }
         }
         return res;
     }
@@ -298,8 +311,9 @@ public class Util {
      * @throws IOException if unable to copy.
      */
     public static Path copyFiles(Path src, Directory dest) throws IOException {
-        if (!src.exists())
+        if (!src.exists()) {
             throw new IOException("copyFiles: Can not find source: " + src.getPathString());
+        }
 
         if (src.isDirectory()) {
             Directory newDir = dest.createDirectory(src.getDirectory().getName());
@@ -311,8 +325,9 @@ public class Util {
                 dc.close();
             }
             return newDir.getPath();
-        } else if (src.isFile())
+        } else if (src.isFile()) {
             return copyFile(src.getFile(), dest).getPath();
+        }
         return null;
     }
 
@@ -329,21 +344,25 @@ public class Util {
      */
     public static void copyFiles(File src, File dest) throws IOException {
         // Check to ensure that the source is valid...
-        if (!src.exists())
+        if (!src.exists()) {
             throw new IOException("copyFiles: Cannot find source: "
                     + src.getAbsolutePath() + ".");
-        else if (!src.canRead())
+        } else if (!src.canRead()) {
             throw new IOException("copyFiles: No right to source: "
                     + src.getAbsolutePath() + ".");
+        }
         // is this a directory copy?
         if (src.isDirectory()) {
             if (!dest.exists())
-                // if not we need to make it exist if possible (note this is
-                // mkdirs not mkdir)
-                if (!dest.mkdirs())
+            // if not we need to make it exist if possible (note this is
+            // mkdirs not mkdir)
+            {
+                if (!dest.mkdirs()) {
                     throw new IOException(
                             "copyFiles: Could not create direcotry: "
                                     + dest.getAbsolutePath() + ".");
+                }
+            }
             // get a listing of files...
             final String list[] = src.list();
             // copy all the files in the list.
@@ -375,8 +394,12 @@ public class Util {
                 wrapper.setStackTrace(e.getStackTrace());
                 throw wrapper;
             } finally { // Ensure that the files are closed (if they were open).
-                if (fin != null) fin.close();
-                if (fout != null) fout.close();
+                if (fin != null) {
+                    fin.close();
+                }
+                if (fout != null) {
+                    fout.close();
+                }
             }
         }
     }
@@ -389,12 +412,14 @@ public class Util {
      */
     public static void deleteFiles(File src) throws IOException {
         // Check to ensure that the source is valid...
-        if (!src.exists())
+        if (!src.exists()) {
             return;
+        }
 
-        if (!src.canRead())
+        if (!src.canRead()) {
             throw new IOException("deleteFiles: No right to source: "
                     + src.getAbsolutePath() + ".");
+        }
 
         // is this a directory copy?
         if (src.isDirectory()) {
@@ -417,16 +442,18 @@ public class Util {
      * @throws IOException if unable to copy.
      */
     public static void deleteFiles(Path path) throws IOException {
-        if (!path.exists())
+        if (!path.exists()) {
             return;
+        }
 
         if (path.isDirectory()) {
             Directory dir = path.getDirectory();
             for (Path p : listDir(dir))
                 deleteFiles(p);
             dir.delete();
-        } else
+        } else {
             path.getFile().delete();
+        }
     }
 
     public static com.sovworks.eds.fs.File writeToFile(Path path, CharSequence content) throws IOException {
@@ -599,10 +626,11 @@ public class Util {
         int res = 0;
         for (int tmp; res < count; ) {
             tmp = input.read(b, offset + res, count - res);
-            if (tmp >= 0)
+            if (tmp >= 0) {
                 res += tmp;
-            else
+            } else {
                 break;
+            }
         }
         return res;
     }
@@ -624,7 +652,9 @@ public class Util {
         int res = 0;
         while (res < num) {
             final long tmp = input.skip(num - res);
-            if (tmp < 0) throw new IOException("Unexpected end of stream");
+            if (tmp < 0) {
+                throw new IOException("Unexpected end of stream");
+            }
             res += tmp;
         }
     }
@@ -643,10 +673,11 @@ public class Util {
         int res = 0;
         for (int tmp; res < len; ) {
             tmp = input.read(b, res, len - res);
-            if (tmp >= 0)
+            if (tmp >= 0) {
                 res += tmp;
-            else
+            } else {
                 break;
+            }
         }
         return res;
     }
@@ -663,16 +694,18 @@ public class Util {
 
     public static int readWordLE(RandomAccessIO input) throws IOException {
         final byte[] buf = new byte[2];
-        if (readBytes(input, buf) != buf.length)
+        if (readBytes(input, buf) != buf.length) {
             throw new EOFException();
+        }
         return unsignedShortToIntLE(buf);
     }
 
     public static long readDoubleWordLE(RandomAccessIO input)
             throws IOException {
         final byte[] buf = new byte[4];
-        if (readBytes(input, buf) != buf.length)
+        if (readBytes(input, buf) != buf.length) {
             throw new EOFException();
+        }
         return unsignedIntToLongLE(buf);
     }
 
@@ -702,8 +735,9 @@ public class Util {
                 is.close();
             }
             return writer.toString();
-        } else
+        } else {
             return "";
+        }
     }
 
     public static void shortToBytesLE(short val, byte[] res, int offset) {
@@ -724,10 +758,11 @@ public class Util {
             int res = 0;
             for (int tmp; res < count; ) {
                 tmp = io.read(buf, res, count - res);
-                if (tmp > 0)
+                if (tmp > 0) {
                     res += tmp;
-                else
+                } else {
                     break;
+                }
             }
             // int res = io.read(buf, bufOffset, count);
             return res;
@@ -771,10 +806,11 @@ public class Util {
         long res = 0;
         Directory.Contents dc = dir.list();
         for (Path p : dc) {
-            if (p.isFile())
+            if (p.isFile()) {
                 res += p.getFile().getSize();
-            else
+            } else {
                 res += countFolderSize(p.getDirectory());
+            }
         }
         return res;
     }

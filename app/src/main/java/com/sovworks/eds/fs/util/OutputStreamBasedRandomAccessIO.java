@@ -50,8 +50,9 @@ public class OutputStreamBasedRandomAccessIO implements RandomAccessIO {
 
     @Override
     public void seek(long position) throws IOException {
-        if (_curPos != position)
+        if (_curPos != position) {
             throw new UnsupportedOperationException();
+        }
     }
 
     @Override

@@ -28,8 +28,9 @@ public class WipeFilesTask {
             OutputStream s = file.getOutputStream();
             try {
                 for (long i = 0; i < l; i += buf.length) {
-                    if (task != null && task.cancel())
+                    if (task != null && task.cancel()) {
                         return;
+                    }
                     rg.nextBytes(buf);
                     s.write(buf);
                     long tmp = l - i - buf.length;
@@ -49,27 +50,30 @@ public class WipeFilesTask {
         for (SrcDstCollection col : records) {
             if (col != null) {
                 for (SrcDst rec : col) {
-                    if (task != null && task.cancel())
+                    if (task != null && task.cancel()) {
                         return;
+                    }
                     Path p = rec.getSrcLocation().getCurrentPath();
                     if (p.isFile()) {
                         if (syncer != null) {
                             synchronized (syncer) {
                                 wipeFile(p.getFile(), wipe, task);
                             }
-                        } else
+                        } else {
                             wipeFile(p.getFile(), wipe, task);
-                    } else if (p.isDirectory())
+                        }
+                    } else if (p.isDirectory()) {
                         p.getDirectory().delete();
+                    }
                 }
             }
         }
     }
 
     public static void wipeFile(File file, boolean wipe, ITask task) throws IOException {
-        if (wipe)
+        if (wipe) {
             wipeFileRnd(file, task);
-        else {
+        } else {
             file.delete();
             updStatus(task, 0);
         }
@@ -81,8 +85,9 @@ public class WipeFilesTask {
 
 
     protected static void updStatus(ITask task, long sizeInc) {
-        if (task == null)
+        if (task == null) {
             return;
+        }
         task.progress((int) sizeInc);
     }
 

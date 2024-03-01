@@ -41,12 +41,15 @@ class DeleteFilesTask extends FileOperationTaskBase {
             if (srcPath.isFile()) {
                 deleteFile(srcPath.getFile());
                 ExtendedFileInfoLoader.getInstance().discardCache(record.getSrcLocation(), srcPath);
-            } else if (srcPath.isDirectory())
+            } else if (srcPath.isDirectory()) {
                 deleteDir(srcPath.getDirectory());
+            }
         } catch (final IOException e) {
             setError(new IOException(String.format("Unable to delete record: %s", srcPath.getPathDesc()), e));
         }
-        if (_currentStatus.processed.filesCount < _currentStatus.total.filesCount - 1) _currentStatus.processed.filesCount++;
+        if (_currentStatus.processed.filesCount < _currentStatus.total.filesCount - 1) {
+            _currentStatus.processed.filesCount++;
+        }
         updateUIOnTime();
         return true;
     }

@@ -31,15 +31,17 @@ public class ExFat implements FileSystem {
     }
 
     public static void makeNewFS(RandomAccessIO img, String label, int volumeSerial, long firstSector, int sectorsPerCluster) throws IOException {
-        if (makeFS(img, label, volumeSerial, firstSector, sectorsPerCluster) != 0)
+        if (makeFS(img, label, volumeSerial, firstSector, sectorsPerCluster) != 0) {
             throw new IOException("Failed formatting an ExFAT image");
+        }
     }
 
     public ExFat(RandomAccessIO exFatImage, boolean readOnly) throws IOException {
         _exfatImageFile = exFatImage;
         _exfatPtr = openFS(readOnly);
-        if (_exfatPtr == 0)
+        if (_exfatPtr == 0) {
             throw new IOException("Failed opening exfat file system");
+        }
     }
 
     @Override
@@ -73,8 +75,9 @@ public class ExFat implements FileSystem {
 
     public void overwriteFreeSpace() throws IOException {
         int res = randFreeSpace();
-        if (res != 0)
+        if (res != 0) {
             throw new IOException("Failed overwriting the free space. code " + res);
+        }
 
     }
 
@@ -102,8 +105,9 @@ public class ExFat implements FileSystem {
         if (_nativeModuleState == ModuleState.Absent || _nativeModuleState == ModuleState.Unknown) {
             System.load(getModulePath().getAbsolutePath());
             _nativeModuleState = ModuleState.Incompatible;
-            if (getVersion() < MIN_COMPATIBLE_NATIVE_MODULE_VERSION)
+            if (getVersion() < MIN_COMPATIBLE_NATIVE_MODULE_VERSION) {
                 throw new RuntimeException("Incompatible native exfat module version");
+            }
             Logger.debug("External exFAT module has been loaded.");
             _nativeModuleState = ModuleState.Installed;
         }
@@ -123,10 +127,11 @@ public class ExFat implements FileSystem {
                     loadNativeLibrary();
                 } catch (Throwable e) {
                     Logger.debug("Failed loading external exFAT module");
-                    if (GlobalConfig.isDebug())
+                    if (GlobalConfig.isDebug()) {
                         Logger.log(e);
+                    }
                 }
-            } else
+            } else {
                 try {
                     System.loadLibrary(MODULE_NAME);
                     Logger.debug("Built-in exFAT module has been loaded.");
@@ -134,6 +139,7 @@ public class ExFat implements FileSystem {
                 } catch (Throwable e) {
                     _nativeModuleState = ModuleState.Absent;
                 }
+            }
         }
     }
 

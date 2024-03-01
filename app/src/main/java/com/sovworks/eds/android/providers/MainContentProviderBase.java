@@ -18,7 +18,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
+
 import androidx.annotation.NonNull;
+
 import android.util.Base64;
 
 import com.sovworks.eds.android.Logger;
@@ -82,8 +84,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
         }
         ClipData clip = clipboard.getPrimaryClip();
         if (clip != null) {
-            if (GlobalConfig.isDebug())
+            if (GlobalConfig.isDebug()) {
                 Logger.debug(String.format("hasSelectionInClipboard: clip = %s", clip));
+            }
             return clip.getItemCount() > 0 && MainContentProvider.isClipboardUri(clip.getItemAt(0).getUri());
         }
 
@@ -108,11 +111,13 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
     public static Uri getLocationUriFromProviderUri(Uri providerUri) {
         String path = providerUri.getPath();
-        if (path == null)
+        if (path == null) {
             return null;
+        }
         String[] parts = new StringPathUtil(path).getComponents();
-        if (parts.length < 2)
+        if (parts.length < 2) {
             return null;
+        }
         String encodedLocationUri = parts[1];
         byte[] locationUriBytes = Base64.decode(encodedLocationUri, Base64.NO_WRAP | Base64.NO_PADDING | Base64.URL_SAFE);
         return Uri.parse(new String(locationUriBytes, Charset.defaultCharset()));
@@ -121,12 +126,14 @@ public abstract class MainContentProviderBase extends ContentProvider {
     public static ParcelFileDescriptor getParcelFileDescriptor(final ContentProvider cp, final Location loc, String accessMode, final Bundle opts) {
         try {
             File.AccessMode am = Util.getAccessModeFromString(accessMode);
-            if (!loc.getCurrentPath().isFile() && am == File.AccessMode.Read)
+            if (!loc.getCurrentPath().isFile() && am == File.AccessMode.Read) {
                 throw new FileNotFoundException();
+            }
             final File f = loc.getCurrentPath().getFile();
             ParcelFileDescriptor fd = f.getFileDescriptor(am);
-            if (fd != null)
+            if (fd != null) {
                 return fd;
+            }
             if (am == File.AccessMode.Read || am == File.AccessMode.Write) {
                 UserSettings s = UserSettings.getSettings(cp.getContext());
                 if (!s.forceTempFiles()) {
@@ -136,8 +143,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
                         // String mime = FileOpsService.getMimeTypeFromExtension(cp.getContext(), loc.getCurrentPath());
                         // return cp.openPipeHelper(srcUri, mime, opts, f, new PipeWriter());
                         return writeToPipe(f, opts);
-                    } else
+                    } else {
                         return readFromPipe(f, opts == null ? new Bundle() : opts);
+                    }
                 }
             }
 
@@ -156,13 +164,14 @@ public abstract class MainContentProviderBase extends ContentProvider {
                         ParcelFileDescriptor.open(jf, mode, new Handler(Looper.getMainLooper()),
                                 e ->
                                 {
-                                    if (e != null)
+                                    if (e != null) {
                                         Logger.showAndLog(cp.getContext(), e);
-                                    else
+                                    } else {
                                         FileOpsService.saveChangedFile(
                                                 cp.getContext(),
                                                 new SrcDstSingle(tmpLocation, loc)
                                         );
+                                    }
                                 }
                         );
 
@@ -175,8 +184,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
     }
 
     private static Location copyFileToTmpLocation(Location srcLoc, Path parentPath, File srcFile, int mode, ContentProvider cp) throws IOException {
-        if (!srcLoc.getCurrentPath().exists() && (mode & ParcelFileDescriptor.MODE_CREATE) == 0)
+        if (!srcLoc.getCurrentPath().exists() && (mode & ParcelFileDescriptor.MODE_CREATE) == 0) {
             throw new IOException("File doesn't exist");
+        }
 
         final Location tmpLocation = TempFilesMonitor.getTmpLocation(
                 srcLoc,
@@ -191,27 +201,31 @@ public abstract class MainContentProviderBase extends ContentProvider {
             if (dstFilePath != null && dstFilePath.isFile()) {
                 Location dstLocation = tmpLocation.copy();
                 dstLocation.setCurrentPath(dstFilePath);
-                if (!TempFilesMonitor.getMonitor(cp.getContext()).isUpdateRequired(srcLoc, dstLocation))
+                if (!TempFilesMonitor.getMonitor(cp.getContext()).isUpdateRequired(srcLoc, dstLocation)) {
                     dst = dstFilePath.getFile();
+                }
             }
-            if (dst == null)
+            if (dst == null) {
                 dst = Util.copyFile(srcFile, tmpLocation.getCurrentPath().getDirectory(), srcFile.getName());
+            }
         } else {
-            if (dstFilePath != null && dstFilePath.isFile())
+            if (dstFilePath != null && dstFilePath.isFile()) {
                 WipeFilesTask.wipeFileRnd(dstFilePath.getFile());
+            }
             dst = tmpLocation.getCurrentPath().getDirectory().createFile(srcFile.getName());
         }
         tmpLocation.setCurrentPath(dst.getPath());
         Location srcFolderLocation = srcLoc.copy();
         srcFolderLocation.setCurrentPath(parentPath);
         Uri u = tmpLocation.getDeviceAccessibleUri(dst.getPath());
-        if (u == null || !ContentResolver.SCHEME_FILE.equalsIgnoreCase(u.getScheme()))
+        if (u == null || !ContentResolver.SCHEME_FILE.equalsIgnoreCase(u.getScheme())) {
             TempFilesMonitor.getMonitor(cp.getContext()).addFileToMonitor(
                     srcLoc,
                     srcFolderLocation,
                     tmpLocation,
                     mode == ParcelFileDescriptor.MODE_READ_ONLY
             );
+        }
 
         return tmpLocation;
     }
@@ -273,8 +287,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
     static class SelectionBuilder {
         void addCondition(String filterName, String arg) {
-            if (_selectionBuilder.length() > 0)
+            if (_selectionBuilder.length() > 0) {
                 _selectionBuilder.append(' ');
+            }
             _selectionBuilder.append(filterName);
             _selectionArgs.add(arg);
         }
@@ -351,14 +366,17 @@ public abstract class MainContentProviderBase extends ContentProvider {
         switch (_uriMatcher.match(uri)) {
             case CONTENT_PATH_CODE:
             case META_PATH_CODE:
-                if (sortOrder != null)
+                if (sortOrder != null) {
                     throw new IllegalArgumentException("Sorting is not supported");
+                }
                 return queryMeta(uri, projection, selection, selectionArgs);
             case CURRENT_SELECTION_PATH_CODE:
-                if (selection != null || selectionArgs != null)
+                if (selection != null || selectionArgs != null) {
                     throw new IllegalArgumentException("Selection is not supported");
-                if (sortOrder != null)
+                }
+                if (sortOrder != null) {
                     throw new IllegalArgumentException("Sorting is not supported");
+                }
                 return querySelection(projection);
         }
         throw new IllegalArgumentException("Unsupported uri: " + uri);
@@ -399,8 +417,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
             case META_PATH_CODE:
                 return deleteFromFS(uri, selection, selectionArgs);
             case CURRENT_SELECTION_PATH_CODE:
-                if (selection != null || selectionArgs != null)
+                if (selection != null || selectionArgs != null) {
                     throw new IllegalArgumentException("Selection is not supported");
+                }
                 if (_currentSelection != null) {
                     _currentSelection = null;
                     return 1;
@@ -417,8 +436,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
             case META_PATH_CODE:
                 return updateFS(uri, values, selection, selectionArgs);
             case CURRENT_SELECTION_PATH_CODE:
-                if (selection != null || selectionArgs != null)
+                if (selection != null || selectionArgs != null) {
                     throw new IllegalArgumentException("Selection is not supported");
+                }
                 setCurrentSelection(values);
                 return 1;
         }
@@ -444,8 +464,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
         // Checks to see if the MIME type filter matches a supported MIME type.
         String[] mimeTypes = getContentMimeType(loc, mimeTypeFilter);
         // If the MIME type is supported
-        if (mimeTypes != null)
+        if (mimeTypes != null) {
             return getAssetFileDescriptor(loc, "r", opts == null ? new Bundle() : opts);
+        }
 
         // If the MIME type is not supported, return a read-only handle to the file.
         return super.openTypedAssetFile(uri, mimeTypeFilter, opts);
@@ -560,8 +581,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
         return Single.<Uri>create(em -> {
             Location loc = getLocationFromProviderUri(uri);
             Path basePath = loc.getCurrentPath();
-            if (!basePath.isDirectory())
+            if (!basePath.isDirectory()) {
                 throw new IllegalArgumentException("Wrong parent folder: " + basePath);
+            }
             String name = contentValues.getAsString(COLUMN_NAME);
             FSRecord res = contentValues.getAsBoolean(COLUMN_IS_FOLDER) ?
                     basePath.getDirectory().createDirectory(name) :
@@ -575,17 +597,20 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
         LocationsManager lm = LocationsManager.getLocationsManager(getContext(), true);
         PathsStore selection = _currentSelection;
-        if (selection == null)
+        if (selection == null) {
             selection = new PathsStore(lm);
-        if (contentValues.containsKey(COLUMN_LOCATION))
+        }
+        if (contentValues.containsKey(COLUMN_LOCATION)) {
             try {
                 selection.setLocation(lm.getLocation(Uri.parse(contentValues.getAsString(COLUMN_LOCATION))));
             } catch (Exception e) {
                 throw new IllegalArgumentException("Failed getting location from uri");
             }
+        }
         if (contentValues.containsKey(COLUMN_PATH)) {
-            if (selection.getLocation() == null)
+            if (selection.getLocation() == null) {
                 throw new IllegalArgumentException("Location is not set");
+            }
             try {
                 selection.getPathsStore().add(selection.getLocation().getFS().getPath(contentValues.getAsString(COLUMN_PATH)));
             } catch (Exception e) {
@@ -609,12 +634,14 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
     protected Cursor querySelection(String[] projection) {
         checkProjection(projection, ALL_SELECTION_COLUMNS);
-        if (projection == null)
+        if (projection == null) {
             projection = ALL_SELECTION_COLUMNS;
+        }
         PathsStore selection = _currentSelection;
         MatrixCursor res = new MatrixCursor(projection);
-        if (selection == null)
+        if (selection == null) {
             return res;
+        }
         Location loc = selection.getLocation();
         for (Path p : selection.getPathsStore()) {
             Location copy = loc.copy();
@@ -667,8 +694,9 @@ public abstract class MainContentProviderBase extends ContentProvider {
     protected void checkProjection(String[] projection, String[] columns) {
         if (projection != null) {
             for (String col : projection)
-                if (!Arrays.asList(columns).contains(col))
+                if (!Arrays.asList(columns).contains(col)) {
                     throw new IllegalArgumentException("Wrong projection column: " + col);
+                }
         }
     }
 

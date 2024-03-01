@@ -17,13 +17,15 @@ public abstract class XTS implements FileEncryptionEngine {
         closeContext();
 
         _xtsContextPointer = initContext();
-        if (_xtsContextPointer == 0)
+        if (_xtsContextPointer == 0) {
             throw new EncryptionEngineException("XTS context initialization failed");
+        }
 
         addBlockCiphers(_cf);
 
-        if (_key == null)
+        if (_key == null) {
             throw new EncryptionEngineException("Encryption key is not set");
+        }
 
         int keyOffset = 0;
         int eeKeySize = getKeySize() / 2;
@@ -91,27 +93,35 @@ public abstract class XTS implements FileEncryptionEngine {
 
     @Override
     public void encrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
-        if (_xtsContextPointer == 0)
+        if (_xtsContextPointer == 0) {
             throw new EncryptionEngineException("Engine is closed");
-        if (len % getEncryptionBlockSize() != 0 || (offset + len) > data.length)
+        }
+        if (len % getEncryptionBlockSize() != 0 || (offset + len) > data.length) {
             throw new EncryptionEngineException("Wrong buffer length");
-        if (encrypt(data, offset, len, _iv, _xtsContextPointer) != 0)
+        }
+        if (encrypt(data, offset, len, _iv, _xtsContextPointer) != 0) {
             throw new EncryptionEngineException("Failed encrypting data");
-        if (_incrementIV)
+        }
+        if (_incrementIV) {
             _iv += (len / getFileBlockSize());
+        }
     }
 
     @Override
     public void decrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
-        if (_xtsContextPointer == 0)
+        if (_xtsContextPointer == 0) {
             throw new EncryptionEngineException("Engine is closed");
-        if (len % getEncryptionBlockSize() != 0 || (offset + len) > data.length)
+        }
+        if (len % getEncryptionBlockSize() != 0 || (offset + len) > data.length) {
             throw new EncryptionEngineException("Wrong buffer length");
+        }
 
-        if (decrypt(data, offset, len, _iv, _xtsContextPointer) != 0)
+        if (decrypt(data, offset, len, _iv, _xtsContextPointer) != 0) {
             throw new EncryptionEngineException("Failed decrypting data");
-        if (_incrementIV)
+        }
+        if (_incrementIV) {
             _iv += (len / getFileBlockSize());
+        }
     }
 
     @Override

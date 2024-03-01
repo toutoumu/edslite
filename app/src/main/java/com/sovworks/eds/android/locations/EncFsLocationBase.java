@@ -51,15 +51,17 @@ public abstract class EncFsLocationBase extends EDSLocationBase {
     public void loadFromUri(Uri uri) {
         super.loadFromUri(uri);
         String p = uri.getPath();
-        if (p != null && p.startsWith("/"))
+        if (p != null && p.startsWith("/")) {
             p = p.substring(1);
+        }
         _currentPathString = p == null || "/".equals(p) || p.isEmpty() ? null : p;
     }
 
     @Override
     public void open() throws Exception {
-        if (isOpenOrMounted())
+        if (isOpenOrMounted()) {
             return;
+        }
         byte[] pass = getFinalPassword();
         try {
             Location encfsLocation = getSharedData().containerLocation;// Mounter.getNonEmulatedDeviceLocationIfNeeded(_globalSettings, _context, _location);
@@ -115,8 +117,9 @@ public abstract class EncFsLocationBase extends EDSLocationBase {
 
     @Override
     protected FileSystem createBaseFS(boolean readOnly) throws IOException {
-        if (getSharedData().encFs == null)
+        if (getSharedData().encFs == null) {
             throw new RuntimeException("File system is closed");
+        }
         return getSharedData().encFs;
     }
 }

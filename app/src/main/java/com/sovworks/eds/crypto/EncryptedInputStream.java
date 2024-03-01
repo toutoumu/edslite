@@ -36,8 +36,9 @@ public class EncryptedInputStream extends TransInputStream {
 
     @Override
     protected int transformBufferFromBase(byte[] baseBuffer, int offset, int count, long bufferPosition, byte[] dstBuffer) throws IOException {
-        if (_allowEmptyParts && count == _bufferSize && EncryptedFile.isBufferEmpty(baseBuffer, offset, count))
+        if (_allowEmptyParts && count == _bufferSize && EncryptedFile.isBufferEmpty(baseBuffer, offset, count)) {
             return count;
+        }
         FileEncryptionEngine ee = _layout.getEngine();
         _layout.setEncryptionEngineIV(ee, bufferPosition);
         try {

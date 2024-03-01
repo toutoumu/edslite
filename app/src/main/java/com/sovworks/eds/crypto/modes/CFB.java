@@ -16,13 +16,15 @@ public abstract class CFB implements EncryptionEngine {
         closeContext();
 
         _cfbContextPointer = initContext();
-        if (_cfbContextPointer == 0)
+        if (_cfbContextPointer == 0) {
             throw new EncryptionEngineException("CFB context initialization failed");
+        }
 
         addBlockCiphers(_cf);
 
-        if (_key == null)
+        if (_key == null) {
             throw new EncryptionEngineException("Encryption key is not set");
+        }
 
         int keyOffset = 0;
         for (BlockCipherNative p : _blockCiphers) {
@@ -76,27 +78,35 @@ public abstract class CFB implements EncryptionEngine {
 
     @Override
     public void encrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
-        if (_cfbContextPointer == 0)
+        if (_cfbContextPointer == 0) {
             throw new EncryptionEngineException("Engine is closed");
-        if (len == 0)
+        }
+        if (len == 0) {
             return;
-        if ((offset + len) > data.length)
+        }
+        if ((offset + len) > data.length) {
             throw new IllegalArgumentException("Wrong length or offset");
-        if (encrypt(data, offset, len, _iv, _cfbContextPointer) != 0)
+        }
+        if (encrypt(data, offset, len, _iv, _cfbContextPointer) != 0) {
             throw new EncryptionEngineException("Failed encrypting data");
+        }
     }
 
     @Override
     public void decrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
-        if (_cfbContextPointer == 0)
+        if (_cfbContextPointer == 0) {
             throw new EncryptionEngineException("Engine is closed");
-        if (len == 0)
+        }
+        if (len == 0) {
             return;
-        if ((offset + len) > data.length)
+        }
+        if ((offset + len) > data.length) {
             throw new IllegalArgumentException("Wrong length or offset");
+        }
 
-        if (decrypt(data, offset, len, _iv, _cfbContextPointer) != 0)
+        if (decrypt(data, offset, len, _iv, _cfbContextPointer) != 0) {
             throw new EncryptionEngineException("Failed decrypting data");
+        }
     }
 
     @Override

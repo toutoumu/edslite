@@ -32,10 +32,11 @@ public class EncryptionAlgorithmPropertyEditor extends ChoiceDialogPropertyEdito
         if (encAlgName != null && encModeName != null) {
             EncryptionEngine ee = VolumeLayoutBase.findCipher(algs, encAlgName, encModeName);
             return algs.indexOf(ee);
-        } else if (!algs.isEmpty())
+        } else if (!algs.isEmpty()) {
             return 0;
-        else
+        } else {
             return -1;
+        }
 
     }
 

@@ -34,8 +34,9 @@ public class ClearTempFolderTask extends WipeFilesTask {
             );
             sdr.setIsDirLast(true);
             return sdr;
-        } else
+        } else {
             return new SrcDstPlain();
+        }
     }
 
     public static class Param extends FileOperationTaskBase.FileOperationParam {
@@ -89,8 +90,9 @@ public class ClearTempFolderTask extends WipeFilesTask {
                 EdsApplication.stopProgram(_context, false);
             }
 
-        } else
+        } else {
             super.onCompleted(result);
+        }
 
     }
 }

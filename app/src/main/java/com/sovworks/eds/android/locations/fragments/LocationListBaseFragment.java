@@ -8,7 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.util.TypedValue;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -75,12 +77,15 @@ public abstract class LocationListBaseFragment extends ListFragment {
             if (convertView == null) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
                 v = inflater.inflate(R.layout.locations_list_row, null);
-            } else v = convertView;
+            } else {
+                v = convertView;
+            }
 
             final LocationInfo item = getItem(position);
             v.setTag(item);
-            if (item == null)
+            if (item == null) {
                 return v;
+            }
             // noinspection deprecation
             v.setBackgroundColor(item.isSelected ? _selectedItemBackgroundColor : _notSelectedItemBackground);
 
@@ -91,8 +96,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
             TextView tv = ((TextView) v.findViewById(android.R.id.text1));
             tv.setText(item.location.getTitle());
             ImageView iv = (ImageView) v.findViewById(android.R.id.icon);
-            if (iv != null)
+            if (iv != null) {
                 iv.setImageDrawable(item.getIcon());
+            }
             return v;
         }
 
@@ -107,11 +113,13 @@ public abstract class LocationListBaseFragment extends ListFragment {
         setEmptyText(getEmptyText());
         _locationsList = initAdapter();
         loadLocations();
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             restoreSelection(savedInstanceState);
+        }
 
-        if (haveSelectedLocations())
+        if (haveSelectedLocations()) {
             startSelectionMode();
+        }
 
         initListView();
         setListShown(true);
@@ -121,8 +129,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         ArrayList<Location> selectedLocations = getSelectedLocations();
-        if (!selectedLocations.isEmpty())
+        if (!selectedLocations.isEmpty()) {
             LocationsManager.storeLocationsInBundle(outState, selectedLocations);
+        }
     }
 
     @Override
@@ -142,8 +151,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
         MenuHandlerInfo mhi = new MenuHandlerInfo();
         mhi.menuItemId = menuItem.getItemId();
         boolean res = handleMenu(mhi);
-        if (res && mhi.clearSelection)
+        if (res && mhi.clearSelection) {
             clearSelectedFlag();
+        }
         return res || super.onOptionsItemSelected(menuItem);
     }
 
@@ -180,8 +190,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
     protected LocationInfo getSelectedLocationInfo() {
         for (int i = 0; i < _locationsList.getCount(); i++) {
             LocationInfo li = _locationsList.getItem(i);
-            if (li != null && li.isSelected)
+            if (li != null && li.isSelected) {
                 return li;
+            }
         }
         return null;
     }
@@ -190,8 +201,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
         ArrayList<Location> res = new ArrayList<>();
         for (int i = 0; i < _locationsList.getCount(); i++) {
             LocationInfo li = _locationsList.getItem(i);
-            if (li != null && li.isSelected)
+            if (li != null && li.isSelected) {
                 res.add(li.location);
+            }
         }
         return res;
     }
@@ -222,16 +234,18 @@ public abstract class LocationListBaseFragment extends ListFragment {
 
     protected void unselectLocation(LocationInfo li) {
         li.isSelected = false;
-        if (!haveSelectedLocations())
+        if (!haveSelectedLocations()) {
             stopSelectionMode();
+        }
         onSelectionChanged();
     }
 
     protected void onLocationClicked(LocationInfo li) {
-        if (li.isSelected)
+        if (li.isSelected) {
             unselectLocation(li);
-        else
+        } else {
             selectLocation(li);
+        }
 
     }
 
@@ -323,8 +337,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
                 for (Location loc : selectedLocations)
                     for (int i = 0; i < _locationsList.getCount(); i++) {
                         LocationInfo li = _locationsList.getItem(i);
-                        if (li != null && li.location.getLocationUri().equals(loc.getLocationUri()))
+                        if (li != null && li.location.getLocationUri().equals(loc.getLocationUri())) {
                             li.isSelected = true;
+                        }
                     }
             } catch (Exception e) {
                 Logger.showAndLog(getActivity(), e);
@@ -348,8 +363,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
         ListView lv = getListView();
         for (int i = 0, n = lv.getCount(); i < n; i++) {
             LocationInfo info = (LocationInfo) lv.getItemAtPosition(i);
-            if (li == info)
+            if (li == info) {
                 return i;
+            }
         }
         return -1;
     }
@@ -375,8 +391,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long itemId) {
                 LocationInfo rec = (LocationInfo) adapterView.getItemAtPosition(pos);
-                if (rec != null)
+                if (rec != null) {
                     selectLocation(rec);
+                }
                 return true;
             }
         });
@@ -385,12 +402,13 @@ public abstract class LocationListBaseFragment extends ListFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
                 LocationInfo rec = (LocationInfo) adapterView.getItemAtPosition(pos);
                 if (rec != null) {
-                    if (rec.isSelected && !isSingleSelectionMode())
+                    if (rec.isSelected && !isSingleSelectionMode()) {
                         unselectLocation(rec);
-                    else if (haveSelectedLocations())
+                    } else if (haveSelectedLocations()) {
                         selectLocation(rec);
-                    else
+                    } else {
                         onLocationClicked(rec);
+                    }
                 }
             }
         });
@@ -419,8 +437,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
                 MenuHandlerInfo mhi = new MenuHandlerInfo();
                 mhi.menuItemId = item.getItemId();
                 boolean res = handleMenu(mhi);
-                if (res && mhi.clearSelection)
+                if (res && mhi.clearSelection) {
                     mode.finish();
+                }
 
                 return res;
             }
@@ -442,8 +461,9 @@ public abstract class LocationListBaseFragment extends ListFragment {
     }
 
     private void onSelectionChanged() {
-        if (_actionMode != null)
+        if (_actionMode != null) {
             _actionMode.invalidate();
+        }
         getActivity().invalidateOptionsMenu();
     }
 

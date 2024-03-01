@@ -84,8 +84,9 @@ public abstract class LocationsManagerBase {
     }
 
     public static synchronized void setGlobalLocationsManager(LocationsManagerBase lm) {
-        if (_instance != null)
+        if (_instance != null) {
             closeLocationsManager();
+        }
         _instance = lm;
     }
 
@@ -94,15 +95,17 @@ public abstract class LocationsManagerBase {
 
     public static void storePathsInBundle(Bundle b, Location loc, Collection<? extends Path> paths) {
         b.putParcelable(PARAM_LOCATION_URI, loc.getLocationUri());
-        if (paths != null)
+        if (paths != null) {
             b.putStringArrayList(PARAM_PATHS, Util.storePaths(paths));
+        }
     }
 
     public static void storePathsInIntent(Intent i, Location loc, Collection<? extends Path> paths) {
         i.setData(loc.getLocationUri());
         i.putExtra(PARAM_LOCATION_URI, loc.getLocationUri());
-        if (paths != null)
+        if (paths != null) {
             i.putStringArrayListExtra(PARAM_PATHS, Util.storePaths(paths));
+        }
     }
 
     public static void storeLocationsInBundle(Bundle b, Iterable<? extends Location> locations) {
@@ -123,9 +126,10 @@ public abstract class LocationsManagerBase {
         ArrayList<Location> res = new ArrayList<>();
         if (b != null) {
             ArrayList<Uri> uris = b.getParcelableArrayList(PARAM_LOCATION_URIS);
-            if (uris != null)
+            if (uris != null) {
                 for (Uri uri : uris)
                     res.add(lm.getLocation(uri));
+            }
         }
         return res;
     }
@@ -133,20 +137,23 @@ public abstract class LocationsManagerBase {
     @SuppressWarnings("WeakerAccess")
     public static ArrayList<Location> getLocationsFromIntent(LocationsManagerBase lm, Intent i) throws Exception {
         ArrayList<Location> res = getLocationsFromBundle(lm, i.getExtras());
-        if (res.isEmpty() && i.getData() != null)
+        if (res.isEmpty() && i.getData() != null) {
             res.add(lm.getLocation(i.getData()));
+        }
         return res;
     }
 
     public static Location getFromIntent(Intent i, LocationsManagerBase lm, Collection<Path> pathsHolder) {
         try {
-            if (i.getData() == null)
+            if (i.getData() == null) {
                 return null;
+            }
             Location loc = lm.getLocation(i.getData());
             if (pathsHolder != null) {
                 ArrayList<String> pathStrings = i.getStringArrayListExtra(PARAM_PATHS);
-                if (pathStrings != null)
+                if (pathStrings != null) {
                     pathsHolder.addAll(Util.restorePaths(loc.getFS(), pathStrings));
+                }
             }
             return loc;
         } catch (Exception e) {
@@ -156,14 +163,16 @@ public abstract class LocationsManagerBase {
     }
 
     public static Location getFromBundle(Bundle b, LocationsManagerBase lm, Collection<Path> pathsHolder) {
-        if (b == null || !b.containsKey(PARAM_LOCATION_URI))
+        if (b == null || !b.containsKey(PARAM_LOCATION_URI)) {
             return null;
+        }
         try {
             Location loc = lm.getLocation(b.getParcelable(PARAM_LOCATION_URI));
             if (pathsHolder != null) {
                 ArrayList<String> pathStrings = b.getStringArrayList(PARAM_PATHS);
-                if (pathStrings != null)
+                if (pathStrings != null) {
                     pathsHolder.addAll(Util.restorePaths(loc.getFS(), pathStrings));
+                }
             }
             return loc;
         } catch (Exception e) {
@@ -190,16 +199,18 @@ public abstract class LocationsManagerBase {
     public static void broadcastLocationAdded(Context context, Location location) {
         Intent i = new Intent(BROADCAST_LOCATION_CREATED);
         // i.setData(location.getLocationUri());
-        if (location != null)
+        if (location != null) {
             i.putExtra(PARAM_LOCATION_URI, location.getLocationUri());
+        }
         context.sendBroadcast(i);
     }
 
     public static void broadcastLocationRemoved(Context context, Location location) {
         Intent i = new Intent(BROADCAST_LOCATION_REMOVED);
         // i.setData(location.getLocationUri());
-        if (location != null)
+        if (location != null) {
             i.putExtra(PARAM_LOCATION_URI, location.getLocationUri());
+        }
         context.sendBroadcast(i);
     }
 
@@ -228,8 +239,9 @@ public abstract class LocationsManagerBase {
     }
 
     private void startMountsMonitor() {
-        if (_mediaChangedReceiver != null)
+        if (_mediaChangedReceiver != null) {
             return;
+        }
         _mediaChangedReceiver = new MediaMountedReceiver(this);
         _context.registerReceiver(_mediaChangedReceiver, new IntentFilter(Intent.ACTION_MEDIA_MOUNTED));
         _context.registerReceiver(_mediaChangedReceiver, new IntentFilter(Intent.ACTION_MEDIA_UNMOUNTED));
@@ -277,14 +289,16 @@ public abstract class LocationsManagerBase {
                     res = loc;
                     break;
                 }
-                if (res == null && loc instanceof ExternalStorageLocation)
+                if (res == null && loc instanceof ExternalStorageLocation) {
                     res = loc;
-                else if (dba == null && loc instanceof DeviceBasedLocation)
+                } else if (dba == null && loc instanceof DeviceBasedLocation) {
                     dba = loc;
+                }
             }
         }
-        if (res == null)
+        if (res == null) {
             res = dba == null ? new DeviceBasedLocation(_settings) : dba;
+        }
         return res.copy();
     }
 
@@ -296,8 +310,9 @@ public abstract class LocationsManagerBase {
                     Openable ol = (Openable) l;
                     if (ol.isOpen()) {
                         closeLocation(l, forceClose);
-                        if (sendBroadcasts)
+                        if (sendBroadcasts) {
                             broadcastLocationChanged(_context, l);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -317,18 +332,21 @@ public abstract class LocationsManagerBase {
             }
         }
         Location loc = createLocationFromUri(locationUri);
-        if (loc == null)
+        if (loc == null) {
             throw new IllegalArgumentException("Unsupported location uri: " + locationUri);
-        if (findExistingLocation(loc.getId()) == null)
+        }
+        if (findExistingLocation(loc.getId()) == null) {
             addNewLocation(loc, false);
+        }
 
         return loc;
     }
 
     public ArrayList<Location> getLocations(Collection<String> uriStrings) {
         ArrayList<Location> res = new ArrayList<>();
-        if (uriStrings == null)
+        if (uriStrings == null) {
             return res;
+        }
         for (String uriString : uriStrings) {
             Uri uri = Uri.parse(uriString);
             try {
@@ -342,8 +360,9 @@ public abstract class LocationsManagerBase {
     public void addNewLocation(Location loc, boolean store) {
         synchronized (_currentLocations) {
             _currentLocations.add(new LocationInfo(loc, store));
-            if (store)
+            if (store) {
                 saveCurrentLocationLinks();
+            }
         }
     }
 
@@ -352,8 +371,9 @@ public abstract class LocationsManagerBase {
             LocationInfo li = findExistingLocationInfo(locationId);
             if (li != null) {
                 _currentLocations.remove(li);
-                if (li.store)
+                if (li.store) {
                     saveCurrentLocationLinks();
+                }
             }
         }
     }
@@ -399,8 +419,9 @@ public abstract class LocationsManagerBase {
             for (Uri u : getStoredLocationUris(_settings)) {
                 try {
                     Location loc = createLocationFromUri(u);
-                    if (loc == null)
+                    if (loc == null) {
                         throw new IllegalArgumentException("Unsupported location uri: " + u);
+                    }
                     _currentLocations.add(new LocationInfo(loc, true));
                 } catch (Exception e) {
                     Logger.log(e);
@@ -429,8 +450,9 @@ public abstract class LocationsManagerBase {
 
     public Location findExistingLocation(Uri locationUri) throws Exception {
         Location t = createLocationFromUri(locationUri);
-        if (t == null)
+        if (t == null) {
             throw new IllegalArgumentException("Unsupported location uri: " + locationUri);
+        }
         return findExistingLocation(t.getId());
     }
 
@@ -465,16 +487,18 @@ public abstract class LocationsManagerBase {
     public boolean hasOpenLocations() {
         synchronized (_currentLocations) {
             for (LocationInfo loc : _currentLocations)
-                if ((loc.location instanceof Openable && ((Openable) loc.location).isOpen()))
+                if ((loc.location instanceof Openable && ((Openable) loc.location).isOpen())) {
                     return true;
+                }
             return false;
         }
     }
 
     public Location getDefaultLocationFromPath(String path) throws Exception {
         Uri u = Uri.parse(path);
-        if (u.getScheme() == null && !path.startsWith("/"))
+        if (u.getScheme() == null && !path.startsWith("/")) {
             return new DeviceBasedLocation(_settings, StdFs.getStdFs().getPath(Environment.getExternalStorageDirectory().getPath()).combine(path));
+        }
 
         return u.getScheme() == null ?
                 createDeviceLocation(u)
@@ -496,24 +520,28 @@ public abstract class LocationsManagerBase {
         synchronized (_currentLocations) {
             List<LocationInfo> prev = new ArrayList<>();
             for (LocationInfo li : _currentLocations)
-                if (li.isDevice)
+                if (li.isDevice) {
                     prev.add(li);
+                }
             List<Location> cur = loadDeviceLocations();
             for (LocationInfo li : prev) {
                 boolean remove = true;
                 for (Location loc : cur) {
-                    if (loc.getId().equals(li.location.getId()))
+                    if (loc.getId().equals(li.location.getId())) {
                         remove = false;
+                    }
                 }
-                if (remove)
+                if (remove) {
                     _currentLocations.remove(li);
+                }
             }
 
             for (Location loc : cur) {
                 boolean add = true;
                 for (LocationInfo li : prev) {
-                    if (loc.getId().equals(li.location.getId()))
+                    if (loc.getId().equals(li.location.getId())) {
                         add = false;
+                    }
                 }
                 if (add) {
                     LocationInfo li = new LocationInfo(loc, false);
@@ -529,8 +557,9 @@ public abstract class LocationsManagerBase {
         ArrayList<String> links = new ArrayList<>();
         synchronized (_currentLocations) {
             for (LocationInfo li : _currentLocations)
-                if (li.store)
+                if (li.store) {
                     links.add(li.location.getLocationUri().toString());
+                }
         }
         _settings.setStoredLocations(com.sovworks.eds.android.helpers.Util.storeElementsToString(links));
     }
@@ -538,8 +567,9 @@ public abstract class LocationsManagerBase {
     public String genNewLocationId() {
         while (true) {
             String locId = SimpleCrypto.calcStringMD5(String.valueOf(new Date().getTime()) + String.valueOf(new Random().nextLong()));
-            if (findExistingLocation(locId) == null)
+            if (findExistingLocation(locId) == null) {
                 return locId;
+            }
         }
     }
 
@@ -547,8 +577,9 @@ public abstract class LocationsManagerBase {
         ArrayList<Location> locs = new ArrayList<>();
         for (int i = _openedLocationsStack.size() - 1; i >= 0; i--) {
             Location loc = findExistingLocation(_openedLocationsStack.get(i));
-            if (loc != null)
+            if (loc != null) {
                 locs.add(loc);
+            }
         }
         return locs;
     }
@@ -569,21 +600,24 @@ public abstract class LocationsManagerBase {
     }
 
     public void unmountAndCloseLocation(Location location, boolean forceClose) throws Exception {
-        if (location instanceof Openable)
+        if (location instanceof Openable) {
             closeLocation(location, forceClose);
+        }
     }
 
     public void closeLocation(Location loc, boolean forceClose) throws Exception {
         loc.closeFileSystem(forceClose);
-        if (loc instanceof Openable)
+        if (loc instanceof Openable) {
             OpenableLocationCloserFragment.closeLocation(_context, (Openable) loc, forceClose);
+        }
 
     }
 
     public Location createLocationFromUri(Uri locationUri) throws Exception {
         String scheme = locationUri.getScheme();
-        if (scheme == null)
+        if (scheme == null) {
             return findOrCreateDeviceLocation(locationUri);
+        }
         switch (locationUri.getScheme()) {
             case ContainerBasedLocation.URI_SCHEME:
                 return createContainerLocation(locationUri);
@@ -604,10 +638,11 @@ public abstract class LocationsManagerBase {
             case LUKSLocation.URI_SCHEME:
                 return createLUKSLocation(locationUri);
             case ContentResolver.SCHEME_CONTENT:
-                if (DocumentTreeLocation.isDocumentTreeUri(_context, locationUri))
+                if (DocumentTreeLocation.isDocumentTreeUri(_context, locationUri)) {
                     return createDocumentTreeLocation(locationUri);
-                else
+                } else {
                     return createContentResolverLocation(locationUri);
+                }
             case DocumentTreeLocation.URI_SCHEME:
                 return createDocumentTreeLocation(locationUri);
             default:
@@ -627,8 +662,9 @@ public abstract class LocationsManagerBase {
             synchronized (_currentLocations) {
                 int res = 0;
                 for (LocationInfo li : _currentLocations)
-                    if (isValid(li.location))
+                    if (isValid(li.location)) {
                         res++;
+                    }
                 return res;
             }
         }
@@ -640,8 +676,9 @@ public abstract class LocationsManagerBase {
             synchronized (_currentLocations) {
                 for (LocationInfo li : _currentLocations) {
                     if (isValid(li.location)) {
-                        if (res == location)
+                        if (res == location) {
                             return (E) li.location;
+                        }
                         res++;
                     }
                 }
@@ -672,15 +709,17 @@ public abstract class LocationsManagerBase {
 
     private LocationInfo findExistingLocationInfo(String locationId) {
         for (LocationInfo li : _currentLocations)
-            if (li.location.getId().equals(locationId))
+            if (li.location.getId().equals(locationId)) {
                 return li;
+            }
         return null;
     }
 
     protected String getLocationIdFromUri(Uri locationUri) throws Exception {
         String scheme = locationUri.getScheme();
-        if (scheme == null)
+        if (scheme == null) {
             return null;
+        }
         switch (locationUri.getScheme()) {
             case ContainerBasedLocation.URI_SCHEME:
                 return ContainerBasedLocation.getLocationId(this, locationUri);
@@ -699,10 +738,11 @@ public abstract class LocationsManagerBase {
             case LUKSLocation.URI_SCHEME:
                 return LUKSLocation.getLocationId(this, locationUri);
             case ContentResolver.SCHEME_CONTENT:
-                if (DocumentTreeLocation.isDocumentTreeUri(_context, locationUri))
+                if (DocumentTreeLocation.isDocumentTreeUri(_context, locationUri)) {
                     return DocumentTreeLocation.getLocationId(locationUri);
-                else
+                } else {
                     return ContentResolverLocation.getLocationId();
+                }
             case DocumentTreeLocation.URI_SCHEME:
                 return DocumentTreeLocation.getLocationId(locationUri);
             default:
@@ -798,10 +838,11 @@ public abstract class LocationsManagerBase {
     }
 
     private Location createDocumentTreeLocation(Uri uri) throws Exception {
-        if (DocumentTreeLocation.URI_SCHEME.equals(uri.getScheme()))
+        if (DocumentTreeLocation.URI_SCHEME.equals(uri.getScheme())) {
             return DocumentTreeLocation.fromLocationUri(_context, uri);
-        else
+        } else {
             return new DocumentTreeLocation(_context, uri);
+        }
     }
 
     private Location createContentResolverLocation(Uri locationUri) throws Exception {

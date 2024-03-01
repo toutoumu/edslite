@@ -27,15 +27,17 @@ public abstract class BufferedRandomAccessIO extends RandomAccessIOWrapper {
     }
 
     public synchronized void close(boolean closeBase) throws IOException {
-        if (closeBase)
+        if (closeBase) {
             super.close();
+        }
     }
 
     @Override
     public synchronized int read(byte[] buf, int offset, int count) throws IOException {
         log("read %d %d %d", buf.length, offset, count);
-        if (_currentPosition >= _length)
+        if (_currentPosition >= _length) {
             return -1;
+        }
         if (count > 0) {
             byte[] currentBuffer = getCurrentBuffer();
             long avail = Math.min(getSpaceInBuffer(), _length - _currentPosition);
@@ -78,7 +80,9 @@ public abstract class BufferedRandomAccessIO extends RandomAccessIOWrapper {
     @Override
     public synchronized void seek(long position) throws IOException {
         log("seek %d", position);
-        if (position < 0) throw new IllegalArgumentException();
+        if (position < 0) {
+            throw new IllegalArgumentException();
+        }
         _currentPosition = position;
         // DEBUG
         // Log.d("EncryptedRAF.seek",String.format("current sector offset = %d, is_buffer_empty=%s, is_buffer_changed=%s ", _currentSectorOffset,_is_buffer_empty,_is_buffer_changed));
@@ -103,14 +107,16 @@ public abstract class BufferedRandomAccessIO extends RandomAccessIOWrapper {
     protected abstract long getBufferPosition();
 
     protected void log(String msg, Object... params) {
-        if (ENABLE_DEBUG_LOG && GlobalConfig.isDebug())
+        if (ENABLE_DEBUG_LOG && GlobalConfig.isDebug()) {
             Logger.log(String.format("EncryptedFile: " + msg, params));
+        }
     }
 
     protected void setCurrentBufferWritten(int numBytes) {
         _currentPosition += numBytes;
-        if (_currentPosition > _length)
+        if (_currentPosition > _length) {
             _length = _currentPosition;
+        }
     }
 
     protected void setCurrentBufferRead(int numBytes) {

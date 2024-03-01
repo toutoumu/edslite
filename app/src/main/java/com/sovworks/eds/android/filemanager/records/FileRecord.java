@@ -102,8 +102,9 @@ class FileRecord extends FsBrowserRecord {
         if (_infoString != null) {
             tv.setVisibility(View.VISIBLE);
             tv.setText(_infoString);
-        } else
+        } else {
             tv.setVisibility(View.INVISIBLE);
+        }
 
         ImageView iv = view.findViewById(android.R.id.icon);
         if (_mainIcon != null) {
@@ -149,8 +150,9 @@ class FileRecord extends FsBrowserRecord {
             } catch (IOException ignored) {
 
             }
-        } else
+        } else {
             _infoString = null;
+        }
     }
 
     protected String formatInfoString(Context context) throws IOException {
@@ -181,8 +183,9 @@ class FileRecord extends FsBrowserRecord {
     }
 
     protected void initExtFileInfo(ExtFileInfo info) {
-        if (_loadPreviews)
+        if (_loadPreviews) {
             info.mainIcon = loadMainIcon();
+        }
     }
 
     protected Drawable loadMainIcon() {
@@ -221,8 +224,9 @@ class FileRecord extends FsBrowserRecord {
     private boolean _animateIcon, _loadPreviews;
 
     private Drawable getDefaultAppIcon(String path, String mime) {
-        if (mime.equals("*/*"))
+        if (mime.equals("*/*")) {
             return null;
+        }
         final Intent intent = new Intent(Intent.ACTION_VIEW);
         // intent.setType(mime);
 
@@ -233,8 +237,9 @@ class FileRecord extends FsBrowserRecord {
             final List<ResolveInfo> matches = pacMan.queryIntentActivities(intent, 0);
             for (ResolveInfo match : matches) {
                 final Drawable icon = match.loadIcon(pacMan);
-                if (icon != null)
+                if (icon != null) {
                     return icon;// drawableToBitmap(icon);
+                }
             }
         } catch (NullPointerException ignored) {
             // bug?

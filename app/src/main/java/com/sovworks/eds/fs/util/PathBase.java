@@ -36,8 +36,9 @@ public abstract class PathBase implements Path {
             return /*((Path)o).getFileSystem().equals(getFileSystem()) && */((pu == null && opu == null) || (pu != null && pu.equals(opu)));
         }
 
-        if (o instanceof String || o instanceof StringPathUtil)
+        if (o instanceof String || o instanceof StringPathUtil) {
             return pu.equals(o);
+        }
 
         return super.equals(o);
     }

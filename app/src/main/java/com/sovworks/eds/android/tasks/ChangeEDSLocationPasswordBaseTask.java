@@ -34,8 +34,9 @@ public abstract class ChangeEDSLocationPasswordBaseTask extends TaskFragment {
     @Override
     protected TaskCallbacks getTaskCallbacks(Activity activity) {
         final EDSLocationSettingsFragment f = (EDSLocationSettingsFragment) getFragmentManager().findFragmentByTag(SettingsBaseActivity.SETTINGS_FRAGMENT_TAG);
-        if (f == null)
+        if (f == null) {
             return null;
+        }
         return new ProgressDialogTaskFragmentCallbacks(activity, R.string.changing_password) {
             @Override
             public void onCompleted(Bundle args, Result result) {

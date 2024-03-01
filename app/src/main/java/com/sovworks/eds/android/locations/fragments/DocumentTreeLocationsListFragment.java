@@ -35,8 +35,9 @@ public class DocumentTreeLocationsListFragment extends LocationListBaseFragment 
                 LocationsManager.getLocationsManager(getActivity()).addNewLocation(loc, true);
                 LocationsManager.broadcastLocationAdded(getActivity(), loc);
             }
-        } else
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

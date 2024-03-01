@@ -82,10 +82,11 @@ public abstract class UserSettingsCommon implements SettingsCommon {
     @Override
     public void setLocationSettingsString(String locationId, String data) {
         SharedPreferences.Editor e = _prefs.edit();
-        if (data == null)
+        if (data == null) {
             e.remove(LOCATION_SETTINGS_PREFIX + locationId);
-        else
+        } else {
             e.putString(LOCATION_SETTINGS_PREFIX + locationId, data);
+        }
         e.commit();
     }
 
@@ -140,8 +141,9 @@ public abstract class UserSettingsCommon implements SettingsCommon {
     @Override
     public LocationShortcutWidgetInfo getLocationShortcutWidgetInfo(int widgetId) {
         String data = _prefs.getString(LOCATION_SHORTCUT_WIDGET_PREFIX + widgetId, null);
-        if (data == null)
+        if (data == null) {
             return _defaultSettings.getLocationShortcutWidgetInfo(widgetId);
+        }
         LocationShortcutWidgetInfo i = new LocationShortcutWidgetInfo();
         i.load(data);
         return i;
@@ -152,10 +154,11 @@ public abstract class UserSettingsCommon implements SettingsCommon {
     public void setLocationShortcutWidgetInfo(int widgetId,
                                               LocationShortcutWidgetInfo info) {
         SharedPreferences.Editor editor = _prefs.edit();
-        if (info == null)
+        if (info == null) {
             editor.remove(LOCATION_SHORTCUT_WIDGET_PREFIX + widgetId);
-        else
+        } else {
             editor.putString(LOCATION_SHORTCUT_WIDGET_PREFIX + widgetId, info.toString());
+        }
         editor.commit();
     }
 
@@ -202,8 +205,9 @@ public abstract class UserSettingsCommon implements SettingsCommon {
     @Override
     public List<String> getVisitedHintSections() {
         String s = _prefs.getString(VISITED_HINT_SECTIONS, null);
-        if (s == null)
+        if (s == null) {
             return _defaultSettings.getVisitedHintSections();
+        }
 
         try {
             return Util.loadStringArrayFromString(s);
@@ -247,11 +251,13 @@ public abstract class UserSettingsCommon implements SettingsCommon {
     }
 
     public byte[] getProtectedData(String key) throws InvalidSettingsPassword {
-        if (_resetProtectedSettings)
+        if (_resetProtectedSettings) {
             return null;
+        }
         String encryptedString = _prefs.getString(key, null);
-        if (encryptedString == null)
+        if (encryptedString == null) {
             return null;
+        }
         try {
             return SimpleCrypto.decrypt(getSettingsProtectionKey(), encryptedString);
         } catch (Exception e) {
@@ -286,21 +292,23 @@ public abstract class UserSettingsCommon implements SettingsCommon {
                     encryptedString = _prefs.getString(SETTINGS_PROTECTION_KEY_OLD, null);
                     isUser = true;
                 }
-            } else
+            } else {
                 isUser = true;
-            if (encryptedString == null)
+            }
+            if (encryptedString == null) {
                 saveSettingsProtectionKey();
-            else {
+            } else {
                 try {
                     byte[] settingsPassword = getSettingsPassword();
                     try {
                         _settingsProtectionKey = new SecureBuffer(SimpleCrypto.decryptWithPassword(settingsPassword, encryptedString));
                         if (!isSettingsPasswordValid()) {
                             clearSettingsProtectionKey();
-                            if (isUser)
+                            if (isUser) {
                                 throw new InvalidSettingsPassword();
-                            else
+                            } else {
                                 saveSettingsProtectionKey();
+                            }
                         }
                     } finally {
                         SecureBuffer.eraseData(settingsPassword);
@@ -335,8 +343,9 @@ public abstract class UserSettingsCommon implements SettingsCommon {
     @Override
     public ExternalFileManagerInfo getExternalFileManagerInfo() {
         String data = _prefs.getString(EXTERNAL_FILE_MANAGER, null);
-        if (data == null)
+        if (data == null) {
             return _defaultSettings.getExternalFileManagerInfo();
+        }
         ExternalFileManagerInfo i = new ExternalFileManagerInfo();
         try {
             i.load(data);
@@ -364,8 +373,9 @@ public abstract class UserSettingsCommon implements SettingsCommon {
             _settingsProtectionKey = new SecureBuffer(k);
         }
         byte[] key = _settingsProtectionKey.getDataArray();
-        if (key == null)
+        if (key == null) {
             throw new InvalidSettingsPassword();
+        }
         try {
             byte[] pass = getUserSettingsPassword();
             if (pass != null) {
@@ -420,8 +430,9 @@ public abstract class UserSettingsCommon implements SettingsCommon {
         SecureBuffer mp = EdsApplication.getMasterPassword();
         if (mp != null) {
             byte[] mpd = mp.getDataArray();
-            if (mpd != null)
+            if (mpd != null) {
                 return mpd;
+            }
         }
         return null;
     }

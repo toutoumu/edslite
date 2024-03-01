@@ -14,8 +14,9 @@ import java.io.OutputStream;
 public class StdFileRecord extends StdFsRecord implements com.sovworks.eds.fs.File {
     public StdFileRecord(StdFsPath path) throws IOException {
         super(path);
-        if (path.exists() && !path.getJavaFile().isFile())
+        if (path.exists() && !path.getJavaFile().isFile()) {
             throw new IllegalArgumentException("StdFileRecord error: path must point to a file");
+        }
     }
 
     @Override

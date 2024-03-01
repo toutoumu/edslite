@@ -3,6 +3,7 @@ package com.sovworks.eds.fs.util;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.android.Logger;
@@ -40,8 +41,9 @@ public class SrcDstRec implements SrcDstCollection, SrcDstCollection.SrcDst {
     }
 
     public static SrcDstCollection fromPaths(Location srcLoc, Location dstLoc, boolean dirLast, Collection<? extends Path> srcPaths) {
-        if (srcPaths == null)
+        if (srcPaths == null) {
             return new SrcDstSingle(srcLoc, dstLoc);
+        }
         ArrayList<SrcDstCollection> res = new ArrayList<>(srcPaths.size());
         for (Path p : srcPaths) {
             Location nextSrcLoc = srcLoc.copy();
@@ -143,13 +145,15 @@ public class SrcDstRec implements SrcDstCollection, SrcDstCollection.SrcDst {
 
     private static Observable<SrcDst> observeTree(SrcDstRec tree, boolean isDirLast) {
         return Observable.create(emitter -> {
-            if (!isDirLast)
+            if (!isDirLast) {
                 emitter.onNext(tree);
+            }
             for (SrcDstRec sdc : tree.getSubElements())
                 observeTree(sdc, isDirLast).
                         subscribe(emitter::onNext, emitter::onError);
-            if (isDirLast)
+            if (isDirLast) {
                 emitter.onNext(tree);
+            }
             emitter.onComplete();
         });
     }
@@ -158,8 +162,9 @@ public class SrcDstRec implements SrcDstCollection, SrcDstCollection.SrcDst {
         ArrayList<SrcDstRec> res = new ArrayList<>();
         Location srcLocation = _topElement.getSrcLocation();
         Path startPath = srcLocation.getCurrentPath();
-        if (startPath == null || !startPath.isDirectory())
+        if (startPath == null || !startPath.isDirectory()) {
             return res;
+        }
 
         Directory directory = startPath.getDirectory();
         String directoryName = directory.getName();
@@ -176,8 +181,9 @@ public class SrcDstRec implements SrcDstCollection, SrcDstCollection.SrcDst {
 
                     @Override
                     public Location getDstLocation() throws IOException {
-                        if (_dstLocationCache == null)
+                        if (_dstLocationCache == null) {
                             _dstLocationCache = calcSubDestLocation(_topElement, directoryName);
+                        }
                         return _dstLocationCache;
                     }
 
@@ -193,8 +199,9 @@ public class SrcDstRec implements SrcDstCollection, SrcDstCollection.SrcDst {
 
     private static Location calcSubDestLocation(SrcDstCollection.SrcDst parentSrcDst, String nextDirName) throws IOException {
         Location loc = parentSrcDst.getDstLocation();
-        if (loc == null)
+        if (loc == null) {
             return null;
+        }
         try {
             loc = loc.copy();
             Path dstSubPath = PathUtil.getDirectory(

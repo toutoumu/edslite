@@ -35,8 +35,9 @@ public abstract class PropertyEditorBase implements PropertyEditor {
 
     @Override
     public synchronized View getView(ViewGroup parent) {
-        if (_view == null)
+        if (_view == null) {
             _view = createView(parent);
+        }
 
         return _view;
     }
@@ -120,20 +121,22 @@ public abstract class PropertyEditorBase implements PropertyEditor {
         TextView tv;
         tv = view.findViewById(R.id.title_edit);
         if (tv != null) {
-            if (_titleResId != 0)
+            if (_titleResId != 0) {
                 tv.setText(_titleResId);
-            else if (_title != null)
+            } else if (_title != null) {
                 tv.setText(_title);
+            }
         }
 
         tv = view.findViewById(R.id.desc);
         if (tv != null) {
-            if (_descResId != 0)
+            if (_descResId != 0) {
                 tv.setText(_descResId);
-            else if (_desc != null)
+            } else if (_desc != null) {
                 tv.setText(_desc);
-            else
+            } else {
                 tv.setVisibility(View.GONE);
+            }
         }
         return view;
     }

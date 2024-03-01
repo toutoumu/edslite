@@ -47,15 +47,18 @@ class MoveFilesTask extends CopyFilesTask {
         try {
             Location srcLocation = record.getSrcLocation();
             Location dstLocation = record.getDstLocation();
-            if (dstLocation == null)
+            if (dstLocation == null) {
                 throw new IOException("Failed to determine destination location for " + srcLocation.getLocationUri());
+            }
             _wipe = !srcLocation.isEncrypted() && dstLocation.isEncrypted();
-            if (tryMove(record))
+            if (tryMove(record)) {
                 return true;
+            }
             copyFiles(record);
             Path srcPath = srcLocation.getCurrentPath();
-            if (srcPath.isDirectory())
+            if (srcPath.isDirectory()) {
                 _foldersToDelete.add(0, srcPath.getDirectory());
+            }
 
         } catch (NoFreeSpaceLeftException e) {
             throw new com.sovworks.eds.android.errors.NoFreeSpaceLeftException(_context);
@@ -69,8 +72,9 @@ class MoveFilesTask extends CopyFilesTask {
         Location srcLocation = srcDst.getSrcLocation();
         Path srcPath = srcLocation.getCurrentPath();
         Location dstLocation = srcDst.getDstLocation();
-        if (dstLocation == null)
+        if (dstLocation == null) {
             throw new IOException("Failed to determine destination location for " + srcLocation.getLocationUri());
+        }
         Path dstPath = dstLocation.getCurrentPath();
         if (srcPath.getFileSystem() == dstPath.getFileSystem()) {
             if (srcPath.isFile()) {
@@ -78,8 +82,9 @@ class MoveFilesTask extends CopyFilesTask {
                     ExtendedFileInfoLoader.getInstance().discardCache(srcLocation, srcPath);
                     return true;
                 }
-            } else if (srcPath.isDirectory())
+            } else if (srcPath.isDirectory()) {
                 return tryMove(srcPath.getDirectory(), dstPath.getDirectory());
+            }
         }
         return false;
     }
@@ -88,8 +93,9 @@ class MoveFilesTask extends CopyFilesTask {
         try {
             Path dstRec = calcDstPath(srcFile, newParent);
             if (dstRec != null) {
-                if (dstRec.exists())
+                if (dstRec.exists()) {
                     return false;
+                }
             }
             srcFile.moveTo(newParent);
             return true;
@@ -138,8 +144,9 @@ class MoveFilesTask extends CopyFilesTask {
     private boolean deleteEmptyDir(Directory startDir) throws IOException {
         Directory.Contents dc = startDir.list();
         try {
-            if (dc.iterator().hasNext())
+            if (dc.iterator().hasNext()) {
                 return false;
+            }
         } finally {
             dc.close();
         }

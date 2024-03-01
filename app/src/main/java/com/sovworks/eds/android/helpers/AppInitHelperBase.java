@@ -35,20 +35,24 @@ public abstract class AppInitHelperBase {
     @SuppressLint("ApplySharedPref")
     void convertLegacySettings() {
         int curSettingsVersion = _settings.getCurrentSettingsVersion();
-        if (curSettingsVersion >= Settings.VERSION)
+        if (curSettingsVersion >= Settings.VERSION) {
             return;
-
-        if (curSettingsVersion < 0) {
-            if (_settings.getLastViewedPromoVersion() > 160)
-                _settings.getSharedPreferences().edit().putInt(CURRENT_SETTINGS_VERSION, Settings.VERSION).commit();
-            else
-                curSettingsVersion = 1;
         }
 
-        if (curSettingsVersion < 2)
+        if (curSettingsVersion < 0) {
+            if (_settings.getLastViewedPromoVersion() > 160) {
+                _settings.getSharedPreferences().edit().putInt(CURRENT_SETTINGS_VERSION, Settings.VERSION).commit();
+            } else {
+                curSettingsVersion = 1;
+            }
+        }
+
+        if (curSettingsVersion < 2) {
             updateSettingsV2();
-        if (curSettingsVersion < 3)
+        }
+        if (curSettingsVersion < 3) {
             updateSettingsV3();
+        }
         _settings.
                 getSharedPreferences().
                 edit().
@@ -70,8 +74,9 @@ public abstract class AppInitHelperBase {
             if (l instanceof ContainerBasedLocation) {
                 ContainerBasedLocation.ExternalSettings externalSettings = ((ContainerBasedLocation) l).getExternalSettings();
                 String encAlg = externalSettings.getEncEngineName();
-                if (encAlg == null)
+                if (encAlg == null) {
                     continue;
+                }
                 switch (encAlg) {
                     case "aes-twofish-serpent-xts-plain64":
                         externalSettings.setEncEngineName("serpent-twofish-aes-xts-plain64");

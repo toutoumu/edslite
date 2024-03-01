@@ -13,8 +13,9 @@ import java.io.IOException;
 public class EncryptedFile extends TransRandomAccessIO {
     public static boolean isBufferEmpty(byte[] buf, int offset, int count) {
         for (int i = 0; i < count; i++)
-            if (buf[offset + i] != 0)
+            if (buf[offset + i] != 0) {
                 return false;
+            }
         return true;
     }
 
@@ -62,16 +63,18 @@ public class EncryptedFile extends TransRandomAccessIO {
 
     @Override
     protected int transformBufferFromBase(byte[] baseBuffer, int offset, int count, long bufferPosition, byte[] dstBuffer) throws IOException {
-        if (baseBuffer != dstBuffer)
+        if (baseBuffer != dstBuffer) {
             System.arraycopy(baseBuffer, offset, dstBuffer, offset, count);
+        }
 
-        if (!_allowSkip)
+        if (!_allowSkip) {
             decryptBuffer(dstBuffer, offset, count, bufferPosition);
-        else {
+        } else {
             for (int i = 0; i < count; ) {
                 int curSize = Math.min(count - i, _fileBlockSize);
-                if (curSize != _fileBlockSize || !isBufferEmpty(dstBuffer, offset + i, curSize))
+                if (curSize != _fileBlockSize || !isBufferEmpty(dstBuffer, offset + i, curSize)) {
                     decryptBuffer(dstBuffer, offset + i, curSize, bufferPosition + i);
+                }
                 i += curSize;
             }
         }
@@ -97,13 +100,14 @@ public class EncryptedFile extends TransRandomAccessIO {
     @Override
     protected void transformBufferToBase(byte[] buf, int offset, int count, long bufferPosition, byte[] baseBuffer) throws IOException {
         System.arraycopy(buf, offset, baseBuffer, offset, count);
-        if (!_allowSkip)
+        if (!_allowSkip) {
             encryptBuffer(baseBuffer, offset, count, bufferPosition);
-        else {
+        } else {
             for (int i = 0; i < count; ) {
                 int curSize = Math.min(count - i, _fileBlockSize);
-                if (curSize != _fileBlockSize || !isBufferEmpty(baseBuffer, offset + i, curSize))
+                if (curSize != _fileBlockSize || !isBufferEmpty(baseBuffer, offset + i, curSize)) {
                     encryptBuffer(baseBuffer, offset + i, curSize, bufferPosition + i);
+                }
                 i += curSize;
             }
         }

@@ -24,14 +24,16 @@ public class ExecuteExternalProgram implements TextShell {
         }
 
         public boolean hasNext() {
-            if (!_isLineRead)
+            if (!_isLineRead) {
                 readLine();
+            }
             return _line != null;
         }
 
         public String next() {
-            if (!hasNext())
+            if (!hasNext()) {
                 throw new NoSuchElementException();
+            }
             _isLineRead = false;
             return _line;
 
@@ -53,20 +55,23 @@ public class ExecuteExternalProgram implements TextShell {
         private void readLine() {
             _line = null;
             _isLineRead = true;
-            if (_eof)
+            if (_eof) {
                 return;
+            }
             StringWriter out = new StringWriter();
             try {
                 for (; ; ) {
                     int n = _input.read();
                     if (n < 0 || n == '\n') {
-                        if (n < 0)
+                        if (n < 0) {
                             _eof = true;
+                        }
                         _line = out.toString();
                         break;
                     }
-                    if (n != '\r')
+                    if (n != '\r') {
                         out.write(n);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -139,8 +144,9 @@ public class ExecuteExternalProgram implements TextShell {
     public String waitResult() throws ExternalProgramFailedException, IOException {
         int res = waitProcess();
         String out = readAll(getProcInputStream());
-        if (res != 0)
+        if (res != 0) {
             throw new ExternalProgramFailedException(res, out + "\n" + out, _currentArgs);
+        }
 
         return out;
     }
@@ -190,8 +196,9 @@ public class ExecuteExternalProgram implements TextShell {
     }
 
     public void executeCommand(String... command) throws IOException {
-        if (_process != null)
+        if (_process != null) {
             throw new RuntimeException("Previous process is active");
+        }
         _currentArgs = command;
         _process = new ProcessBuilder().command(command).redirectErrorStream(_redirectErrorStream).start();
         _procInputStream = _process.getInputStream();
@@ -230,8 +237,9 @@ public class ExecuteExternalProgram implements TextShell {
         try {
             exec.executeCommand(command);
             int res = exec.waitProcess();
-            if (res != 0)
+            if (res != 0) {
                 throw new ExternalProgramFailedException(res, "", command);
+            }
         } catch (IOException e) {
             throw new ApplicationException("Failed executing external program", e);
         }
@@ -239,9 +247,9 @@ public class ExecuteExternalProgram implements TextShell {
 
     protected static String executeAndReadString(final ExecuteExternalProgram exec, int timeout, final String... command) throws ApplicationException {
         try {
-            if (timeout > 0)
+            if (timeout > 0) {
                 return CmdRunner.executeCommand(timeout, exec, (Object[]) command);
-            else {
+            } else {
                 exec.executeCommand(command);
                 return exec.waitResult();
             }

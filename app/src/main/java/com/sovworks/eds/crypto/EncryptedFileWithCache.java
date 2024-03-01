@@ -54,28 +54,33 @@ public class EncryptedFileWithCache extends EncryptedFile {
             _cache.clear();
             Arrays.fill(_buffer, (byte) 0);
         } finally {
-            if (closeBase)
+            if (closeBase) {
                 getBase().close();
+            }
         }
     }
 
     @Override
     protected void loadCurrentBuffer() throws IOException {
-        if (_isBufferLoaded)
+        if (_isBufferLoaded) {
             return;
+        }
         long bp = getBufferPosition();
         int space = (int) Math.min(_length - bp, _bufferSize);
-        if (space < 0)
+        if (space < 0) {
             space = 0;
+        }
         int bufIndex = getBufferIndex();
         CachedSectorInfo ci = _cache.get(bufIndex);
         if (ci == null) {
             ci = reserveCacheSlot(bufIndex);
-            if (space > 0)
+            if (space > 0) {
                 space = readFromBaseAndTransformBuffer(ci.buffer, 0, space, bp);
+            }
             Arrays.fill(ci.buffer, space, _bufferSize, (byte) 0);
-        } else
+        } else {
             ci.refCount++;
+        }
 
         System.arraycopy(ci.buffer, 0, _buffer, 0, _bufferSize);
         _isBufferChanged = false;
@@ -84,8 +89,9 @@ public class EncryptedFileWithCache extends EncryptedFile {
 
     @Override
     protected void writeCurrentBuffer() throws IOException {
-        if (!_isBufferChanged)
+        if (!_isBufferChanged) {
             return;
+        }
         CachedSectorInfo ci = _cache.get(getBufferIndex());
         System.arraycopy(_buffer, 0, ci.buffer, 0, _bufferSize);
         ci.isChanged = true;
@@ -114,8 +120,9 @@ public class EncryptedFileWithCache extends EncryptedFile {
         int cs = _cache.size();
         for (int i = 0; i < cs; i++) {
             CachedSectorInfo ci = _cache.valueAt(i);
-            if (ci.isChanged)
+            if (ci.isChanged) {
                 writeCachedBuffer(_cache.keyAt(i), ci);
+            }
         }
     }
 
@@ -144,8 +151,9 @@ public class EncryptedFileWithCache extends EncryptedFile {
             }
         }
         CachedSectorInfo ci = _cache.get(minRefsBufIndex);
-        if (ci.isChanged)
+        if (ci.isChanged) {
             writeCachedBuffer(minRefsBufIndex, ci);
+        }
         _cache.remove(minRefsBufIndex);
         ci.refCount = 1;
         _cache.put(bufIndex, ci);

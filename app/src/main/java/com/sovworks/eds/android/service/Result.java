@@ -26,8 +26,9 @@ public class Result {
     }
 
     public Object getResult() throws Throwable {
-        if (_error != null)
+        if (_error != null) {
             throw _error;
+        }
         return _result;
     }
 

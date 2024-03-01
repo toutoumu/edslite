@@ -24,24 +24,27 @@ public class FDRandomAccessIO implements RandomAccessIO {
 
     @Override
     public void seek(long position) throws IOException {
-        if (_fd < 0)
+        if (_fd < 0) {
             throw new IOException("File is closed");
+        }
 
         seek(_fd, position);
     }
 
     @Override
     public long getFilePointer() throws IOException {
-        if (_fd < 0)
+        if (_fd < 0) {
             throw new IOException("File is closed");
+        }
 
         return getPosition(_fd);
     }
 
     @Override
     public long length() throws IOException {
-        if (_fd < 0)
+        if (_fd < 0) {
             throw new IOException("File is closed");
+        }
 
         return getSize(_fd);
     }
@@ -54,17 +57,21 @@ public class FDRandomAccessIO implements RandomAccessIO {
 
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
-        if (off + len > b.length)
+        if (off + len > b.length) {
             throw new IndexOutOfBoundsException();
+        }
 
-        if (_fd < 0)
+        if (_fd < 0) {
             throw new IOException("File is closed");
+        }
 
         int res = read(_fd, b, off, len);
-        if (res < 0)
+        if (res < 0) {
             throw new IOException("Failed reading data");
-        if (res == 0)
+        }
+        if (res == 0) {
             return -1;
+        }
         return res;
     }
 
@@ -75,37 +82,45 @@ public class FDRandomAccessIO implements RandomAccessIO {
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        if (off + len > b.length)
+        if (off + len > b.length) {
             throw new IndexOutOfBoundsException();
+        }
 
-        if (_fd < 0)
+        if (_fd < 0) {
             throw new IOException("File is closed");
+        }
 
-        if (write(_fd, b, off, len) != 0)
+        if (write(_fd, b, off, len) != 0) {
             throw new IOException("Failed writing data");
+        }
     }
 
     @Override
     public void flush() throws IOException {
-        if (_fd < 0)
+        if (_fd < 0) {
             throw new IOException("File is closed");
+        }
         flush(_fd);
     }
 
     @Override
     public void setLength(long newLength) throws IOException {
-        if (_fd < 0)
+        if (_fd < 0) {
             throw new IOException("File is closed");
+        }
 
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException("newLength < 0");
+        }
 
-        if (ftruncate(_fd, newLength) != 0)
+        if (ftruncate(_fd, newLength) != 0) {
             throw new IOException("Failed truncating file");
+        }
 
         long filePointer = getFilePointer();
-        if (filePointer > newLength)
+        if (filePointer > newLength) {
             seek(newLength);
+        }
     }
 
     protected FDRandomAccessIO() {

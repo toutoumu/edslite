@@ -38,15 +38,17 @@ public class ActionSendTask extends PrepareTempFilesTask {
     }
 
     public static void sendFiles(Context context, List<Location> files, String mimeType) {
-        if (files == null || files.isEmpty())
+        if (files == null || files.isEmpty()) {
             return;
+        }
 
         ArrayList<Uri> uris = new ArrayList<>();
         for (Location l : files)
             try {
                 Uri uri = l.getDeviceAccessibleUri(l.getCurrentPath());
-                if (uri == null)
+                if (uri == null) {
                     uri = MainContentProvider.getContentUriFromLocation(l);
+                }
                 uris.add(uri);
             } catch (IOException e) {
                 Logger.log(e);
@@ -55,15 +57,17 @@ public class ActionSendTask extends PrepareTempFilesTask {
     }
 
     public static void sendFiles(Context context, ArrayList<Uri> uris, String mime, ClipData clipData) {
-        if (uris == null || uris.isEmpty())
+        if (uris == null || uris.isEmpty()) {
             return;
+        }
 
         Intent actionIntent = new Intent(uris.size() > 1 ? Intent.ACTION_SEND_MULTIPLE : Intent.ACTION_SEND);
         actionIntent.setType(mime == null ? "*/*" : mime);
-        if (uris.size() > 1)
+        if (uris.size() > 1) {
             actionIntent.putExtra(Intent.EXTRA_STREAM, uris);
-        else
+        } else {
             actionIntent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && clipData != null) {
             actionIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             actionIntent.setClipData(clipData);

@@ -80,10 +80,11 @@ public class DocumentRootsCursor extends AbstractCursor {
     @Override
     public boolean onMove(int oldPosition, int newPosition) {
         _current = null;
-        if (newPosition >= 0 && newPosition < _locations.size())
+        if (newPosition >= 0 && newPosition < _locations.size()) {
             _current = getObservable(_locations.get(newPosition)).
                     subscribeOn(Schedulers.io()).
                     blockingGet();
+        }
         return _current != null;
     }
 
@@ -112,18 +113,20 @@ public class DocumentRootsCursor extends AbstractCursor {
     private void fillList() {
         _locations.clear();
         for (EDSLocation l : _lm.getLoadedEDSLocations(true))
-            if (l.isOpen())
+            if (l.isOpen()) {
                 _locations.add(l);
+            }
     }
 
     private Single<LocationInfo> getObservable(EDSLocation loc) {
         synchronized (this) {
-            if (_request == null)
+            if (_request == null) {
                 try {
                     _request = createObservable(loc);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+            }
             return _request;
         }
     }
@@ -151,8 +154,9 @@ public class DocumentRootsCursor extends AbstractCursor {
     }
 
     private Object getValueFromCurrentLocation(int column) {
-        if (_current == null)
+        if (_current == null) {
             return null;
+        }
         return getValueFromCachedPathInfo(_current, _projection[column]);
     }
 
@@ -179,8 +183,9 @@ public class DocumentRootsCursor extends AbstractCursor {
             case DocumentsContract.Root.COLUMN_ICON:
                 return R.drawable.ic_lock_open;
             default:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     return getMoreColumns(li, columnName);
+                }
 
         }
         return null;
@@ -202,10 +207,12 @@ public class DocumentRootsCursor extends AbstractCursor {
         // FLAG_SUPPORTS_SEARCH allows users to search all documents the application
         // shares.
         int flags = DocumentsContract.Root.FLAG_SUPPORTS_SEARCH;
-        if (!li.location.isReadOnly())
+        if (!li.location.isReadOnly()) {
             flags |= DocumentsContract.Root.FLAG_SUPPORTS_CREATE;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             flags |= DocumentsContract.Root.FLAG_SUPPORTS_IS_CHILD;
+        }
         return flags;
     }
 }

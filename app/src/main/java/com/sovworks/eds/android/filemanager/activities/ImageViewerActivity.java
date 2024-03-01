@@ -72,10 +72,12 @@ public class ImageViewerActivity extends Activity implements PreviewFragment.Hos
         // com.sovworks.eds.android.helpers.Util.setTheme(this);
         super.onCreate(savedInstanceState);
         UserSettings us = UserSettings.getSettings(this);
-        if (us.isFlagSecureEnabled())
+        if (us.isFlagSecureEnabled()) {
             CompatHelper.setWindowFlagSecure(this);
-        if (us.isImageViewerFullScreenModeEnabled())
+        }
+        if (us.isImageViewerFullScreenModeEnabled()) {
             enableFullScreen();
+        }
         _location = LocationsManager.getLocationsManager(this).getFromIntent(getIntent(), null);
         getFragmentManager().beginTransaction().add(RestorePathsTask.newInstance(), RestorePathsTask.TAG).commit();
     }
@@ -97,8 +99,9 @@ public class ImageViewerActivity extends Activity implements PreviewFragment.Hos
 
     @Override
     public void onToggleFullScreen() {
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             CompatHelper.restartActivity(this);
+        }
     }
 
     public TaskFragment.TaskCallbacks getRestorePathsTaskCallbacks() {
@@ -112,8 +115,9 @@ public class ImageViewerActivity extends Activity implements PreviewFragment.Hos
                 } catch (Throwable e) {
                     Logger.showAndLog(_context, result.getError());
                 }
-                if (getPreviewFragment() == null)
+                if (getPreviewFragment() == null) {
                     showFragment(getIntent().getStringExtra(INTENT_PARAM_CURRENT_PATH));
+                }
             }
         };
     }
@@ -122,8 +126,9 @@ public class ImageViewerActivity extends Activity implements PreviewFragment.Hos
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         PreviewFragment pf = (PreviewFragment) getFragmentManager().findFragmentByTag(PreviewFragment.TAG);
-        if (pf != null)
+        if (pf != null) {
             pf.updateImageViewFullScreen();
+        }
     }
 
     private TreeSet<CachedPathInfo> _files;

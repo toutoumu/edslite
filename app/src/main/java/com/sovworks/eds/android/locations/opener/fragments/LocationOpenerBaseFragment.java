@@ -68,13 +68,15 @@ public class LocationOpenerBaseFragment extends Fragment {
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, toString());
             wl.acquire();
             try {
-                if (_openingProgressReporter != null)
+                if (_openingProgressReporter != null) {
                     _openingProgressReporter.setTaskState(taskState);
+                }
                 Location location = getTargetLocation();
                 procLocation(taskState, location, getArguments());
                 LocationsService.startService(_context);
-                if (location.isFileSystemOpen() && !location.getCurrentPath().exists())
+                if (location.isFileSystemOpen() && !location.getCurrentPath().exists()) {
                     location.setCurrentPath(location.getFS().getRootPath());
+                }
                 taskState.setResult(location);
             } finally {
                 wl.release();
@@ -100,8 +102,9 @@ public class LocationOpenerBaseFragment extends Fragment {
                 err = e;
             }
             LocationsManager.broadcastLocationChanged(_context, location);
-            if (err != null)
+            if (err != null) {
                 throw err;
+            }
         }
 
         protected void openFS(Location location, Bundle param) throws IOException {
@@ -115,8 +118,9 @@ public class LocationOpenerBaseFragment extends Fragment {
                 FragmentTransaction trans = fm.beginTransaction();
                 trans.remove(this);
                 LocationOpenerBaseFragment f = (LocationOpenerBaseFragment) fm.findFragmentByTag(getArguments().getString(ARG_OPENER_TAG));
-                if (f != null)
+                if (f != null) {
                     trans.remove(f);
+                }
                 trans.commitAllowingStateLoss();
                 Logger.debug(String.format("TaskFragment %s has been removed from the fragment manager", this));
                 onEvent(EventType.Removed, this);
@@ -211,14 +215,17 @@ public class LocationOpenerBaseFragment extends Fragment {
             StringBuilder statusString = new StringBuilder();
             if (_formatName != null) {
                 String fn = _formatName;
-                if (_isHidden)
+                if (_isHidden) {
                     fn += " (" + _context.getString(R.string.hidden) + ')';
+                }
                 statusString.append(_context.getString(R.string.container_format_is, fn));
             }
-            if (_encAlgName != null)
+            if (_encAlgName != null) {
                 statusString.append(_context.getString(R.string.encryption_alg_is, _encAlgName));
-            if (_hashName != null)
+            }
+            if (_hashName != null) {
                 statusString.append(_context.getString(R.string.kdf_base_hash_func_is, _hashName));
+            }
             return Html.fromHtml(statusString.toString());
         }
     }
@@ -226,8 +233,9 @@ public class LocationOpenerBaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getFragmentManager().findFragmentByTag(getOpenLocationTaskTag()) == null)
+        if (getFragmentManager().findFragmentByTag(getOpenLocationTaskTag()) == null) {
             openLocation();
+        }
     }
 
     @Override
@@ -260,8 +268,9 @@ public class LocationOpenerBaseFragment extends Fragment {
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     OpenLocationTaskFragment f = (OpenLocationTaskFragment) getFragmentManager().findFragmentByTag(getOpenLocationTaskTag());
-                    if (f != null)
+                    if (f != null) {
                         f.cancel();
+                    }
                 }
             });
         }
@@ -320,8 +329,9 @@ public class LocationOpenerBaseFragment extends Fragment {
 
     protected void onLocationOpened(Location location) {
         LocationOpenerResultReceiver rec = getResultReceiver();
-        if (rec != null)
+        if (rec != null) {
             rec.onTargetLocationOpened(getArguments(), location);
+        }
     }
 
     LocationOpenerResultReceiver getResultReceiver() {
@@ -331,23 +341,26 @@ public class LocationOpenerBaseFragment extends Fragment {
 
     protected void onLocationNotOpened() {
         LocationOpenerResultReceiver rec = getResultReceiver();
-        if (rec != null)
+        if (rec != null) {
             rec.onTargetLocationNotOpened(getArguments());
+        }
     }
 
     protected void finishOpener(boolean opened, Location location) {
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
-        if (opened)
+        if (opened) {
             onLocationOpened(location);
-        else
+        } else {
             onLocationNotOpened();
+        }
     }
 
     protected void procOpenLocationTaskResult(Bundle args, final TaskFragment.Result result) {
         try {
             Location location = (Location) result.getResult();
-            if (location.isReadOnly())
+            if (location.isReadOnly()) {
                 Toast.makeText(getActivity(), R.string.container_opened_read_only, Toast.LENGTH_LONG).show();
+            }
             finishOpener(true, location);
             return;
         } catch (CancellationException ignored) {

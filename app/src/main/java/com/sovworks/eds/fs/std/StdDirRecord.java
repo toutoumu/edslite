@@ -14,8 +14,9 @@ class StdDirRecord extends StdFsRecord implements Directory {
     public StdDirRecord(StdFs stdFs, StdFsPath path) throws IOException {
         super(path);
         _stdFs = stdFs;
-        if (path.exists() && !path.getJavaFile().isDirectory())
+        if (path.exists() && !path.getJavaFile().isDirectory()) {
             throw new IllegalArgumentException("StdDirRecord error: file must be a directory");
+        }
     }
 
     @Override
@@ -33,8 +34,9 @@ class StdDirRecord extends StdFsRecord implements Directory {
     public void delete() throws IOException {
         if (_path.exists()) {
             File[] ff = _path.getJavaFile().listFiles();
-            if (ff != null && ff.length > 0)
+            if (ff != null && ff.length > 0) {
                 throw new DirectoryIsNotEmptyException("Directory is not empty: " + _path.getPathDesc());
+            }
         }
         super.delete();
     }
@@ -42,16 +44,18 @@ class StdDirRecord extends StdFsRecord implements Directory {
     @Override
     public Directory createDirectory(String name) throws IOException {
         StdFsPath newPath = (StdFsPath) _path.combine(name);
-        if (!newPath.getJavaFile().mkdir())
+        if (!newPath.getJavaFile().mkdir()) {
             throw new IOException("Failed creating folder");
+        }
         return new StdDirRecord(_stdFs, newPath);
     }
 
     @Override
     public com.sovworks.eds.fs.File createFile(String name) throws IOException {
         StdFsPath newPath = (StdFsPath) _path.combine(name);
-        if (!newPath.getJavaFile().createNewFile())
+        if (!newPath.getJavaFile().createNewFile()) {
             throw new IOException("Failed creating file");
+        }
         return new StdFileRecord(newPath);
     }
 
@@ -59,9 +63,10 @@ class StdDirRecord extends StdFsRecord implements Directory {
     public Directory.Contents list() throws IOException {
         File[] files = _path.getJavaFile().listFiles();
         final ArrayList<Path> res = files == null ? new ArrayList<Path>() : new ArrayList<Path>(files.length);
-        if (files != null)
+        if (files != null) {
             for (File f : files)
                 res.add(_stdFs.getPath(f));
+        }
 
         return new Contents() {
             @Override

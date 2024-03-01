@@ -11,8 +11,9 @@ public abstract class ECB implements FileEncryptionEngine {
     @Override
     public synchronized void init() throws EncryptionEngineException {
         closeCipher();
-        if (_key == null)
+        if (_key == null) {
             throw new EncryptionEngineException("Encryption key is not set");
+        }
         _cipher.init(_key);
     }
 
@@ -58,11 +59,13 @@ public abstract class ECB implements FileEncryptionEngine {
 
     @Override
     public void encrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
-        if (len == 0)
+        if (len == 0) {
             return;
+        }
         int blockSize = _cipher.getBlockSize();
-        if (len % blockSize != 0 || (offset + len) > data.length)
+        if (len % blockSize != 0 || (offset + len) > data.length) {
             throw new EncryptionEngineException("Wrong buffer length");
+        }
         int numBlocks = len / blockSize;
         byte[] block = new byte[blockSize];
         for (int i = 0; i < numBlocks; i++) {
@@ -75,11 +78,13 @@ public abstract class ECB implements FileEncryptionEngine {
 
     @Override
     public void decrypt(byte[] data, int offset, int len) throws EncryptionEngineException {
-        if (len == 0)
+        if (len == 0) {
             return;
+        }
         int blockSize = _cipher.getBlockSize();
-        if (len % blockSize != 0 || (offset + len) > data.length)
+        if (len % blockSize != 0 || (offset + len) > data.length) {
             throw new EncryptionEngineException("Wrong buffer length");
+        }
         int numBlocks = len / blockSize;
         byte[] block = new byte[blockSize];
         for (int i = 0; i < numBlocks; i++) {

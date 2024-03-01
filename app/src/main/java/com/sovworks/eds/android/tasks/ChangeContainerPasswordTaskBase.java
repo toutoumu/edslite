@@ -37,7 +37,8 @@ public abstract class ChangeContainerPasswordTaskBase extends ChangeEDSLocationP
         SecureBuffer sb = Util.getPassword(args, LocationsManager.getLocationsManager(_context));
         vl.setPassword(sb.getDataArray());
         sb.close();
-        if (args.containsKey(Openable.PARAM_KDF_ITERATIONS))
+        if (args.containsKey(Openable.PARAM_KDF_ITERATIONS)) {
             vl.setNumKDFIterations(args.getInt(Openable.PARAM_KDF_ITERATIONS));
+        }
     }
 }

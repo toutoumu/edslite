@@ -13,10 +13,11 @@ import java.io.SyncFailedException;
 public class StdFsFileIO extends RandomAccessFile implements RandomAccessIO {
     public StdFsFileIO(File f, AccessMode mode) throws IOException {
         super(f, mode == AccessMode.Read ? "r" : "rw");
-        if (mode == AccessMode.ReadWriteTruncate)
+        if (mode == AccessMode.ReadWriteTruncate) {
             setLength(0);
-        else if (mode == AccessMode.WriteAppend)
+        } else if (mode == AccessMode.WriteAppend) {
             seek(length());
+        }
     }
 
 
@@ -24,8 +25,9 @@ public class StdFsFileIO extends RandomAccessFile implements RandomAccessIO {
     public void close() throws IOException {
         try {
             FileDescriptor fd = getFD();
-            if (fd != null)
+            if (fd != null) {
                 fd.sync();
+            }
         } catch (SyncFailedException ignored) {
         }
         super.close();

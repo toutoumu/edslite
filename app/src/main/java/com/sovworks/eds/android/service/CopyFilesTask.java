@@ -52,8 +52,9 @@ class CopyFilesTask extends FileOperationTaskBase {
             result.getResult();
             CopyFilesTaskParam p = getParam();
             // noinspection ThrowableResultOfMethodCallIgnored
-            if (p.getOverwriteTargetsStorage() != null && !p.getOverwriteTargetsStorage().isEmpty())
+            if (p.getOverwriteTargetsStorage() != null && !p.getOverwriteTargetsStorage().isEmpty()) {
                 _context.startActivity(getOverwriteRequestIntent(p.getOverwriteTargetsStorage()));
+            }
         } catch (CancellationException ignored) {
 
         } catch (Throwable e) {
@@ -107,10 +108,15 @@ class CopyFilesTask extends FileOperationTaskBase {
         boolean res = true;
         Path src = record.getSrcLocation().getCurrentPath();
         if (src.isFile()) {
-            if (!copyFile(record)) res = false;
-            if (_currentStatus.processed.filesCount < _currentStatus.total.filesCount - 1) _currentStatus.processed.filesCount++;
-        } else if (!makeDir(record))
+            if (!copyFile(record)) {
+                res = false;
+            }
+            if (_currentStatus.processed.filesCount < _currentStatus.total.filesCount - 1) {
+                _currentStatus.processed.filesCount++;
+            }
+        } else if (!makeDir(record)) {
             res = false;
+        }
 
         updateUIOnTime();
         return res;
@@ -119,8 +125,9 @@ class CopyFilesTask extends FileOperationTaskBase {
     private boolean makeDir(SrcDst record) throws IOException {
         Path src = record.getSrcLocation().getCurrentPath();
         Location dstLocation = record.getDstLocation();
-        if (dstLocation == null)
+        if (dstLocation == null) {
             throw new IOException("Failed to determine destination folder for " + src.getPathDesc());
+        }
         return makeDir(src, dstLocation.getCurrentPath());
     }
 
@@ -143,8 +150,9 @@ class CopyFilesTask extends FileOperationTaskBase {
     protected boolean copyFile(SrcDst record) throws IOException {
         Path src = record.getSrcLocation().getCurrentPath();
         Location dstLocation = record.getDstLocation();
-        if (dstLocation == null)
+        if (dstLocation == null) {
             throw new IOException("Failed to determine destination folder for " + src.getPathDesc());
+        }
         Path dst = dstLocation.getCurrentPath();
         if (copyFile(src, dst)) {
             ExtendedFileInfoLoader.getInstance().discardCache(record.getDstLocation(), dst);
@@ -177,16 +185,19 @@ class CopyFilesTask extends FileOperationTaskBase {
         _currentStatus.fileName = srcName;
         updateUIOnTime();
         Path dstPath = calcDstPath(srcFile, targetFolder);
-        if (dstPath != null && !dstPath.exists())
+        if (dstPath != null && !dstPath.exists()) {
             dstPath = null;
-        if (!getParam().forceOverwrite() && dstPath != null)
+        }
+        if (!getParam().forceOverwrite() && dstPath != null) {
             return false;
+        }
 
         if (!(targetFolder instanceof DocumentTreeFS.Directory)) {
             long size = srcFile.getSize();
             long space = targetFolder.getFreeSpace();
-            if (space > 0 && size > space)
+            if (space > 0 && size > space) {
                 throw new NoFreeSpaceLeftException();
+            }
         }
         return copyFile(srcFile, dstPath != null ? dstPath.getFile() : targetFolder.createFile(srcName));
     }
@@ -202,13 +213,19 @@ class CopyFilesTask extends FileOperationTaskBase {
             fin = srcFile.getInputStream();
             fout = dstFile.getOutputStream();
             while ((bytesRead = fin.read(buffer)) >= 0) {
-                if (isCancelled()) throw new CancellationException();
+                if (isCancelled()) {
+                    throw new CancellationException();
+                }
                 fout.write(buffer, 0, bytesRead);
                 incProcessedSize(bytesRead);
             }
         } finally {
-            if (fin != null) fin.close();
-            if (fout != null) fout.close();
+            if (fin != null) {
+                fin.close();
+            }
+            if (fout != null) {
+                fout.close();
+            }
         }
         try {
             dstFile.setLastModified(srcDate);

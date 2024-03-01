@@ -76,14 +76,17 @@ public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragm
         Uri uri = _state.getParcelable(CreateContainerTaskFragmentBase.ARG_LOCATION);
         if (uri == null) {
             File path;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-            else
+            } else {
                 path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            if (!path.exists() && !path.mkdirs())
+            }
+            if (!path.exists() && !path.mkdirs()) {
                 path = getContext().getFilesDir();
-            if (path != null)
+            }
+            if (path != null) {
                 path = new File(path, "new container.eds");
+            }
             if (path != null) {
                 _state.putParcelable(CreateContainerTaskFragmentBase.ARG_LOCATION, Uri.parse(path.getPath()));
                 getActivity().invalidateOptionsMenu();
@@ -99,23 +102,26 @@ public abstract class CreateContainerFragmentBase extends CreateEDSLocationFragm
     public void onPasswordEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if (pr != null)
+        if (pr != null) {
             pr.onPasswordEntered(dlg);
+        }
     }
 
     @Override
     public void onPasswordNotEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if (pr != null)
+        if (pr != null) {
             pr.onPasswordNotEntered(dlg);
+        }
     }
 
     @Override
     protected void createProperties() {
         super.createProperties();
-        if (!_state.containsKey(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT))
+        if (!_state.containsKey(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT)) {
             _state.putString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT, EdsContainer.getSupportedFormats().get(0).getFormatName());
+        }
     }
 
     @Override

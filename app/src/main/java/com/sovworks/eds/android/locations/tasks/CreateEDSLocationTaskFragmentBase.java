@@ -53,8 +53,9 @@ public abstract class CreateEDSLocationTaskFragmentBase extends
                 .getLocation(
                         (Uri) getArguments().getParcelable(ARG_LOCATION));
 
-        if (!checkParams(state, location))
+        if (!checkParams(state, location)) {
             return;
+        }
         PowerManager pm = (PowerManager) _context
                 .getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,

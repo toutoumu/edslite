@@ -48,8 +48,9 @@ public class LocationsServiceBase extends Service {
         public void onReceive(Context context, Intent intent) {
             try {
                 LocationsManager lm = LocationsManager.getLocationsManager(context, false);
-                if (lm == null)
+                if (lm == null) {
                     return;
+                }
                 Uri uri = intent.getParcelableExtra(LocationsManager.PARAM_LOCATION_URI);
                 if (uri != null) {
                     EDSLocation loc = (EDSLocation) lm.getLocation(uri);
@@ -64,8 +65,9 @@ public class LocationsServiceBase extends Service {
         private void closeIfInactive(Context context, EDSLocation loc) {
             int tm = loc.getExternalSettings().getAutoCloseTimeout();
             Logger.debug("Checking if " + loc.getTitle() + " container is inactive");
-            if (tm <= 0)
+            if (tm <= 0) {
                 return;
+            }
             long ct = SystemClock.elapsedRealtime();
             Logger.debug("Current time = " + ct);
             if (loc.isOpenOrMounted()) {
@@ -85,8 +87,9 @@ public class LocationsServiceBase extends Service {
     public static void registerInactiveContainerCheck(Context context, EDSLocation loc) {
 
         long triggerTime = loc.getExternalSettings().getAutoCloseTimeout();
-        if (triggerTime == 0)
+        if (triggerTime == 0) {
             return;
+        }
         triggerTime += SystemClock.elapsedRealtime();
         Intent i = new Intent(ACTION_CHECK_INACTIVE_LOCATION);
         i.putExtra(LocationsManager.PARAM_LOCATION_URI, loc.getLocationUri());
@@ -177,8 +180,9 @@ public class LocationsServiceBase extends Service {
     private void deleteMirror() {
         try {
             Location l = FileOpsService.getSecTempFolderLocation(_settings.getWorkDir(), this);
-            if (l != null)
+            if (l != null) {
                 Util.deleteFiles(l.getCurrentPath());
+            }
         } catch (IOException e) {
             Logger.showAndLog(this, e);
         }

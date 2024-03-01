@@ -15,6 +15,7 @@ import com.sovworks.eds.crypto.SecureBuffer;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.sovworks.eds.settings.Settings;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+
 import io.reactivex.Single;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
@@ -62,8 +63,9 @@ public class MasterPasswordDialog extends PasswordDialog {
         UserSettings settings = UserSettings.getSettings(context);
         try {
             String check = settings.getProtectedString(SETTINGS_PROTECTION_KEY_CHECK);
-            if (check == null)
+            if (check == null) {
                 settings.saveSettingsProtectionKey();
+            }
             EdsApplication.updateLastActivityTime();
             return true;
         } catch (Settings.InvalidSettingsPassword ignored) {
@@ -119,21 +121,24 @@ public class MasterPasswordDialog extends PasswordDialog {
         EdsApplication.setMasterPassword(new SecureBuffer(getPassword()));
         if (checkSettingsKey(getActivity())) {
             Bundle args = getArguments();
-            if (args != null && args.getBoolean(ARG_IS_OBSERVABLE))
+            if (args != null && args.getBoolean(ARG_IS_OBSERVABLE)) {
                 _passwordCheckSubject.onNext(true);
-            else
+            } else {
                 super.onPasswordEntered();
-        } else
+            }
+        } else {
             onPasswordNotEntered();
+        }
     }
 
     @Override
     protected void onPasswordNotEntered() {
         Bundle args = getArguments();
-        if (args != null && args.getBoolean(ARG_IS_OBSERVABLE))
+        if (args != null && args.getBoolean(ARG_IS_OBSERVABLE)) {
             _passwordCheckSubject.onNext(false);
-        else
+        } else {
             super.onPasswordNotEntered();
+        }
     }
 
     private final Subject<Boolean> _passwordCheckSubject = BehaviorSubject.create();

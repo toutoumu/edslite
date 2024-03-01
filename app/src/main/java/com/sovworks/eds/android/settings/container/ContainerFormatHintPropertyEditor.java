@@ -30,8 +30,9 @@ public class ContainerFormatHintPropertyEditor extends ChoiceDialogPropertyEdito
         showHints(cfi);
         List<ContainerFormatInfo> supportedFormats = getHost().getLocation().getSupportedFormats();
         for (int i = 0, l = supportedFormats.size(); i < l; i++)
-            if (cfi.getFormatName().equalsIgnoreCase(supportedFormats.get(i).getFormatName()))
+            if (cfi.getFormatName().equalsIgnoreCase(supportedFormats.get(i).getFormatName())) {
                 return l > 1 ? i + 1 : i;
+            }
         return 0;
     }
 
@@ -52,8 +53,9 @@ public class ContainerFormatHintPropertyEditor extends ChoiceDialogPropertyEdito
     protected ArrayList<String> getEntries() {
         List<ContainerFormatInfo> supportedFormats = getHost().getLocation().getSupportedFormats();
         ArrayList<String> entries = new ArrayList<>();
-        if (supportedFormats.size() > 1)
+        if (supportedFormats.size() > 1) {
             entries.add("-");
+        }
         for (ContainerFormatInfo cfi : supportedFormats)
             entries.add(cfi.getFormatName());
         return entries;
@@ -61,22 +63,25 @@ public class ContainerFormatHintPropertyEditor extends ChoiceDialogPropertyEdito
 
     private ContainerFormatInfo getSelectedFormat(int pos) {
         List<ContainerFormatInfo> supportedFormats = getHost().getLocation().getSupportedFormats();
-        if (supportedFormats.size() == 1)
+        if (supportedFormats.size() == 1) {
             return supportedFormats.get(0);
-        if (pos <= 0 || pos >= supportedFormats.size() + 1)
+        }
+        if (pos <= 0 || pos >= supportedFormats.size() + 1) {
             return null;
+        }
         return supportedFormats.get(pos - 1);
     }
 
     private void showHints(ContainerFormatInfo selectedFormat) {
-        if (selectedFormat == null)
+        if (selectedFormat == null) {
             disableAlgHints();
-        else {
+        } else {
             String cfn = selectedFormat.getFormatName();
-            if (cfn.equalsIgnoreCase(com.sovworks.eds.truecrypt.FormatInfo.FORMAT_NAME) || cfn.equalsIgnoreCase(FormatInfo.FORMAT_NAME))
+            if (cfn.equalsIgnoreCase(com.sovworks.eds.truecrypt.FormatInfo.FORMAT_NAME) || cfn.equalsIgnoreCase(FormatInfo.FORMAT_NAME)) {
                 enableAlgHints();
-            else
+            } else {
                 disableAlgHints();
+            }
         }
     }
 

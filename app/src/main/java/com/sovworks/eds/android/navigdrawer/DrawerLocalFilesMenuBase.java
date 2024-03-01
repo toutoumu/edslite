@@ -37,11 +37,13 @@ public abstract class DrawerLocalFilesMenuBase extends DrawerSubMenuBase {
         for (Location loc : LocationsManager.getLocationsManager(act).getLoadedLocations(true))
             addLocationMenuItem(res, loc);
 
-        if (act.isSelectAction() && i.getBooleanExtra(FileManagerActivity.EXTRA_ALLOW_SELECT_FROM_CONTENT_PROVIDERS, false))
+        if (act.isSelectAction() && i.getBooleanExtra(FileManagerActivity.EXTRA_ALLOW_SELECT_FROM_CONTENT_PROVIDERS, false)) {
             res.add(new DrawerSelectContentProviderMenuItem(getDrawerController()));
+        }
 
-        if (_allowDocumentTree)
+        if (_allowDocumentTree) {
             res.add(new DrawerManageLocalStorages(getDrawerController()));
+        }
 
         return res;
     }
@@ -49,12 +51,13 @@ public abstract class DrawerLocalFilesMenuBase extends DrawerSubMenuBase {
     protected boolean _allowDeviceLocations, _allowDocumentTree;
 
     protected void addLocationMenuItem(List<DrawerMenuItemBase> list, Location loc) {
-        if (loc instanceof InternalSDLocation && _allowDeviceLocations)
+        if (loc instanceof InternalSDLocation && _allowDeviceLocations) {
             list.add(new DrawerInternalSDMenuItem(loc, getDrawerController()));
-        else if (loc instanceof ExternalStorageLocation && _allowDeviceLocations)
+        } else if (loc instanceof ExternalStorageLocation && _allowDeviceLocations) {
             list.add(new DrawerExternalSDMenuItem(loc, getDrawerController(), _allowDocumentTree));
-        else if (loc instanceof DocumentTreeLocation && _allowDocumentTree)
+        } else if (loc instanceof DocumentTreeLocation && _allowDocumentTree) {
             list.add(new DrawerDocumentTreeMenuItem(loc, getDrawerController()));
+        }
     }
 
 }

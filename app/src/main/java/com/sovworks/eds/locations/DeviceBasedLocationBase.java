@@ -57,8 +57,9 @@ public abstract class DeviceBasedLocationBase implements Location, Cloneable {
     @Override
     public synchronized FileSystem getFS() throws IOException {
         SharedData sd = getSharedData();
-        if (sd.fs == null)
+        if (sd.fs == null) {
             sd.fs = createFS();
+        }
         return sd.fs;
     }
 
@@ -89,8 +90,9 @@ public abstract class DeviceBasedLocationBase implements Location, Cloneable {
     @Override
     public synchronized ExternalSettings getExternalSettings() {
         SharedData sd = getSharedData();
-        if (sd.externalSettings == null)
+        if (sd.externalSettings == null) {
             sd.externalSettings = loadExternalSettings();
+        }
         return sd.externalSettings;
     }
 
@@ -121,8 +123,9 @@ public abstract class DeviceBasedLocationBase implements Location, Cloneable {
     @Override
     public void closeFileSystem(boolean force) throws IOException {
         FileSystem fs = getSharedData().fs;
-        if (fs != null && getRootPath().length() != 0)
+        if (fs != null && getRootPath().length() != 0) {
             fs.close(force);
+        }
         getSharedData().fs = null;
     }
 
@@ -155,10 +158,12 @@ public abstract class DeviceBasedLocationBase implements Location, Cloneable {
             Uri u = Uri.fromFile(new File(getCurrentPath().getPathString()));
             Uri.Builder b = u.buildUpon();
             StringPathUtil cr = new StringPathUtil(getRootPath());
-            if (!cr.isEmpty())
+            if (!cr.isEmpty()) {
                 b.appendQueryParameter("root_dir", cr.toString());
-            if (getSharedData().title != null)
+            }
+            if (getSharedData().title != null) {
                 b.appendQueryParameter("title", getSharedData().title);
+            }
             return b;
         } catch (IOException e) {
             Logger.log(e);

@@ -23,26 +23,29 @@ public class ListDirObservable {
     public static Observable<CachedPathInfo> create(LocationsManager lm, Uri locUri) {
         return Observable.create(observableEmitter -> {
             Location loc = lm.getLocation(locUri);
-            if (loc.getCurrentPath().isDirectory())
+            if (loc.getCurrentPath().isDirectory()) {
                 emitListDir(loc.getCurrentPath().getDirectory(), observableEmitter);
-            else if (loc.getCurrentPath().isFile())
+            } else if (loc.getCurrentPath().isFile()) {
                 emitFile(loc.getCurrentPath().getFile(), observableEmitter);
-            else
+            } else {
                 observableEmitter.onComplete();
+            }
         });
     }
 
     public static Observable<CachedPathInfo> create(Location loc, boolean listDir) {
         return Observable.create(observableEmitter -> {
             if (loc.getCurrentPath().isDirectory()) {
-                if (listDir)
+                if (listDir) {
                     emitListDir(loc.getCurrentPath().getDirectory(), observableEmitter);
-                else
+                } else {
                     emitFile(loc.getCurrentPath().getDirectory(), observableEmitter);
-            } else if (loc.getCurrentPath().isFile())
+                }
+            } else if (loc.getCurrentPath().isFile()) {
                 emitFile(loc.getCurrentPath().getFile(), observableEmitter);
-            else
+            } else {
                 observableEmitter.onComplete();
+            }
         });
     }
 

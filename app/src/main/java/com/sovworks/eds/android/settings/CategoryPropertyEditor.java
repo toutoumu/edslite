@@ -38,10 +38,11 @@ public abstract class CategoryPropertyEditor extends PropertyEditorBase {
 
     @Override
     public void load(Bundle b) {
-        if (b.getBoolean(getBundleKey(), false))
+        if (b.getBoolean(getBundleKey(), false)) {
             expand();
-        else
+        } else {
             collapse();
+        }
     }
 
     public final boolean isExpanded() {
@@ -51,15 +52,17 @@ public abstract class CategoryPropertyEditor extends PropertyEditorBase {
     public final void collapse() {
         _isExpanded = false;
         load();
-        if (_indicatorIcon != null)
+        if (_indicatorIcon != null) {
             _indicatorIcon.setRotation(0);
+        }
     }
 
     public final void expand() {
         _isExpanded = true;
         load();
-        if (_indicatorIcon != null)
+        if (_indicatorIcon != null) {
             _indicatorIcon.setRotation(180);
+        }
     }
 
     protected CategoryPropertyEditor(Host host, int titleResId, int descResId) {
@@ -76,17 +79,20 @@ public abstract class CategoryPropertyEditor extends PropertyEditorBase {
         _indicatorIcon.clearAnimation();
         ObjectAnimator anim = ObjectAnimator.ofFloat(_indicatorIcon, View.ROTATION, _isExpanded ? 0 : 180);
         anim.setDuration(200);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             _indicatorIcon.setHasTransientState(true);
+        }
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (_isExpanded)
+                if (_isExpanded) {
                     collapse();
-                else
+                } else {
                     expand();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     _indicatorIcon.setHasTransientState(false);
+                }
                 IS_ANIMATING = false;
 
             }

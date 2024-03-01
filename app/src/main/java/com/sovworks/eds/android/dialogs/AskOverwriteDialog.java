@@ -3,7 +3,9 @@ package com.sovworks.eds.android.dialogs;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,8 +79,9 @@ public class AskOverwriteDialog extends RxDialogFragment {
                 :
                 (SrcDstPlain) savedInstanceState.getParcelable(ARG_SELECTED_PATHS);
         SrcDstCollection paths = getArguments().getParcelable(ARG_PATHS);
-        if (paths == null)
+        if (paths == null) {
             paths = new SrcDstPlain();
+        }
         _applyToAll = savedInstanceState != null && savedInstanceState.getBoolean(ARG_APPLY_TO_ALL);
         _numProc = savedInstanceState == null ? 0 : savedInstanceState.getInt(ARG_NUM_PROC);
         _pathsIter = paths.iterator();
@@ -90,8 +93,9 @@ public class AskOverwriteDialog extends RxDialogFragment {
                 firstElement().
                 subscribe(res -> askNextRecord(), err ->
                 {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.log(err);
+                    }
                 });
     }
 
@@ -140,10 +144,11 @@ public class AskOverwriteDialog extends RxDialogFragment {
     private void askNextRecord() {
         try {
             if (!_pathsIter.hasNext()) {
-                if (getArguments().getBoolean(ARG_MOVE, false))
+                if (getArguments().getBoolean(ARG_MOVE, false)) {
                     FileOpsService.moveFiles(getActivity(), _selectedPaths, true);
-                else
+                } else {
                     FileOpsService.copyFiles(getActivity(), _selectedPaths, true);
+                }
 
                 dismiss();
             } else {
@@ -191,8 +196,9 @@ public class AskOverwriteDialog extends RxDialogFragment {
                 observeOn(AndroidSchedulers.mainThread()).
                 compose(bindToLifecycle()).
                 subscribe(res -> setText(res.srcName, res.dstName), err -> {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.showAndLog(context, err);
+                    }
                 });
     }
 }

@@ -36,13 +36,16 @@ public class StdLayout extends VolumeLayoutBase {
     @Override
     public void initNew() {
         super.initNew();
-        if (_hashFunc == null) try {
-            _hashFunc = MessageDigest.getInstance("SHA-512");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("SHA-512 is not available", e);
+        if (_hashFunc == null) {
+            try {
+                _hashFunc = MessageDigest.getInstance("SHA-512");
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException("SHA-512 is not available", e);
+            }
         }
-        if (_encEngine == null)
+        if (_encEngine == null) {
             setEngine(new AESXTS());
+        }
     }
 
     protected long getBackupHeaderOffset() {
@@ -64,10 +67,12 @@ public class StdLayout extends VolumeLayoutBase {
         input.seek(getHeaderOffset());
         int hs = getEffectiveHeaderSize();
         byte[] encryptedHeader = new byte[hs + getEncryptedHeaderPartOffset()];
-        if (Util.readBytes(input, encryptedHeader, hs) != hs)
+        if (Util.readBytes(input, encryptedHeader, hs) != hs) {
             return false;
-        if (isUnsupportedHeaderType(encryptedHeader))
+        }
+        if (isUnsupportedHeaderType(encryptedHeader)) {
             return false;
+        }
         byte[] salt = getSaltFromHeader(encryptedHeader);
         if (selectAlgosAndDecodeHeader(encryptedHeader, salt)) {
             prepareEncryptionEngineForPayload();
@@ -118,14 +123,16 @@ public class StdLayout extends VolumeLayoutBase {
         }
 
         public void setKey(byte[] key) {
-            if (key != null)
+            if (key != null) {
                 close();
+            }
             _key = key;
         }
 
         public void close() {
-            if (_key != null)
+            if (_key != null) {
                 Arrays.fill(_key, (byte) 0);
+            }
         }
 
         private byte[] _key;
@@ -164,8 +171,9 @@ public class StdLayout extends VolumeLayoutBase {
         byte[] sig = getHeaderSignature();
         int offset = getEncryptedHeaderPartOffset();
         for (int i = 0; i < sig.length; i++)
-            if (headerData[offset + i] != sig[i])
+            if (headerData[offset + i] != sig[i]) {
                 return false;
+            }
         return true;
     }
 
@@ -194,12 +202,14 @@ public class StdLayout extends VolumeLayoutBase {
         KeyHolder prevKey = new KeyHolder();
         try {
             if (_encEngine != null) {
-                if (tryEncryptionEngine(encryptedHeaderData, salt, hashFunc, _encEngine, prevKey))
+                if (tryEncryptionEngine(encryptedHeaderData, salt, hashFunc, _encEngine, prevKey)) {
                     return _encEngine;
+                }
             } else {
                 for (FileEncryptionEngine ee : getSupportedEncryptionEngines()) {
-                    if (tryEncryptionEngine(encryptedHeaderData, salt, hashFunc, ee, prevKey))
+                    if (tryEncryptionEngine(encryptedHeaderData, salt, hashFunc, ee, prevKey)) {
                         return ee;
+                    }
                 }
             }
         } finally {
@@ -220,10 +230,11 @@ public class StdLayout extends VolumeLayoutBase {
             key = deriveHeaderKey(ee, hashFunc, salt);
             prevKey.setKey(key);
         }
-        if (decryptAndDecodeHeader(encryptedHeaderData, ee, key))
+        if (decryptAndDecodeHeader(encryptedHeaderData, ee, key)) {
             return true;
-        else
+        } else {
             ee.close();
+        }
         return false;
     }
 
@@ -231,17 +242,20 @@ public class StdLayout extends VolumeLayoutBase {
         byte[] decryptedHeader = null;
         try {
             decryptedHeader = decryptHeader(encryptedHeader, ee, key);
-            if (decryptedHeader == null)
+            if (decryptedHeader == null) {
                 return false;
+            }
 
-            if (_masterKey != null)
+            if (_masterKey != null) {
                 Arrays.fill(_masterKey, (byte) 0);
+            }
             _masterKey = new byte[ee.getKeySize()];
             decodeHeader(decryptedHeader);
             return true;
         } finally {
-            if (decryptedHeader != null)
+            if (decryptedHeader != null) {
                 Arrays.fill(decryptedHeader, (byte) 0);
+            }
         }
 
     }
@@ -252,8 +266,9 @@ public class StdLayout extends VolumeLayoutBase {
 
     protected int getMKKDFNumIterations(MessageDigest hashFunc) {
         String an = hashFunc.getAlgorithm();
-        if ("ripemd160".equalsIgnoreCase(an))
+        if ("ripemd160".equalsIgnoreCase(an)) {
             return 2000;
+        }
         return 1000;
     }
 
@@ -293,8 +308,9 @@ public class StdLayout extends VolumeLayoutBase {
         int keySize = ee.getKeySize();
         if (_encEngine == null) {
             for (EncryptionEngine eng : getSupportedEncryptionEngines())
-                if (eng.getKeySize() > keySize)
+                if (eng.getKeySize() > keySize) {
                     keySize = eng.getKeySize();
+                }
         }
         return deriveKey(keySize, md, _password, salt, getMKKDFNumIterations(md));
     }
@@ -373,18 +389,21 @@ public class StdLayout extends VolumeLayoutBase {
         bb.position(encPartOffset + getHeaderSignature().length);
         // offset 68
         short headerVersion = bb.getShort();
-        if (headerVersion < MIN_ALLOWED_HEADER_VERSION || headerVersion > CURRENT_HEADER_VERSION)
+        if (headerVersion < MIN_ALLOWED_HEADER_VERSION || headerVersion > CURRENT_HEADER_VERSION) {
             throw new WrongContainerVersionException();
+        }
 
         CRC32 crc = new CRC32();
         crc.update(data, encPartOffset, HEADER_CRC_OFFSET - encPartOffset);
-        if ((int) crc.getValue() != bb.getInt(HEADER_CRC_OFFSET))
+        if ((int) crc.getValue() != bb.getInt(HEADER_CRC_OFFSET)) {
             throw new HeaderCRCException();
+        }
 
         // offset 70
         int programVer = bb.getShort();
-        if (programVer > EdsContainer.COMPATIBLE_TC_VERSION)
+        if (programVer > EdsContainer.COMPATIBLE_TC_VERSION) {
             throw new WrongContainerVersionException();
+        }
 
         // offset 72
         int volumeKeyAreaCRC32 = bb.getInt();
@@ -421,8 +440,9 @@ public class StdLayout extends VolumeLayoutBase {
         _volumeSize = loadVolumeSize(bb);
         crc.reset();
         crc.update(bb.array(), DATA_AREA_KEY_OFFSET, DATA_KEY_AREA_MAX_SIZE);
-        if ((int) crc.getValue() != volumeKeyAreaCRC32)
+        if ((int) crc.getValue() != volumeKeyAreaCRC32) {
             throw new HeaderCRCException();
+        }
         bb.position(DATA_AREA_KEY_OFFSET);
         bb.get(_masterKey);
     }

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.android.R;
@@ -27,15 +28,17 @@ public class AskPrimaryStoragePermissionDialog extends DialogFragment {
                         {
                             dialog.dismiss();
                             ExtStorageWritePermisisonCheckFragment stateFragment = (ExtStorageWritePermisisonCheckFragment) getFragmentManager().findFragmentByTag(ExtStorageWritePermisisonCheckFragment.TAG);
-                            if (stateFragment != null)
+                            if (stateFragment != null) {
                                 stateFragment.requestExtStoragePermission();
+                            }
                         })
                 .setNegativeButton(android.R.string.cancel,
                         (dialog, id) ->
                         {
                             ExtStorageWritePermisisonCheckFragment stateFragment = (ExtStorageWritePermisisonCheckFragment) getFragmentManager().findFragmentByTag(ExtStorageWritePermisisonCheckFragment.TAG);
-                            if (stateFragment != null)
+                            if (stateFragment != null) {
                                 stateFragment.cancelExtStoragePermissionRequest();
+                            }
                         });
         return builder.create();
     }

@@ -49,8 +49,9 @@ public class SimpleCrypto {
 
     public static String encrypt(SecureBuffer key, byte[] data) {
         byte[] decKey = key.getDataArray();
-        if (decKey == null)
+        if (decKey == null) {
             throw new RuntimeException("key is closed");
+        }
         try {
             return toHexString(encrypt(decKey, data, 0, data.length));
         } finally {
@@ -64,15 +65,17 @@ public class SimpleCrypto {
 
     public static byte[] decrypt(byte[] key, String encrypted) {
         byte[] enc = toByte(encrypted);
-        if (enc.length < IV_SIZE)
+        if (enc.length < IV_SIZE) {
             throw new RuntimeException("Encrypted data is too small.");
+        }
         return decrypt(key, enc, 0, enc.length);
     }
 
     public static byte[] decrypt(SecureBuffer key, String encrypted) {
         byte[] decKey = key.getDataArray();
-        if (decKey == null)
+        if (decKey == null) {
             throw new RuntimeException("key is closed");
+        }
         try {
             return decrypt(decKey, encrypted);
         } finally {
@@ -82,8 +85,9 @@ public class SimpleCrypto {
 
     public static String encryptWithPassword(SecureBuffer passwd, byte[] cleartext) {
         byte[] key = passwd.getDataArray();
-        if (key == null)
+        if (key == null) {
             throw new RuntimeException("key is closed");
+        }
         try {
             return encryptWithPassword(key, cleartext);
         } finally {
@@ -93,8 +97,9 @@ public class SimpleCrypto {
 
     public static byte[] decryptWithPassword(SecureBuffer passwd, String encrypted) {
         byte[] key = passwd.getDataArray();
-        if (key == null)
+        if (key == null) {
             throw new RuntimeException("key is closed");
+        }
         try {
             return decryptWithPassword(key, encrypted);
         } finally {
@@ -128,8 +133,9 @@ public class SimpleCrypto {
     }
 
     public static byte[] decryptWithPasswordBytes(byte[] passwd, byte[] encrypted) {
-        if (encrypted.length < SALT_SIZE + IV_SIZE)
+        if (encrypted.length < SALT_SIZE + IV_SIZE) {
             throw new RuntimeException("Encrypted data is too small.");
+        }
         byte[] salt = new byte[SALT_SIZE];
         System.arraycopy(encrypted, 0, salt, 0, SALT_SIZE);
         byte[] key = getStrongKeyBytes(passwd, salt);
@@ -157,7 +163,9 @@ public class SimpleCrypto {
     }
 
     public static char[] toHex(byte[] buf) {
-        if (buf == null) return new char[0];
+        if (buf == null) {
+            return new char[0];
+        }
         CharBuffer result = CharBuffer.allocate(buf.length * 2);
         for (byte aBuf : buf)
             appendHex(result, aBuf);

@@ -70,47 +70,56 @@ public class PipedInputStream extends InputStream {
     private int getAvailByteCountW() {
         while (_nbr == _buffer.length) try {
             _buffer.wait();
-            if (_finWrite || _finRead)
+            if (_finWrite || _finRead) {
                 return -1;
+            }
         } catch (InterruptedException e) {
             return -1;
         }
         int dif = _rp - _wp;
-        if (dif <= 0)
+        if (dif <= 0) {
             return _buffer.length - _wp;
+        }
         return dif;
     }
 
     private int getAvailByteCountR() {
         while (_nbr == 0 && !_finWrite) try {
             _buffer.wait();
-            if (_finRead)
+            if (_finRead) {
                 return -1;
+            }
         } catch (InterruptedException ignored) {
         }
-        if (_nbr == 0 && _finWrite)
+        if (_nbr == 0 && _finWrite) {
             return -1;
+        }
         int dif = _wp - _rp;
-        if (dif == 0)
+        if (dif == 0) {
             return Math.min(_nbr, _buffer.length - _rp);
-        if (dif < 0)
+        }
+        if (dif < 0) {
             return _buffer.length - _rp;
+        }
         return dif;
     }
 
     private void incWritePos(int count) {
         _wp += count;
-        if (_wp >= _buffer.length)
+        if (_wp >= _buffer.length) {
             _wp -= _buffer.length;
+        }
         _nbr += count;
-        if (_nbr == _buffer.length)
+        if (_nbr == _buffer.length) {
             _buffer.notify();
+        }
     }
 
     private void incReadPos(int count) {
         _rp += count;
-        if (_rp >= _buffer.length)
+        if (_rp >= _buffer.length) {
             _rp -= _buffer.length;
+        }
         _nbr -= count;
         _buffer.notify();
     }

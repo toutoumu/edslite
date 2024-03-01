@@ -21,8 +21,9 @@ public class ForceCloseDialog extends ConfirmationDialog {
         Bundle b = new Bundle();
         b.putString(ARG_LOCATION_TITLE, locTitle);
         b.putString(ARG_CLOSER_CLASS_NAME, closerClassName);
-        if (closerArgs != null)
+        if (closerArgs != null) {
             b.putBundle(ARG_CLOSER_ARGS, closerArgs);
+        }
         b.putString(LocationCloserBaseFragment.PARAM_RECEIVER_FRAGMENT_TAG, closerTag);
         f.setArguments(b);
         f.show(fm, TAG);
@@ -31,8 +32,9 @@ public class ForceCloseDialog extends ConfirmationDialog {
     @Override
     protected void onYes() {
         Bundle closerArgs = getArguments().getBundle(ARG_CLOSER_ARGS);
-        if (closerArgs == null)
+        if (closerArgs == null) {
             closerArgs = new Bundle();
+        }
         closerArgs.putBoolean(LocationCloserBaseFragment.ARG_FORCE_CLOSE, true);
         LocationCloserBaseFragment closer = (LocationCloserBaseFragment) Fragment.instantiate(
                 getActivity(),

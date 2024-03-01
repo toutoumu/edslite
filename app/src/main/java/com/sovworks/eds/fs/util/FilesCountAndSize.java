@@ -42,7 +42,8 @@ public class FilesCountAndSize {
         if (path.isFile()) {
             result.totalSize += path.getFile().getSize();
             result.filesCount++;
-        } else if (countDirs)
+        } else if (countDirs) {
             result.filesCount++;
+        }
     }
 }

@@ -26,8 +26,9 @@ import java.util.TreeMap;
 public class TempFilesMonitor {
 
     public static void deleteRecWithWiping(Path path, boolean wipe) throws IOException {
-        if (!path.exists())
+        if (!path.exists()) {
             return;
+        }
         if (path.isDirectory()) {
             Directory.Contents dc = path.getDirectory().list();
             try {
@@ -38,10 +39,11 @@ public class TempFilesMonitor {
             }
             path.getDirectory().delete();
         } else if (path.isFile()) {
-            if (wipe)
+            if (wipe) {
                 WipeFilesTask.wipeFileRnd(path.getFile(), null);
-            else
+            } else {
                 path.getFile().delete();
+            }
         }
     }
 
@@ -67,8 +69,9 @@ public class TempFilesMonitor {
     }
 
     public static synchronized TempFilesMonitor getMonitor(Context context) {
-        if (_instance == null)
+        if (_instance == null) {
             _instance = new TempFilesMonitor(context);
+        }
 
         return _instance;
     }
@@ -85,8 +88,9 @@ public class TempFilesMonitor {
     }
 
     public void startFile(Location fileLocation) throws IOException, UserException {
-        if (!isTempDirWriteable())
+        if (!isTempDirWriteable()) {
             throw new ExternalStorageNotAvailableException(_context);
+        }
         decryptAndStartFile(fileLocation);
     }
 
@@ -121,8 +125,9 @@ public class TempFilesMonitor {
     public void updateMonitoredInfo(Location deviceLocation, Date srclastModified) throws IOException {
         synchronized (_syncObject) {
             OpenFileInfo ofi = _openedFiles.get(deviceLocation.getLocationUri());
-            if (ofi != null)
+            if (ofi != null) {
                 ofi.srcLastModified = srclastModified.getTime();
+            }
         }
     }
 
@@ -140,8 +145,9 @@ public class TempFilesMonitor {
     }
 
     public synchronized void stopChangesMonitor() {
-        if (_modCheckTask == null)
+        if (_modCheckTask == null) {
             return;
+        }
         _modCheckTask.cancel();
         try {
             _modCheckTask.join();
@@ -165,9 +171,9 @@ public class TempFilesMonitor {
                                             fileInfo.srcFolderLocation instanceof Openable &&
                                                     !((Openable) fileInfo.srcFolderLocation).isOpen()
                                     )
-                            )
+                            ) {
                                 iter.remove();
-                            else if (!fileInfo.isReadOnly) {
+                            } else if (!fileInfo.isReadOnly) {
                                 // long lastModified = fileInfo.devicePath.getAbsoluteFile().lastModified(); //fileInfo.devicePath.lastModified();
                                 File f = fileInfo.devicePath.getCurrentPath().getFile();
                                 long lastModified = f.getLastModified().getTime();
@@ -207,8 +213,9 @@ public class TempFilesMonitor {
 
 
     private void decryptAndStartFile(Location srcLocation) throws IOException, UserException {
-        if (_context == null)
+        if (_context == null) {
             return;
+        }
         FileOpsService.startTempFile(_context, srcLocation);
     }
 

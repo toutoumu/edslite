@@ -30,22 +30,26 @@ class ExFatRAIO implements RandomAccessIO {
     public long length() throws IOException {
         synchronized (_exfat._sync) {
             long res = _exfat.getSize(_fileHandle);
-            if (res < 0)
+            if (res < 0) {
                 throw new IOException("Failed getting node size.");
+            }
             return res;
         }
     }
 
     @Override
     public void setLength(long newLength) throws IOException {
-        if (_mode == File.AccessMode.Read)
+        if (_mode == File.AccessMode.Read) {
             throw new IOException("Read-only mode");
+        }
         synchronized (_exfat._sync) {
             int res = _exfat.truncate(_fileHandle, newLength);
-            if (res != 0)
+            if (res != 0) {
                 throw new IOException("Truncate failed. Error code = " + res);
-            if (_position > newLength)
+            }
+            if (_position > newLength) {
                 _position = newLength;
+            }
         }
     }
 
@@ -57,12 +61,14 @@ class ExFatRAIO implements RandomAccessIO {
 
     @Override
     public void write(byte[] b, int off, int len) throws IOException {
-        if (_mode == File.AccessMode.Read)
+        if (_mode == File.AccessMode.Read) {
             throw new IOException("Read-only mode");
+        }
         synchronized (_exfat._sync) {
             int res = _exfat.write(_fileHandle, b, off, len, _position);
-            if (res < 0)
+            if (res < 0) {
                 throw new IOException("Write failed. Result = " + res);
+            }
             _position += res;
         }
     }
@@ -71,8 +77,9 @@ class ExFatRAIO implements RandomAccessIO {
     public void flush() throws IOException {
         synchronized (_exfat._sync) {
             int res = _exfat.flush(_fileHandle);
-            if (res != 0)
+            if (res != 0) {
                 throw new IOException("Flush failed. Error code = " + res);
+            }
         }
     }
 
@@ -86,10 +93,12 @@ class ExFatRAIO implements RandomAccessIO {
     public int read(byte[] b, int off, int count) throws IOException {
         synchronized (_exfat._sync) {
             int res = _exfat.read(_fileHandle, b, off, count, _position);
-            if (res < 0)
+            if (res < 0) {
                 throw new IOException("Read failed. Result = " + res);
-            if (res == 0 && count > 0)
+            }
+            if (res == 0 && count > 0) {
                 return -1;
+            }
             _position += res;
             return res;
         }
@@ -100,8 +109,9 @@ class ExFatRAIO implements RandomAccessIO {
         synchronized (_exfat._sync) {
             if (_fileHandle != 0) {
                 int res = _exfat.closeFile(_fileHandle);
-                if (res != 0)
+                if (res != 0) {
                     throw new IOException("Close failed. Error code = " + res);
+                }
                 _fileHandle = 0;
             }
         }

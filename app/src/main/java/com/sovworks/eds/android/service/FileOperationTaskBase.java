@@ -3,6 +3,7 @@ package com.sovworks.eds.android.service;
 
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.core.app.NotificationCompat;
 
 import com.sovworks.eds.android.R;
@@ -19,8 +20,9 @@ public abstract class FileOperationTaskBase extends ServiceTaskWithNotificationB
         }
 
         SrcDstCollection getRecords() {
-            if (_records == null)
+            if (_records == null) {
                 _records = loadRecords(_intent);
+            }
             return _records;
         }
 
@@ -43,8 +45,9 @@ public abstract class FileOperationTaskBase extends ServiceTaskWithNotificationB
         updateUIOnTime();
         _currentStatus = initStatus(_param.getRecords());
         processSrcDstCollection(_param.getRecords());
-        if (_error != null)
+        if (_error != null) {
             throw _error;
+        }
         return null;
     }
 
@@ -66,8 +69,9 @@ public abstract class FileOperationTaskBase extends ServiceTaskWithNotificationB
 
     @Override
     protected void updateUI() {
-        if (_currentStatus != null)
+        if (_currentStatus != null) {
             updateNotificationProgress();
+        }
         super.updateUI();
     }
 
@@ -90,10 +94,12 @@ public abstract class FileOperationTaskBase extends ServiceTaskWithNotificationB
 
     protected int getProgress() {
         if (_currentStatus.total.totalSize == 0) {
-            if (_currentStatus.total.filesCount != 0)
+            if (_currentStatus.total.filesCount != 0) {
                 return (int) ((_currentStatus.processed.filesCount / (float) _currentStatus.total.filesCount) * 100);
-        } else
+            }
+        } else {
             return (int) ((_currentStatus.processed.totalSize / (float) _currentStatus.total.totalSize) * 100);
+        }
         return 0;
     }
 
@@ -104,15 +110,19 @@ public abstract class FileOperationTaskBase extends ServiceTaskWithNotificationB
 
     protected void processSrcDstCollection(SrcDstCollection col) throws Exception {
         for (SrcDst rec : col) {
-            if (isCancelled()) throw new CancellationException();
-            if (!processRecord(rec))
+            if (isCancelled()) {
+                throw new CancellationException();
+            }
+            if (!processRecord(rec)) {
                 break;
+            }
         }
     }
 
     void setError(Throwable err) {
-        if (_error == null || err == null)
+        if (_error == null || err == null) {
             _error = err;
+        }
     }
 
     void incProcessedSize(int inc) {

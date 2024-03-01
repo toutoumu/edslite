@@ -29,8 +29,9 @@ public class HashBasedPBKDF2 extends PBKDF {
     @SuppressLint("DefaultLocale")
     private static int guessMDBlockSize(MessageDigest md) {
         String mdn = md.getAlgorithm().toLowerCase();
-        if (mdn.equals("sha-512") || mdn.equals("sha512"))
+        if (mdn.equals("sha-512") || mdn.equals("sha512")) {
             return 128;
+        }
         return 64;
 		/*
 		if(mdn.equals("md5") 

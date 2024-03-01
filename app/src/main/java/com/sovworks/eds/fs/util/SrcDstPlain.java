@@ -16,8 +16,9 @@ import java.util.Collection;
 
 public class SrcDstPlain extends ArrayList<SrcDstCollection.SrcDst> implements SrcDstCollection {
     public static SrcDstCollection fromPaths(Location srcLoc, Location dstLoc, Collection<? extends Path> srcPaths) {
-        if (srcPaths == null)
+        if (srcPaths == null) {
             return new SrcDstSingle(srcLoc, dstLoc);
+        }
         SrcDstPlain res = new SrcDstPlain();
         for (Path p : srcPaths) {
             Location l = srcLoc.copy();
@@ -38,8 +39,9 @@ public class SrcDstPlain extends ArrayList<SrcDstCollection.SrcDst> implements S
                     Location srcLoc = lm != null ? lm.getLocation(u) : null;
                     u = in.readParcelable(getClass().getClassLoader());
                     Location dstLoc = Uri.EMPTY.equals(u) ? null : lm != null ? lm.getLocation(u) : null;
-                    if (srcLoc != null)
+                    if (srcLoc != null) {
                         res.add(srcLoc, dstLoc);
+                    }
                 }
             } catch (Exception e) {
                 Logger.log(e);

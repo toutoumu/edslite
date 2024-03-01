@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.widget.EditText;
 
 import com.sovworks.eds.android.R;
@@ -51,11 +53,12 @@ public class NewFileDialog extends DialogFragment {
                     Receiver r = (Receiver) getFragmentManager().findFragmentByTag(
                             getArguments().getString(ARG_RECEIVER_TAG)
                     );
-                    if (r != null)
+                    if (r != null) {
                         r.makeNewFile(
                                 input.getText().toString(),
                                 getArguments().getInt(ARG_TYPE)
                         );
+                    }
                     dialog.dismiss();
                 });
 

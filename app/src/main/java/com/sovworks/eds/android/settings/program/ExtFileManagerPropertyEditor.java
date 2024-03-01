@@ -28,9 +28,9 @@ import static com.sovworks.eds.android.settings.UserSettings.EXTERNAL_FILE_MANAG
 public class ExtFileManagerPropertyEditor extends ChoiceDialogPropertyEditor {
 
     public static void saveExtInfo(UserSettings settings, Settings.ExternalFileManagerInfo info) {
-        if (info == null)
+        if (info == null) {
             settings.getSharedPreferences().edit().remove(EXTERNAL_FILE_MANAGER).commit();
-        else {
+        } else {
             try {
                 settings.getSharedPreferences().edit().putString(EXTERNAL_FILE_MANAGER, info.save()).commit();
             } catch (JSONException e) {
@@ -55,8 +55,9 @@ public class ExtFileManagerPropertyEditor extends ChoiceDialogPropertyEditor {
 
     @Override
     public void load() {
-        if (!getHost().getPropertiesView().isPropertyEnabled(getId()))
+        if (!getHost().getPropertiesView().isPropertyEnabled(getId())) {
             return;
+        }
         loadExtBrowserInfo();
         loadChoiceStrings();
         super.load();
@@ -123,22 +124,25 @@ public class ExtFileManagerPropertyEditor extends ChoiceDialogPropertyEditor {
     }
 
     private int getSelectionFromExtFMInfo(Settings.ExternalFileManagerInfo info) {
-        if (info != null)
+        if (info != null) {
             for (int i = 0; i < _extBrowserInfo.size(); i++) {
                 ExternalBrowserInfo item = _extBrowserInfo.get(i);
                 if (info.packageName.equals(item.resolveInfo.activityInfo.packageName) &&
                         info.className.equals(item.resolveInfo.activityInfo.name) &&
                         info.action.equals(item.action) &&
-                        info.mimeType.equals(item.mime))
+                        info.mimeType.equals(item.mime)) {
                     return i + 1;
+                }
             }
+        }
         return 0;
     }
 
     private Settings.ExternalFileManagerInfo getExtFMInfoFromSelection(int selection) {
         int idx = selection - 1;
-        if (idx < 0 || idx >= _extBrowserInfo.size())
+        if (idx < 0 || idx >= _extBrowserInfo.size()) {
             return null;
+        }
 
         ExternalBrowserInfo item = _extBrowserInfo.get(idx);
         Settings.ExternalFileManagerInfo res = new Settings.ExternalFileManagerInfo();
@@ -151,12 +155,13 @@ public class ExtFileManagerPropertyEditor extends ChoiceDialogPropertyEditor {
 
     private void addMatches(List<ExternalBrowserInfo> matches, String action, Uri data, String mime) {
         final Intent intent = new Intent(action);
-        if (data != null && mime != null)
+        if (data != null && mime != null) {
             intent.setDataAndType(data, mime);
-        else if (data != null)
+        } else if (data != null) {
             intent.setData(data);
-        else if (mime != null)
+        } else if (mime != null) {
             intent.setType(mime);
+        }
         addMatches(matches, intent);
 
     }
@@ -172,8 +177,9 @@ public class ExtFileManagerPropertyEditor extends ChoiceDialogPropertyEditor {
                 eb.action = intent.getAction();
                 eb.mime = intent.getType() == null ? "" : intent.getType();
                 eb.label = match.loadLabel(pacMan).toString();
-                if (intent.getData() != null && ContentResolver.SCHEME_CONTENT.equals(intent.getData().getScheme()))
+                if (intent.getData() != null && ContentResolver.SCHEME_CONTENT.equals(intent.getData().getScheme())) {
                     eb.label += " (content provider browser)";
+                }
                 matches.add(eb);
             }
         }
@@ -181,8 +187,9 @@ public class ExtFileManagerPropertyEditor extends ChoiceDialogPropertyEditor {
 
     private boolean isFileManagerAdded(List<ExternalBrowserInfo> matches, ResolveInfo m) {
         for (ExternalBrowserInfo match : matches) {
-            if (match.resolveInfo.activityInfo.packageName.equals(m.activityInfo.packageName) && match.resolveInfo.activityInfo.name.equals(m.activityInfo.name))
+            if (match.resolveInfo.activityInfo.packageName.equals(m.activityInfo.packageName) && match.resolveInfo.activityInfo.name.equals(m.activityInfo.name)) {
                 return true;
+            }
         }
         return false;
     }

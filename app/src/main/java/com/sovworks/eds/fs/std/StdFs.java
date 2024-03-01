@@ -21,8 +21,9 @@ public class StdFs implements FileSystem {
 
     public static synchronized StdFs getStdFs(String rootDir) {
         if (rootDir == null || rootDir.length() == 0 || rootDir.equals("/")) {
-            if (_rootStdFs == null)
+            if (_rootStdFs == null) {
                 _rootStdFs = new StdFs("");
+            }
             return _rootStdFs;
         }
 

@@ -23,10 +23,11 @@ public class CheckStartPathTask extends AddExistingContainerTaskFragment {
     protected void doWork(TaskState state) throws Exception {
         LocationsManager lm = LocationsManager.getLocationsManager(_context);
         Location loc = lm.getFromBundle(getArguments(), null);
-        if (loc.getCurrentPath().isFile())
+        if (loc.getCurrentPath().isFile()) {
             state.setResult(findOrCreateEDSLocation(lm, loc, getArguments().getBoolean(ARG_STORE_LINK)));
-        else
+        } else {
             state.setResult(null);
+        }
     }
 
     @Override

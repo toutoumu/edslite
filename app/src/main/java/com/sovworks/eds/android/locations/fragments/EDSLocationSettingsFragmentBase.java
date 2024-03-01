@@ -114,16 +114,18 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
     public void onPasswordEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if (pr != null)
+        if (pr != null) {
             pr.onPasswordEntered(dlg);
+        }
     }
 
     @Override
     public void onPasswordNotEntered(PasswordDialog dlg) {
         int propertyId = dlg.getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID);
         PasswordDialogBase.PasswordReceiver pr = (PasswordDialogBase.PasswordReceiver) getPropertiesView().getPropertyById(propertyId);
-        if (pr != null)
+        if (pr != null) {
             pr.onPasswordNotEntered(dlg);
+        }
     }
 
     class LoadLocationInfoTaskCallbacks extends ProgressDialogTaskFragmentCallbacks {
@@ -202,13 +204,14 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
     }
 
     protected void initPropertiesState() {
-        if (_location == null)
+        if (_location == null) {
             _propertiesView.setPropertiesState(false);
-        else {
-            if (_location.isOpenOrMounted())
+        } else {
+            if (_location.isOpenOrMounted()) {
                 showInternalSettings();
-            else
+            } else {
                 hideInternalSettings();
+            }
 
             _propertiesView.setPropertyState(R.string.path_to_container, false);
             _propertiesView.setPropertyState(R.string.save_password, _location.hasPassword());
@@ -243,16 +246,18 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
         ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.total_space) {
             @Override
             protected String loadText() {
-                if (!_location.isOpenOrMounted() || _locationInfo == null)
+                if (!_location.isOpenOrMounted() || _locationInfo == null) {
                     return "";
+                }
                 return Formatter.formatFileSize(getHost().getContext(), _locationInfo.totalSpace);
             }
         }));
         ids.add(_propertiesView.addProperty(new StaticPropertyEditor(this, R.string.free_space) {
             @Override
             protected String loadText() {
-                if (!_location.isOpenOrMounted() || _locationInfo == null)
+                if (!_location.isOpenOrMounted() || _locationInfo == null) {
                     return "";
+                }
                 return Formatter.formatFileSize(getHost().getContext(), _locationInfo.freeSpace);
             }
         }));

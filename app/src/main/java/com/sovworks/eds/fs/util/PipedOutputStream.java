@@ -16,11 +16,14 @@ public class PipedOutputStream extends OutputStream {
 
     @Override
     public void write(byte[] buf, int offset, int len) throws IOException {
-        if (len <= 0) return;
+        if (len <= 0) {
+            return;
+        }
         while (len > 0) {
             int nb = _input.write(buf, offset, len);
-            if (nb == -1)
+            if (nb == -1) {
                 throw new IOException("Input stream is closed");
+            }
             offset += nb;
             len -= nb;
         }

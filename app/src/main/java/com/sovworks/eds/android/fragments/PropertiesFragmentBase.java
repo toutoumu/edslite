@@ -37,18 +37,20 @@ public abstract class PropertiesFragmentBase extends Fragment implements Propert
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!getPropertiesView().onActivityResult(requestCode, resultCode, data))
+        if (!getPropertiesView().onActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     protected PropertiesView _propertiesView;
 
     protected void initProperties(Bundle state) {
         try {
-            if (state == null)
+            if (state == null) {
                 _propertiesView.loadProperties();
-            else
+            } else {
                 _propertiesView.loadProperties(state);
+            }
         } catch (Throwable e) {
             Logger.showAndLog(getActivity(), e);
         }

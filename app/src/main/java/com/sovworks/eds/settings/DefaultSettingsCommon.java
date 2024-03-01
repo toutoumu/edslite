@@ -121,8 +121,9 @@ public class DefaultSettingsCommon implements SettingsCommon {
 
     @Override
     public boolean isHintDisabled() {
-        if (GlobalConfig.isDebug())
+        if (GlobalConfig.isDebug()) {
             return true;
+        }
         int lv = getLastViewedPromoVersion();
         return lv > 124;
     }

@@ -7,7 +7,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
+
 import android.widget.RemoteViews;
 
 import com.sovworks.eds.android.R;
@@ -54,8 +56,9 @@ public class LocationShortcutWidget extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-        if (LocationsManager.BROADCAST_LOCATION_CHANGED.equals(intent.getAction()))
+        if (LocationsManager.BROADCAST_LOCATION_CHANGED.equals(intent.getAction())) {
             setWidgetsState(context, (Uri) intent.getParcelableExtra(LocationsManager.PARAM_LOCATION_URI));
+        }
     }
 
     private void setWidgetsState(Context context, Uri locationUri) {
@@ -66,9 +69,9 @@ public class LocationShortcutWidget extends AppWidgetProvider {
 
     private void setWidgetsState(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds, Uri locationUri) {
         LocationsManager lm = LocationsManager.getLocationsManager(context);
-        if (lm == null)
+        if (lm == null) {
             setWidgetsState(context, appWidgetManager, appWidgetIds, false);
-        else
+        } else {
             try {
                 UserSettings settings = UserSettings.getSettings(context);
                 for (int widgetId : appWidgetIds) {
@@ -78,16 +81,19 @@ public class LocationShortcutWidget extends AppWidgetProvider {
                         if (widgetLoc != null) {
                             if (locationUri != null) {
                                 Location changedLoc = lm.getLocation(locationUri);
-                                if (changedLoc != null && changedLoc.getId().equals(widgetLoc.getId()))
+                                if (changedLoc != null && changedLoc.getId().equals(widgetLoc.getId())) {
                                     setWidgetLayout(context, appWidgetManager, widgetId, widgetInfo, widgetLoc);
-                            } else
+                                }
+                            } else {
                                 setWidgetLayout(context, appWidgetManager, widgetId, widgetInfo, widgetLoc);
+                            }
                         }
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
     }
 
     public void setWidgetLayout(Context context, AppWidgetManager appWidgetManager, int widgetId, Settings.LocationShortcutWidgetInfo widgetInfo, Location loc) {
@@ -98,8 +104,9 @@ public class LocationShortcutWidget extends AppWidgetProvider {
         UserSettings settings = UserSettings.getSettings(context);
         for (int widgetId : appWidgetIds) {
             Settings.LocationShortcutWidgetInfo widgetInfo = settings.getLocationShortcutWidgetInfo(widgetId);
-            if (widgetInfo != null)
+            if (widgetInfo != null) {
                 setWidgetLayout(context, appWidgetManager, widgetId, widgetInfo, isOpen);
+            }
         }
     }
 }

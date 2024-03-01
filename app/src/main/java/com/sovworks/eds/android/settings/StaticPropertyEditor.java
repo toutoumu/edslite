@@ -31,17 +31,19 @@ public class StaticPropertyEditor extends PropertyEditorBase {
         if (txt != null) {
             _descTextView.setVisibility(View.VISIBLE);
             _descTextView.setText(txt);
-        } else
+        } else {
             _descTextView.setVisibility(View.GONE);
+        }
     }
 
     @Override
     public void load(Bundle b) {
         if (_descTextView != null) {
-            if (isInstantSave())
+            if (isInstantSave()) {
                 load();
-            else
+            } else {
                 _descTextView.setText(b.getString(getBundleKey()));
+            }
         }
     }
 
@@ -51,8 +53,9 @@ public class StaticPropertyEditor extends PropertyEditorBase {
 
     @Override
     public void save(Bundle b) {
-        if (!isInstantSave() && _descTextView != null)
+        if (!isInstantSave() && _descTextView != null) {
             b.putString(getBundleKey(), _descTextView.getText().toString());
+        }
     }
 
     @Override

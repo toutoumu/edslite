@@ -36,8 +36,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
 
     public static FilePropertiesFragment newInstance(Path currentPath) {
         Bundle args = new Bundle();
-        if (currentPath != null)
+        if (currentPath != null) {
             args.putString(ARG_CURRENT_PATH, currentPath.getPathString());
+        }
         FilePropertiesFragment f = new FilePropertiesFragment();
         f.setArguments(args);
         return f;
@@ -56,12 +57,14 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
         public void initTask(Activity activity) {
             try {
                 FileListDataFragment df = (FileListDataFragment) getFragmentManager().findFragmentByTag(FileListDataFragment.TAG);
-                if (df != null && df.isAdded())
+                if (df != null && df.isAdded()) {
                     _paths = new ArrayList<>(df.getSelectedPaths());
-                else
+                } else {
                     _paths = new ArrayList<>();
-                if (df != null && _paths.size() == 0 && getArguments().containsKey(ARG_CURRENT_PATH))
+                }
+                if (df != null && _paths.size() == 0 && getArguments().containsKey(ARG_CURRENT_PATH)) {
                     _paths.add(df.getLocation().getFS().getPath(getArguments().getString(ARG_CURRENT_PATH)));
+                }
             } catch (Exception e) {
                 Logger.showAndLog(activity, e);
             }
@@ -70,11 +73,13 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
         @Override
         protected TaskCallbacks getTaskCallbacks(Activity activity) {
             FragmentManager fm = getFragmentManager();
-            if (fm == null)
+            if (fm == null) {
                 return null;
+            }
             FilePropertiesFragment f = (FilePropertiesFragment) fm.findFragmentByTag(FilePropertiesFragment.TAG);
-            if (f == null)
+            if (f == null) {
                 return null;
+            }
             return f.getCalcPropertiesCallbacks();
         }
 
@@ -83,7 +88,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
             FilesInfo info = new FilesInfo();
             Iterator<Path> pathsIterator = _paths.iterator();
             while (pathsIterator.hasNext()) {
-                if (state.isTaskCancelled()) break;
+                if (state.isTaskCancelled()) {
+                    break;
+                }
                 Path p = pathsIterator.next();
                 calcPath(state, info, p);
                 pathsIterator.remove();
@@ -98,21 +105,26 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
 
         private void calcPath(final TaskState state, final FilesInfo info, Path rec) {
             info.filesCount++;
-            if (info.path == null)
+            if (info.path == null) {
                 info.path = rec.getPathDesc();
-            else if (!info.path.endsWith(", ...")) info.path += ", ...";
+            } else if (!info.path.endsWith(", ...")) {
+                info.path += ", ...";
+            }
             try {
                 if (rec.isFile()) {
                     info.totalSize += rec.getFile().getSize();
                     Date mdt = rec.getFile().getLastModified();
                     if (info.lastModDate == null
-                            || mdt.after(info.lastModDate))
+                            || mdt.after(info.lastModDate)) {
                         info.lastModDate = mdt;
+                    }
                 } else if (rec.isDirectory()) {
                     Directory.Contents dc = rec.getDirectory().list();
                     try {
                         for (Path p : dc) {
-                            if (state.isTaskCancelled()) break;
+                            if (state.isTaskCancelled()) {
+                                break;
+                            }
                             calcPath(state, info, p);
                         }
                     } finally {
@@ -142,8 +154,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             startCalcTask();
+        }
     }
 
     @Override
@@ -163,8 +176,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
         _fullPathTextView = (TextView) view.findViewById(R.id.fullPathTextView);
         _modDateTextView = (TextView) view
                 .findViewById(R.id.lastModifiedTextView);
-        if (_lastInfo != null)
+        if (_lastInfo != null) {
             updateUI(_lastInfo, true);
+        }
         return view;
     }
 
@@ -173,8 +187,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
     public void onStop() {
         Activity fa = getActivity();
         if (fa != null) {
-            if (!fa.isChangingConfigurations() || (fa instanceof FileManagerActivity))
+            if (!fa.isChangingConfigurations() || (fa instanceof FileManagerActivity)) {
                 cancelCalcTask();
+            }
         }
         super.onStop();
     }
@@ -182,8 +197,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (_lastInfo != null)
+        if (_lastInfo != null) {
             _lastInfo.save(outState);
+        }
     }
 
     private static class FilesInfo implements Cloneable {
@@ -196,8 +212,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
             b.putString("path", path);
             b.putInt("count", filesCount);
             b.putLong("size", totalSize);
-            if (lastModDate != null)
+            if (lastModDate != null) {
                 b.putString("mod_date", SimpleDateFormat.getDateTimeInstance().format(lastModDate));
+            }
         }
 
         public void load(Bundle b) {
@@ -206,8 +223,9 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
             totalSize = b.getLong("size");
             try {
                 String s = b.getString("mod_date");
-                if (s != null)
+                if (s != null) {
                     lastModDate = SimpleDateFormat.getDateTimeInstance().parse(s);
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -268,15 +286,20 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
 
     private void updateUI(FilesInfo info, boolean isLast) {
         Context ctx = getActivity();
-        if (ctx == null)
+        if (ctx == null) {
             return;
+        }
         String tmp = Formatter
                 .formatFileSize(ctx, info.totalSize);
-        if (!isLast) tmp = ">=" + tmp;
+        if (!isLast) {
+            tmp = ">=" + tmp;
+        }
         _sizeTextView.setText(tmp);
 
         tmp = Long.toString(info.filesCount);
-        if (!isLast) tmp = ">=" + tmp;
+        if (!isLast) {
+            tmp = ">=" + tmp;
+        }
         _numberOfFilesTextView.setText(tmp);
 
         if (info.lastModDate != null) {
@@ -286,26 +309,32 @@ public class FilePropertiesFragment extends Fragment implements FileManagerFragm
                     .getTimeFormat(ctx);
             tmp = df.format(info.lastModDate) + " "
                     + tf.format(info.lastModDate);
-            if (!isLast) tmp = ">=" + tmp;
-        } else
+            if (!isLast) {
+                tmp = ">=" + tmp;
+            }
+        } else {
             tmp = "";
+        }
         _modDateTextView.setText(tmp);
         _fullPathTextView.setText(info.path != null ? info.path : "");
     }
 
     private void cancelCalcTask() {
         FragmentManager fm = getFragmentManager();
-        if (fm == null)
+        if (fm == null) {
             return;
+        }
         TaskFragment tf = (TaskFragment) fm.findFragmentByTag(CalcPropertiesTaskFragment.TAG);
-        if (tf != null)
+        if (tf != null) {
             tf.cancel();
+        }
     }
 
     private void startCalcTask() {
         cancelCalcTask();
         FragmentManager fm = getFragmentManager();
-        if (fm != null)
+        if (fm != null) {
             fm.beginTransaction().add(CalcPropertiesTaskFragment.newInstance(getArguments()), CalcPropertiesTaskFragment.TAG).commit();
+        }
     }
 }

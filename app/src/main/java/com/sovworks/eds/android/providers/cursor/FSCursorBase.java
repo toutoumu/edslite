@@ -114,12 +114,13 @@ public abstract class FSCursorBase extends AbstractCursor {
 
     private Observable<CachedPathInfo> getObservable() {
         synchronized (this) {
-            if (_request == null)
+            if (_request == null) {
                 try {
                     _request = createObservable();
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
+            }
             return _request;
         }
     }
@@ -127,8 +128,9 @@ public abstract class FSCursorBase extends AbstractCursor {
     protected abstract Observable<CachedPathInfo> createObservable() throws Exception;
 
     private Object getValueFromCurrentCPI(int column) {
-        if (_current == null)
+        if (_current == null) {
             return null;
+        }
         return getValueFromCachedPathInfo(_current, _projection[column]);
     }
 
@@ -148,8 +150,9 @@ public abstract class FSCursorBase extends AbstractCursor {
             case COLUMN_PATH:
                 return cpi.getPath().getPathString();
             default:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     return getDocumentValue(cpi, columnName);
+                }
 
         }
         return null;
@@ -184,16 +187,19 @@ public abstract class FSCursorBase extends AbstractCursor {
         boolean ro = _location.isReadOnly();
         int flags = 0;
         if (!ro) {
-            if (cpi.isFile())
+            if (cpi.isFile()) {
                 flags |= DocumentsContract.Document.FLAG_SUPPORTS_WRITE;
-            else if (cpi.isDirectory())
+            } else if (cpi.isDirectory()) {
                 flags |= DocumentsContract.Document.FLAG_DIR_SUPPORTS_CREATE;
+            }
             flags |= DocumentsContract.Document.FLAG_SUPPORTS_DELETE;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 flags |= DocumentsContract.Document.FLAG_SUPPORTS_RENAME;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 flags |= DocumentsContract.Document.FLAG_SUPPORTS_COPY |
                         DocumentsContract.Document.FLAG_SUPPORTS_MOVE;
+            }
         }
         return flags;
     }

@@ -91,10 +91,12 @@ class BPB {
         input.read();
         extendedBootSignature = Util.readUnsignedByte(input);
         volumeSerialNumber = Util.readDoubleWordLE(input);
-        if (Util.readBytes(input, volumeLabel, 11) != 11)
+        if (Util.readBytes(input, volumeLabel, 11) != 11) {
             throw new EOFException();
-        if (Util.readBytes(input, fileSystemLabel, 8) != 8)
+        }
+        if (Util.readBytes(input, fileSystemLabel, 8) != 8) {
             throw new EOFException();
+        }
     }
 
     protected void writeCommonPart(RandomAccessIO output) throws IOException {
@@ -108,9 +110,12 @@ class BPB {
 
     protected void checkEndingSignature(RandomAccessIO input) throws WrongImageFormatException, IOException {
         input.seek(0x1FE);
-        if (Util.readWordLE(input) != 0xAA55) throw new WrongImageFormatException("Invalid bpb sector signature");
-        if (fileSystemLabel[0] != 'F' || fileSystemLabel[1] != 'A' || fileSystemLabel[2] != 'T')
+        if (Util.readWordLE(input) != 0xAA55) {
+            throw new WrongImageFormatException("Invalid bpb sector signature");
+        }
+        if (fileSystemLabel[0] != 'F' || fileSystemLabel[1] != 'A' || fileSystemLabel[2] != 'T') {
             throw new WrongImageFormatException("Looks like the file system is not FAT");
+        }
     }
 
     protected void writeBPBSignature(RandomAccessIO output) throws IOException {

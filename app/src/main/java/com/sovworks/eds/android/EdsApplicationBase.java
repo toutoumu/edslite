@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.SystemClock;
+
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.widget.Toast;
 
 import com.sovworks.eds.android.helpers.ExtendedFileInfoLoader;
@@ -35,8 +37,9 @@ public class EdsApplicationBase extends Application {
 
     public static void stopProgramBase(Context context, boolean removeNotifications) {
         LocalBroadcastManager.getInstance(context).sendBroadcastSync(new Intent(BROADCAST_EXIT));
-        if (removeNotifications)
+        if (removeNotifications) {
             ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).cancelAll();
+        }
         setMasterPassword(null);
         LocationsManager.setGlobalLocationsManager(null);
         UserSettings.closeSettings();
@@ -48,8 +51,9 @@ public class EdsApplicationBase extends Application {
 
         try {
             ClipboardManager cm = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
-            if (MainContentProvider.hasSelectionInClipboard(cm))
+            if (MainContentProvider.hasSelectionInClipboard(cm)) {
                 cm.setPrimaryClip(ClipData.newPlainText("Empty", ""));
+            }
         } catch (Throwable e) {
             Logger.log(e);
         }
@@ -127,10 +131,11 @@ public class EdsApplicationBase extends Application {
 
     protected void init(UserSettings settings) {
         try {
-            if (settings.disableDebugLog())
+            if (settings.disableDebugLog()) {
                 Logger.disableLog(true);
-            else
+            } else {
                 Logger.initLogger();
+            }
         } catch (Throwable e) {
             e.printStackTrace();
             Toast.makeText(this, Logger.getExceptionMessage(this, e), Toast.LENGTH_LONG).show();

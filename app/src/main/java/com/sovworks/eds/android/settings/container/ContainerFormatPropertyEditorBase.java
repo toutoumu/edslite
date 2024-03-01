@@ -62,8 +62,9 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
                 updateEncFsProperties(!addExisting);
             } else {
                 ContainerFormatInfo cfi = getSelectedContainerFormatInfo(value);
-                if (cfi != null)
+                if (cfi != null) {
                     getHostFragment().getState().putString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT, cfi.getFormatName());
+                }
                 updateEncFsProperties(false);
                 updateContainerFormatProperties(!addExisting, cfi);
             }
@@ -83,15 +84,18 @@ public abstract class ContainerFormatPropertyEditorBase extends ChoiceDialogProp
     }
 
     protected int getFormatIdFromName(String formatName) {
-        if (formatName == null)
+        if (formatName == null) {
             return 0;
+        }
         List<ContainerFormatInfo> supportedFormats = EdsContainer.getSupportedFormats();
-        if (EDSLocationFormatter.FORMAT_ENCFS.equals(formatName))
+        if (EDSLocationFormatter.FORMAT_ENCFS.equals(formatName)) {
             return supportedFormats.size();
+        }
         for (int i = 0; i < supportedFormats.size(); i++) {
             ContainerFormatInfo cfi = supportedFormats.get(i);
-            if (cfi.getFormatName().equalsIgnoreCase(formatName))
+            if (cfi.getFormatName().equalsIgnoreCase(formatName)) {
                 return i;
+            }
         }
         return 0;
     }

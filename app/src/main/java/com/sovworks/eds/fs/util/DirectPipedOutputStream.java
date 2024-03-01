@@ -16,13 +16,16 @@ public class DirectPipedOutputStream extends OutputStream {
 
     @Override
     public void write(byte[] buf, int offset, int len) throws IOException {
-        if (len <= 0) return;
+        if (len <= 0) {
+            return;
+        }
         while (len > 0) {
             int nb = 0;
             byte[] dest = _input.getBuffer();
             try {
-                if (dest == null)
+                if (dest == null) {
                     throw new IOException("Input stream is closed");
+                }
                 nb = Math.min(len, _input.getRequestedBytes());
                 System.arraycopy(buf, offset, dest, _input.getOffset(), nb);
                 offset += nb;

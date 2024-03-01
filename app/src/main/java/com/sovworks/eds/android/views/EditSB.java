@@ -1,7 +1,9 @@
 package com.sovworks.eds.android.views;
 
 import android.content.Context;
+
 import androidx.appcompat.widget.AppCompatEditText;
+
 import android.text.Editable;
 import android.util.AttributeSet;
 
@@ -27,8 +29,9 @@ public class EditSB extends AppCompatEditText {
     @Override
     public void setText(CharSequence text, BufferType type) {
         Editable et = getEditableText();
-        if (et != null)
+        if (et != null) {
             et.clear();
+        }
         super.setText(text, type);
     }
 

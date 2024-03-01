@@ -14,10 +14,11 @@ public abstract class ButtonPropertyEditor extends PropertyEditorBase {
     public View createView(ViewGroup parent) {
         View view = super.createView(parent);
         _button = view.findViewById(android.R.id.button1);
-        if (_buttonTextId != 0)
+        if (_buttonTextId != 0) {
             _button.setText(_buttonTextId);
-        else if (_buttonText != null)
+        } else if (_buttonText != null) {
             _button.setText(_buttonText);
+        }
         _button.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,7 +66,8 @@ public abstract class ButtonPropertyEditor extends PropertyEditorBase {
     private final String _buttonText;
 
     protected void onButtonClick() {
-        if (_host.getPropertiesView().isInstantSave())
+        if (_host.getPropertiesView().isInstantSave()) {
             save();
+        }
     }
 }

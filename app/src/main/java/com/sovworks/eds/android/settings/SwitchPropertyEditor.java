@@ -20,8 +20,9 @@ public abstract class SwitchPropertyEditor extends PropertyEditorBase {
         _switchButton.setOnCheckedChangeListener((buttonView, isChecked) ->
         {
             if (!_loadingValue) {
-                if (!onChecked(isChecked))
+                if (!onChecked(isChecked)) {
                     buttonView.setChecked(!isChecked);
+                }
             }
         });
         return view;
@@ -39,11 +40,12 @@ public abstract class SwitchPropertyEditor extends PropertyEditorBase {
 
     @Override
     public void load(Bundle b) {
-        if (_switchButton == null)
+        if (_switchButton == null) {
             return;
-        if (isInstantSave())
+        }
+        if (isInstantSave()) {
             load();
-        else {
+        } else {
             _loadingValue = true;
             try {
                 _switchButton.setChecked(b.getBoolean(getBundleKey()));
@@ -60,8 +62,9 @@ public abstract class SwitchPropertyEditor extends PropertyEditorBase {
 
     @Override
     public void save(Bundle b) {
-        if (!isInstantSave() && _switchButton != null)
+        if (!isInstantSave() && _switchButton != null) {
             b.putBoolean(getBundleKey(), _switchButton.isChecked());
+        }
     }
 
     @Override
@@ -81,8 +84,9 @@ public abstract class SwitchPropertyEditor extends PropertyEditorBase {
     protected abstract void saveValue(boolean value);
 
     protected boolean onChecked(boolean isChecked) {
-        if (_host.getPropertiesView().isInstantSave())
+        if (_host.getPropertiesView().isInstantSave()) {
             save();
+        }
         return true;
     }
 }

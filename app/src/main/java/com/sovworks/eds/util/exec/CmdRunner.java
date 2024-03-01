@@ -30,8 +30,9 @@ public class CmdRunner extends Thread {
     }
 
     public String getResult() throws Throwable {
-        if (_error != null)
+        if (_error != null) {
             throw _error;
+        }
         return _result;
     }
 

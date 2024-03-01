@@ -15,13 +15,15 @@ public class LoadingProgressDialog {
         return Completable.create(emitter -> {
             Dialog dialog = makeProgressDialog(context);
             dialog.setCancelable(isCancellable);
-            if (isCancellable)
+            if (isCancellable) {
                 dialog.setOnCancelListener((dialogInterface) -> {
                     throw new CancellationException();
                 });
+            }
             emitter.setCancellable(dialog::dismiss);
-            if (!emitter.isDisposed())
+            if (!emitter.isDisposed()) {
                 dialog.show();
+            }
         });
     }
 

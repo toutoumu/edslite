@@ -6,7 +6,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+
 import androidx.annotation.NonNull;
+
 import android.widget.RemoteViews;
 
 import com.sovworks.eds.android.R;
@@ -45,8 +47,9 @@ public class CloseAllContainersWidget extends AppWidgetProvider {
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         super.onReceive(context, intent);
-        if (LocationsManager.BROADCAST_LOCATION_CHANGED.equals(intent.getAction()))
+        if (LocationsManager.BROADCAST_LOCATION_CHANGED.equals(intent.getAction())) {
             setWidgetsState(context);
+        }
     }
 
     private void setWidgetsState(Context context) {
@@ -65,8 +68,9 @@ public class CloseAllContainersWidget extends AppWidgetProvider {
         LocationsManager lm = LocationsManager.getLocationsManager(context);
         if (lm != null) {
             for (EDSLocation cbl : lm.getLoadedEDSLocations(false))
-                if (cbl.isOpenOrMounted())
+                if (cbl.isOpenOrMounted()) {
                     return true;
+                }
         }
         return false;
     }

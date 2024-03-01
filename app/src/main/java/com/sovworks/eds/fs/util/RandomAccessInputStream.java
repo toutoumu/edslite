@@ -45,8 +45,9 @@ public class RandomAccessInputStream extends InputStream implements DataInput, R
     public long skip(long n) throws IOException {
         long pos = _io.getFilePointer();
         long left = _io.length() - pos;
-        if (n > left)
+        if (n > left) {
             n = left;
+        }
         seek(pos + n);
         return n;
     }

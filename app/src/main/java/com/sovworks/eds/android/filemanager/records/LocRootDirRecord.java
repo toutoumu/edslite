@@ -16,8 +16,9 @@ public class LocRootDirRecord extends FolderRecord {
     public void init(Location location, Path path) throws IOException {
         super.init(location, path);
         _rootFolderName = super.getName();
-        if ((_rootFolderName == null || _rootFolderName.isEmpty()) && location != null)
+        if ((_rootFolderName == null || _rootFolderName.isEmpty()) && location != null) {
             _rootFolderName = location.getTitle() + "/";
+        }
     }
 
     @Override

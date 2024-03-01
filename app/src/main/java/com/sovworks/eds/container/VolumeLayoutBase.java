@@ -27,8 +27,9 @@ public abstract class VolumeLayoutBase implements VolumeLayout {
 
     public static EncryptionEngine findCipher(Iterable<? extends EncryptionEngine> engines, String cipherName, String modeName) {
         for (EncryptionEngine eng : engines)
-            if (cipherName.equalsIgnoreCase(eng.getCipherName()) && modeName.equalsIgnoreCase(eng.getCipherModeName()))
+            if (cipherName.equalsIgnoreCase(eng.getCipherName()) && modeName.equalsIgnoreCase(eng.getCipherModeName())) {
                 return eng;
+            }
         return null;
     }
 
@@ -36,8 +37,9 @@ public abstract class VolumeLayoutBase implements VolumeLayout {
         name = name.toLowerCase();
         for (MessageDigest eng : engines) {
             String algName = eng.getAlgorithm().toLowerCase();
-            if (algName.contains(name))
+            if (algName.contains(name)) {
                 return eng;
+            }
         }
         return null;
     }
@@ -48,25 +50,29 @@ public abstract class VolumeLayoutBase implements VolumeLayout {
 
     public static EncryptionEngine findEncEngineByName(Iterable<? extends EncryptionEngine> engines, String name) {
         for (EncryptionEngine eng : engines)
-            if (getEncEngineName(eng).equalsIgnoreCase(name))
+            if (getEncEngineName(eng).equalsIgnoreCase(name)) {
                 return eng;
+            }
         return null;
     }
 
     @Override
     public void initNew() {
-        if (_encEngine == null)
+        if (_encEngine == null) {
             throw new IllegalStateException("Encryption engine is not set");
-        if (_masterKey != null)
+        }
+        if (_masterKey != null) {
             Arrays.fill(_masterKey, (byte) 0);
+        }
         _masterKey = new byte[_encEngine.getKeySize()];
         getRandom().nextBytes(_masterKey);
     }
 
     @Override
     public boolean readHeader(RandomAccessIO input) throws IOException, ApplicationException {
-        if (_password == null)
+        if (_password == null) {
             throw new IllegalStateException("Password is not set");
+        }
         return false;
     }
 
@@ -84,8 +90,9 @@ public abstract class VolumeLayoutBase implements VolumeLayout {
 
     @Override
     public void setPassword(byte[] password) {
-        if (_password != null)
+        if (_password != null) {
             Arrays.fill(_password, (byte) 0);
+        }
         _password = password;
     }
 
@@ -106,8 +113,9 @@ public abstract class VolumeLayoutBase implements VolumeLayout {
 
     @Override
     public void setEngine(FileEncryptionEngine engine) {
-        if (_encEngine != null)
+        if (_encEngine != null) {
             _encEngine.close();
+        }
         _encEngine = engine;
         _invertIV = _encEngine != null && CBC.NAME.equalsIgnoreCase(_encEngine.getCipherModeName());
     }
@@ -164,8 +172,9 @@ public abstract class VolumeLayoutBase implements VolumeLayout {
 
     @SuppressLint("TrulyRandom")
     protected synchronized Random getRandom() {
-        if (_sr == null)
+        if (_sr == null) {
             _sr = new SecureRandom();
+        }
         return _sr;
     }
 
@@ -185,13 +194,15 @@ public abstract class VolumeLayoutBase implements VolumeLayout {
     }
 
     protected void checkWriteHeaderPrereqs() {
-        if (_encEngine == null || _hashFunc == null || _password == null || _masterKey == null)
+        if (_encEngine == null || _hashFunc == null || _password == null || _masterKey == null) {
             throw new IllegalStateException("Header data is not initialized");
+        }
     }
 
     protected void checkReadHeaderPrereqs() {
-        if (_password == null)
+        if (_password == null) {
             throw new IllegalStateException("The password is not set");
+        }
     }
 
     protected byte[] getIVFromBlockIndex(long blockIndex) {

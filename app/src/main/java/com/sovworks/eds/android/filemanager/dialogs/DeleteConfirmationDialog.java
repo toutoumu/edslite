@@ -7,7 +7,9 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -47,8 +49,9 @@ public class DeleteConfirmationDialog extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = (LayoutInflater) builder.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (inflater == null)
+        if (inflater == null) {
             throw new RuntimeException("Inflater is null");
+        }
 
         @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.delete_confirmation_dialog, null);
         TextView tv = v.findViewById(android.R.id.text1);
@@ -62,8 +65,9 @@ public class DeleteConfirmationDialog extends DialogFragment {
                         (dialog, id) ->
                         {
                             FileListViewFragment frag = (FileListViewFragment) getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
-                            if (frag != null)
+                            if (frag != null) {
                                 frag.deleteFiles(loc, paths, wipe);
+                            }
                             dialog.dismiss();
                         })
                 .setNegativeButton(R.string.no,
@@ -73,12 +77,13 @@ public class DeleteConfirmationDialog extends DialogFragment {
                 {
                     String fn = "";
                     if (loc != null) {
-                        if (paths.size() > 1)
+                        if (paths.size() > 1) {
                             fn = String.valueOf(paths.size());
-                        else if (paths.isEmpty())
+                        } else if (paths.isEmpty()) {
                             fn = PathUtil.getNameFromPath(loc.getCurrentPath());
-                        else
+                        } else {
                             fn = PathUtil.getNameFromPath(paths.get(0));
+                        }
                     }
                     c.onSuccess(fn);
                 }).

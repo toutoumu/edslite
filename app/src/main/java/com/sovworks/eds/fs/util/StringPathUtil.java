@@ -13,11 +13,13 @@ public class StringPathUtil implements Comparable<StringPathUtil> {
 
     public static List<String> splitPath(String path) {
         ArrayList<String> res = new ArrayList<>();
-        if (path != null)
+        if (path != null) {
             for (String s : path.split(Pattern.quote(File.separator))) {
-                if (!s.trim().isEmpty())
+                if (!s.trim().isEmpty()) {
                     res.add(s);
+                }
             }
+        }
         return res;
     }
 
@@ -26,8 +28,9 @@ public class StringPathUtil implements Comparable<StringPathUtil> {
     }
 
     public static String joinPath(List<String> components, int off, int count) {
-        if (count == 0)
+        if (count == 0) {
             return File.separator;
+        }
         StringBuilder res = new StringBuilder(File.separator);
         for (int i = 0; i < count; i++) {
             res.append(components.get(i + off));
@@ -39,8 +42,9 @@ public class StringPathUtil implements Comparable<StringPathUtil> {
 
     public static String getSubPath(String srcPath, int numToRemove) {
         List<String> components = splitPath(srcPath);
-        if (components.size() < numToRemove + 1)
+        if (components.size() < numToRemove + 1) {
             return "";
+        }
         return joinPath(components, numToRemove, components.size() - numToRemove);
     }
 
@@ -96,17 +100,20 @@ public class StringPathUtil implements Comparable<StringPathUtil> {
     public boolean equals(Object o) {
         if (o instanceof StringPathUtil) {
             List<String> ocomponents = ((StringPathUtil) o)._components;
-            if (ocomponents.size() != _components.size())
+            if (ocomponents.size() != _components.size()) {
                 return false;
+            }
             for (int i = 0; i < ocomponents.size(); i++)
-                if (!ocomponents.get(i).equalsIgnoreCase(_components.get(i)))
+                if (!ocomponents.get(i).equalsIgnoreCase(_components.get(i))) {
                     return false;
+                }
 
             return true;
         }
 
-        if (o instanceof String)
+        if (o instanceof String) {
             return equals(new StringPathUtil((String) o));
+        }
 
         return super.equals(o);
     }
@@ -145,14 +152,16 @@ public class StringPathUtil implements Comparable<StringPathUtil> {
     }
 
     public StringPathUtil getParentPath() {
-        if (_components.size() < 2)
+        if (_components.size() < 2) {
             return new StringPathUtil();
+        }
         return new StringPathUtil(_components.subList(0, _components.size() - 1));
     }
 
     public StringPathUtil getSubPath(int numToRemove) {
-        if (_components.size() < numToRemove + 1)
+        if (_components.size() < numToRemove + 1) {
             return new StringPathUtil();
+        }
         return new StringPathUtil(_components.subList(numToRemove, _components.size()));
     }
 
@@ -174,12 +183,14 @@ public class StringPathUtil implements Comparable<StringPathUtil> {
 
     public boolean isParentDir(StringPathUtil subPath) {
         int s = _components.size();
-        if (subPath._components.size() <= s)
+        if (subPath._components.size() <= s) {
             return false;
+        }
 
         for (int i = 0; i < s; i++)
-            if (!_components.get(i).equalsIgnoreCase(subPath._components.get(i)))
+            if (!_components.get(i).equalsIgnoreCase(subPath._components.get(i))) {
                 return false;
+            }
 
         return true;
     }

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.android.R;
@@ -51,14 +52,16 @@ public abstract class ConfirmationDialog extends DialogFragment {
 
     protected void onNo() {
         Receiver rec = getReceiver();
-        if (rec != null)
+        if (rec != null) {
             rec.onNo();
+        }
     }
 
     protected void onYes() {
         Receiver rec = getReceiver();
-        if (rec != null)
+        if (rec != null) {
             rec.onYes();
+        }
     }
 
     protected abstract String getTitle();
@@ -68,12 +71,14 @@ public abstract class ConfirmationDialog extends DialogFragment {
         String tag = args == null ? null : args.getString(ARG_RECEIVER_TAG);
         if (tag != null) {
             Fragment f = getFragmentManager().findFragmentByTag(tag);
-            if (f instanceof Receiver)
+            if (f instanceof Receiver) {
                 return (Receiver) f;
+            }
         } else {
             Activity act = getActivity();
-            if (act instanceof Receiver)
+            if (act instanceof Receiver) {
                 return (Receiver) act;
+            }
         }
         return null;
     }

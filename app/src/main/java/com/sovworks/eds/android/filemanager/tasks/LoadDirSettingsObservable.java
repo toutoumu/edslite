@@ -40,13 +40,15 @@ public class LoadDirSettingsObservable {
     public static Maybe<DirectorySettings> create(Location targetLocation) {
         return Maybe.create(s -> {
             Path p = targetLocation.getCurrentPath();
-            if (p.isFile())
+            if (p.isFile()) {
                 p = p.getParentPath();
+            }
             DirectorySettings ds = getDirectorySettings(p);
-            if (ds == null)
+            if (ds == null) {
                 s.onComplete();
-            else
+            } else {
                 s.onSuccess(ds);
+            }
         });
     }
 }

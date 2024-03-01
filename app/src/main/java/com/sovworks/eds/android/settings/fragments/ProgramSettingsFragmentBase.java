@@ -69,8 +69,9 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
     @Override
     public void onPasswordEntered(PasswordDialog dlg) {
         char[] data = dlg.getPassword();
-        if (data != null && data.length == 0)
+        if (data != null && data.length == 0) {
             data = null;
+        }
 
         EdsApplication.setMasterPassword(data == null ? null : new SecureBuffer(data));
         try {
@@ -177,10 +178,11 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
 
             @Override
             protected void saveValue(int value) {
-                if (value >= 0)
+                if (value >= 0) {
                     editSettings().putInt(USE_INTERNAL_IMAGE_VIEWER, value).commit();
-                else
+                } else {
                     editSettings().remove(USE_INTERNAL_IMAGE_VIEWER).commit();
+                }
             }
 
             @Override
@@ -206,8 +208,9 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
                     } catch (Exception e) {
                         Logger.showAndLog(getActivity(), e);
                     }
-                } else
+                } else {
                     editSettings().remove(WORK_DIR).commit();
+                }
             }
 
             @Override
@@ -239,10 +242,11 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
 
             @Override
             protected void saveValue(int value) {
-                if (value >= 0)
+                if (value >= 0) {
                     editSettings().putInt(MAX_FILE_SIZE_TO_OPEN, value).commit();
-                else
+                } else {
                     editSettings().remove(MAX_FILE_SIZE_TO_OPEN).commit();
+                }
             }
         }));
         commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.overwrite_temp_files_with_random_data, R.string.overwrite_temp_files_with_random_data_desc) {
@@ -264,10 +268,11 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
 
             @Override
             protected void saveText(String text) {
-                if (text != null)
+                if (text != null) {
                     editSettings().putString(EXTENSIONS_MIME, text).commit();
-                else
+                } else {
                     editSettings().remove(EXTENSIONS_MIME).commit();
+                }
             }
         }));
         commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.debug_log, 0) {
@@ -282,13 +287,14 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
                 if (!value) {
                     Logger.closeLogger();
                     Logger.disableLog(true);
-                } else
+                } else {
                     try {
                         Logger.disableLog(false);
                         Logger.initLogger();
                     } catch (IOException e) {
                         Logger.showErrorMessage(getContext(), e);
                     }
+                }
             }
         }));
         commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.disable_modified_files_backup, 0) {

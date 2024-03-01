@@ -23,8 +23,9 @@ public abstract class SpinnerPropertyEditor extends PropertyEditorBase {
         _spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (_host.getPropertiesView().isInstantSave())
+                if (_host.getPropertiesView().isInstantSave()) {
                     save();
+                }
             }
         });
         return view;
@@ -42,10 +43,11 @@ public abstract class SpinnerPropertyEditor extends PropertyEditorBase {
     @Override
     public void load(Bundle b) {
         if (_spinner != null) {
-            if (isInstantSave())
+            if (isInstantSave()) {
                 load();
-            else
+            } else {
                 _spinner.setSelection(b.getInt(getBundleKey()));
+            }
         }
     }
 
@@ -56,8 +58,9 @@ public abstract class SpinnerPropertyEditor extends PropertyEditorBase {
 
     @Override
     public void save(Bundle b) {
-        if (!isInstantSave() && _spinner != null)
+        if (!isInstantSave() && _spinner != null) {
             b.putInt(getBundleKey(), _spinner.getSelectedItemPosition());
+        }
     }
 
     protected Spinner _spinner;

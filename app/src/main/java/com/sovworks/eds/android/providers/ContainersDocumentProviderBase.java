@@ -158,13 +158,15 @@ public abstract class ContainersDocumentProviderBase extends android.provider.Do
                                 getCurrentPath().
                                 getDirectory();
                         Location res = dstLocation.copy();
-                        if (srcPath.isDirectory())
+                        if (srcPath.isDirectory()) {
                             res.setCurrentPath(dest.createDirectory(srcPath.getDirectory().getName()).getPath());
-                        else if (srcPath.isFile())
+                        } else if (srcPath.isFile()) {
                             res.setCurrentPath(Util.copyFile(srcPath.getFile(), dest).getPath());
+                        }
                         Context context = getContext();
-                        if (context != null)
+                        if (context != null) {
                             context.getContentResolver().notifyChange(getUriFromLocation(res), null);
+                        }
 
                         em.onSuccess(getDocumentIdFromLocation(res));
                     }).
@@ -223,13 +225,15 @@ public abstract class ContainersDocumentProviderBase extends android.provider.Do
                         Location loc = getLocationsManager().
                                 getLocation(getLocationUriFromDocumentId(documentId));
                         Path srcPath = loc.getCurrentPath();
-                        if (srcPath.isFile())
+                        if (srcPath.isFile()) {
                             srcPath.getFile().delete();
-                        else if (srcPath.isDirectory())
+                        } else if (srcPath.isDirectory()) {
                             srcPath.getDirectory().delete();
+                        }
                         Context context = getContext();
-                        if (context != null)
+                        if (context != null) {
                             context.getContentResolver().notifyChange(getUriFromLocation(loc), null);
+                        }
                         em.onComplete();
                     }).
                     subscribeOn(Schedulers.io()).
@@ -246,16 +250,19 @@ public abstract class ContainersDocumentProviderBase extends android.provider.Do
             return Single.<String>create(em -> {
                         Location loc = getLocationsManager().getLocation(getLocationUriFromDocumentId(documentId)).copy();
                         Path srcPath = loc.getCurrentPath();
-                        if (srcPath.isDirectory())
+                        if (srcPath.isDirectory()) {
                             srcPath.getDirectory().rename(displayName);
-                        else if (srcPath.isFile())
+                        } else if (srcPath.isFile()) {
                             srcPath.getFile().rename(displayName);
+                        }
                         Context context = getContext();
-                        if (context != null)
+                        if (context != null) {
                             context.getContentResolver().notifyChange(getUriFromLocation(loc), null);
+                        }
                         loc.setCurrentPath(srcPath);
-                        if (context != null)
+                        if (context != null) {
                             context.getContentResolver().notifyChange(getUriFromLocation(loc), null);
+                        }
                         em.onSuccess(getDocumentIdFromLocation(loc));
                     }).
                     subscribeOn(Schedulers.io()).
@@ -273,13 +280,15 @@ public abstract class ContainersDocumentProviderBase extends android.provider.Do
                         Location res = getLocationsManager().
                                 getLocation(getLocationUriFromDocumentId(parentDocumentId)).copy();
                         Directory dest = res.getCurrentPath().getDirectory();
-                        if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mimeType))
+                        if (DocumentsContract.Document.MIME_TYPE_DIR.equals(mimeType)) {
                             res.setCurrentPath(dest.createDirectory(displayName).getPath());
-                        else
+                        } else {
                             res.setCurrentPath(dest.createFile(displayName).getPath());
+                        }
                         Context context = getContext();
-                        if (context != null)
+                        if (context != null) {
                             context.getContentResolver().notifyChange(getUriFromLocation(res), null);
+                        }
                         em.onSuccess(getDocumentIdFromLocation(res));
                     }).
                     subscribeOn(Schedulers.io()).

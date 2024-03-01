@@ -42,8 +42,9 @@ public abstract class ChoiceDialogPropertyEditor extends PropertyEditorBase {
     public void setSelectedEntry(int val) {
         _selectedEntry = val;
         updateSelectionText();
-        if (_host.getPropertiesView().isInstantSave())
+        if (_host.getPropertiesView().isInstantSave()) {
             save();
+        }
     }
 
     public int getSelectedEntry() {
@@ -61,9 +62,9 @@ public abstract class ChoiceDialogPropertyEditor extends PropertyEditorBase {
     @Override
     public void load(Bundle b) {
         if (_selectButton != null) {
-            if (isInstantSave())
+            if (isInstantSave()) {
                 load();
-            else {
+            } else {
                 _entries = getEntries();
                 _selectButton.setVisibility(_entries.size() < 2 ? View.GONE : View.VISIBLE);
                 _selectedEntry = b.getInt(getBundleKey());
@@ -79,8 +80,9 @@ public abstract class ChoiceDialogPropertyEditor extends PropertyEditorBase {
 
     @Override
     public void save(Bundle b) {
-        if (!isInstantSave() && _selectButton != null)
+        if (!isInstantSave() && _selectButton != null) {
             b.putInt(getBundleKey(), _selectedEntry);
+        }
     }
 
     protected int _selectedEntry = -1;
@@ -97,10 +99,11 @@ public abstract class ChoiceDialogPropertyEditor extends PropertyEditorBase {
     private Button _selectButton;
 
     private void updateSelectionText() {
-        if (_selectedEntry >= 0 && _selectedEntry < _entries.size())
+        if (_selectedEntry >= 0 && _selectedEntry < _entries.size()) {
             _selectedItems.setText(_entries.get(_selectedEntry));
-        else
+        } else {
             _selectedItems.setText("");
+        }
     }
 
     private void startChoiceDialog() {

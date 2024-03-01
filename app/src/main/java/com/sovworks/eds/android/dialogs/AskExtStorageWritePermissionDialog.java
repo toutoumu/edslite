@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.android.R;
@@ -32,15 +33,17 @@ public class AskExtStorageWritePermissionDialog extends DialogFragment {
                         {
                             dialog.dismiss();
                             ExternalStorageOpenerFragment f = getRecFragment();
-                            if (f != null)
+                            if (f != null) {
                                 f.showSystemDialog();
+                            }
                         })
                 .setNegativeButton(android.R.string.cancel,
                         (dialog, id) ->
                         {
                             ExternalStorageOpenerFragment f = getRecFragment();
-                            if (f != null)
+                            if (f != null) {
                                 f.setDontAskPermissionAndOpenLocation();
+                            }
 
                         });
         return builder.create();
@@ -50,8 +53,9 @@ public class AskExtStorageWritePermissionDialog extends DialogFragment {
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         ExternalStorageOpenerFragment f = getRecFragment();
-        if (f != null)
+        if (f != null) {
             f.cancelOpen();
+        }
     }
 
     private ExternalStorageOpenerFragment getRecFragment() {

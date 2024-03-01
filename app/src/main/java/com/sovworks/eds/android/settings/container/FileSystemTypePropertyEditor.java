@@ -26,12 +26,13 @@ public class FileSystemTypePropertyEditor extends ChoiceDialogPropertyEditor {
         FileSystemInfo cur = getHostFragment().
                 getState().
                 getParcelable(CreateContainerTaskFragmentBase.ARG_FILE_SYSTEM_TYPE);
-        if (cur != null)
+        if (cur != null) {
             return names.indexOf(cur.getFileSystemName());
-        else if (!names.isEmpty())
+        } else if (!names.isEmpty()) {
             return 0;
-        else
+        } else {
             return -1;
+        }
     }
 
     @Override

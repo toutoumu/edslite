@@ -95,8 +95,9 @@ public abstract class LocationBase implements Location, Cloneable {
         }
 
         public void saveToJSONObject(JSONObject jo) throws JSONException {
-            if (_title != null)
+            if (_title != null) {
                 jo.put(SETTINGS_TITLE, _title);
+            }
             jo.put(SETTINGS_VISIBLE_TO_USER, _isVisibleToUser);
             jo.put(SETTINGS_USE_EXT_FILE_MANAGER, useExtFileManager());
         }
@@ -109,18 +110,20 @@ public abstract class LocationBase implements Location, Cloneable {
 
         protected void storeProtectedField(JSONObject jo, String key, String data) {
             try {
-                if (data != null)
+                if (data != null) {
                     jo.put(key, _protectionKeyProvider == null ?
                             data :
                             SimpleCrypto.encrypt(_protectionKeyProvider.getProtectionKey(), data));
+                }
             } catch (Exception ignored) {
             }
         }
 
         protected void storeProtectedField(JSONObject jo, String key, byte[] data) {
             try {
-                if (data != null)
+                if (data != null) {
                     jo.put(key, encryptAndEncode(data));
+                }
             } catch (Exception ignored) {
             }
         }
@@ -139,8 +142,9 @@ public abstract class LocationBase implements Location, Cloneable {
         protected byte[] loadProtectedData(JSONObject jo, String key) {
             try {
                 String data = jo.optString(key, null);
-                if (data == null)
+                if (data == null) {
                     return null;
+                }
                 return decodeAndDecrypt(data);
             } catch (Exception e) {
                 Logger.log(e);
@@ -197,8 +201,9 @@ public abstract class LocationBase implements Location, Cloneable {
     @Override
     public ExternalSettings getExternalSettings() {
         SharedData sd = getSharedData();
-        if (sd.externalSettings == null)
+        if (sd.externalSettings == null) {
             sd.externalSettings = loadExternalSettings();
+        }
         return sd.externalSettings;
     }
 
@@ -238,21 +243,24 @@ public abstract class LocationBase implements Location, Cloneable {
 
     @Override
     public Intent getExternalFileManagerLaunchIntent() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             return null;
+        }
         Settings.ExternalFileManagerInfo exFmInfo = _globalSettings.getExternalFileManagerInfo();
-        if (exFmInfo == null || !DocumentsContract.Document.MIME_TYPE_DIR.equals(exFmInfo.mimeType))
+        if (exFmInfo == null || !DocumentsContract.Document.MIME_TYPE_DIR.equals(exFmInfo.mimeType)) {
             return null;
+        }
 
         try {
             Intent intent = new Intent(exFmInfo.action);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setClassName(exFmInfo.packageName, exFmInfo.className);
             Uri uri = ContainersDocumentProviderBase.getUriFromLocation(this);
-            if (exFmInfo.mimeType != null)
+            if (exFmInfo.mimeType != null) {
                 intent.setDataAndType(uri, exFmInfo.mimeType);
-            else
+            } else {
                 intent.setData(uri);
+            }
             return intent;
         } catch (Exception e) {
             Logger.log(e);
@@ -264,8 +272,9 @@ public abstract class LocationBase implements Location, Cloneable {
     public String toString() {
         String res = getTitle();
         try {
-            if (isFileSystemOpen() && getCurrentPath() != null)
+            if (isFileSystemOpen() && getCurrentPath() != null) {
                 res += new StringPathUtil(getCurrentPath().getPathDesc());
+            }
         } catch (Exception ignored) {
         }
         return res;
@@ -279,10 +288,11 @@ public abstract class LocationBase implements Location, Cloneable {
                 getSharedData().fs = null;
             }
         } catch (Throwable e) {
-            if (!force)
+            if (!force) {
                 throw new IOException(e);
-            else
+            } else {
                 Logger.log(e);
+            }
         }
     }
 

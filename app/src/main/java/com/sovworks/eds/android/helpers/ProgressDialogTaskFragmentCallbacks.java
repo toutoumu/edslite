@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.android.fragments.TaskFragment.Result;
@@ -46,14 +47,16 @@ public class ProgressDialogTaskFragmentCallbacks implements TaskCallbacks {
     @Override
     public void onResumeUI(Bundle args) {
         _dialog = initDialog(args);
-        if (_dialog != null)
+        if (_dialog != null) {
             _dialog.show(_context.getFragmentManager(), Dialog.TAG);
+        }
     }
 
     @Override
     public void onSuspendUI(Bundle args) {
-        if (_dialog != null)
+        if (_dialog != null) {
             _dialog.dismissAllowingStateLoss();
+        }
     }
 
     @Override

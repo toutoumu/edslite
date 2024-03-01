@@ -7,7 +7,9 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -30,8 +32,9 @@ public class SortDialog extends DialogFragment {
         Bundle b = new Bundle();
         b.putInt(ARG_SORT_MODE, sortMode);
         b.putInt(ARG_SORT_LABELS_RES_ID, sortLabelsResId);
-        if (receiverFragmentTag != null)
+        if (receiverFragmentTag != null) {
             b.putString(ARG_RECEIVER_FRAGMENT_TAG, receiverFragmentTag);
+        }
         newFragment.setArguments(b);
         newFragment.show(fm, "SortDialog");
     }
@@ -63,8 +66,9 @@ public class SortDialog extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 int pos = listView.getCheckedItemPosition();
-                                if (pos == ListView.INVALID_POSITION)
+                                if (pos == ListView.INVALID_POSITION) {
                                     pos = -1;
+                                }
                                 applySort(pos, sortDirection.getCheckedRadioButtonId() == R.id.sort_asc);
                                 dialog.dismiss();
                             }
@@ -86,10 +90,12 @@ public class SortDialog extends DialogFragment {
         String rft = getArguments().getString(ARG_RECEIVER_FRAGMENT_TAG);
         if (rft != null) {
             SortingReceiver sr = (SortingReceiver) getFragmentManager().findFragmentByTag(rft);
-            if (sr != null)
+            if (sr != null) {
                 sr.applySort(sortMode);
-        } else if (getActivity() instanceof SortingReceiver)
+            }
+        } else if (getActivity() instanceof SortingReceiver) {
             ((SortingReceiver) getActivity()).applySort(sortMode);
+        }
     }
 
     private static final String ARG_SORT_MODE = "com.sovworks.eds.android.SORT_MODE";

@@ -1,6 +1,7 @@
 package com.sovworks.eds.fs.util;
 
 import android.os.SystemClock;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.fs.FSRecord;
@@ -119,8 +120,9 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
                 @Override
                 public void write(int b) throws IOException {
                     _lastActivityTime = SystemClock.elapsedRealtime();
-                    if (!_isChanged && _changesListener != null)
+                    if (!_isChanged && _changesListener != null) {
                         _changesListener.beforeModification(getPath());
+                    }
                     out.write(b);
                     _isChanged = true;
                 }
@@ -128,16 +130,18 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
                 @Override
                 public void write(@NonNull byte[] b, int off, int len) throws IOException {
                     _lastActivityTime = SystemClock.elapsedRealtime();
-                    if (!_isChanged && _changesListener != null)
+                    if (!_isChanged && _changesListener != null) {
                         _changesListener.beforeModification(getPath());
+                    }
                     out.write(b, off, len);
                     _isChanged = true;
                 }
 
                 public void close() throws IOException {
                     super.close();
-                    if (_changesListener != null && _isChanged)
+                    if (_changesListener != null && _isChanged) {
                         _changesListener.afterModification(getPath());
+                    }
                 }
 
                 private boolean _isChanged;
@@ -181,8 +185,9 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
         public com.sovworks.eds.fs.File createFile(String name) throws IOException {
             _lastActivityTime = SystemClock.elapsedRealtime();
             com.sovworks.eds.fs.File f = super.createFile(name);
-            if (_changesListener != null)
+            if (_changesListener != null) {
                 _changesListener.afterModification(f.getPath());
+            }
             return f;
         }
 
@@ -190,8 +195,9 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
         public com.sovworks.eds.fs.Directory createDirectory(String name) throws IOException {
             _lastActivityTime = SystemClock.elapsedRealtime();
             com.sovworks.eds.fs.Directory f = super.createDirectory(name);
-            if (_changesListener != null)
+            if (_changesListener != null) {
                 _changesListener.afterModification(f.getPath());
+            }
             return f;
         }
 
@@ -224,8 +230,9 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
         @Override
         public void write(int b) throws IOException {
             _lastActivityTime = SystemClock.elapsedRealtime();
-            if (!_isChanged && _changesListener != null)
+            if (!_isChanged && _changesListener != null) {
                 _changesListener.beforeModification(_path);
+            }
             super.write(b);
             _isChanged = true;
         }
@@ -233,8 +240,9 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
         @Override
         public void write(byte[] b, int off, int len) throws IOException {
             _lastActivityTime = SystemClock.elapsedRealtime();
-            if (!_isChanged && _changesListener != null)
+            if (!_isChanged && _changesListener != null) {
                 _changesListener.beforeModification(_path);
+            }
             super.write(b, off, len);
             _isChanged = true;
         }
@@ -242,8 +250,9 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
         @Override
         public void close() throws IOException {
             super.close();
-            if (_changesListener != null && _isChanged)
+            if (_changesListener != null && _isChanged) {
                 _changesListener.afterModification(_path);
+            }
         }
 
         private final com.sovworks.eds.fs.Path _path;
@@ -268,8 +277,9 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
             } catch (IOException e) {
                 dst = null;
             }
-            if (dst != null)
+            if (dst != null) {
                 _changesListener.beforeModification(dst);
+            }
         }
     }
 
@@ -282,13 +292,15 @@ public class ActivityTrackingFSWrapper extends FileSystemWrapper {
 
     private void beforeDelete(FSRecord srcRecord) throws IOException {
         _lastActivityTime = SystemClock.elapsedRealtime();
-        if (_changesListener != null)
+        if (_changesListener != null) {
             _changesListener.beforeRemoval(srcRecord.getPath());
+        }
     }
 
     private void afterDelete(FSRecord srcRecord) {
-        if (_changesListener != null)
+        if (_changesListener != null) {
             _changesListener.afterRemoval(srcRecord.getPath());
+        }
     }
 
 }

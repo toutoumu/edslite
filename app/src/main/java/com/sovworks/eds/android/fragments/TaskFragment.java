@@ -20,8 +20,9 @@ public abstract class TaskFragment extends Fragment {
     public static final String ARG_HOST_FRAGMENT = "com.sovworks.eds.android.HOST_FRAGMENT_TAG";
 
     public static synchronized void addEventListener(EventListener listener) {
-        if (GlobalConfig.isDebug())
+        if (GlobalConfig.isDebug()) {
             _eventListeners.add(new WeakReference<>(listener));
+        }
     }
 
 
@@ -34,8 +35,9 @@ public abstract class TaskFragment extends Fragment {
         if (GlobalConfig.isDebug()) {
             for (WeakReference<EventListener> wr : _eventListeners) {
                 EventListener el = wr.get();
-                if (el != null)
+                if (el != null) {
                     el.onEvent(eventType, tf);
+                }
             }
         }
     }
@@ -94,8 +96,9 @@ public abstract class TaskFragment extends Fragment {
         }
 
         public Object getResult() throws Throwable {
-            if (_error != null)
+            if (_error != null) {
                 throw _error;
+            }
             return _result;
         }
 
@@ -112,15 +115,17 @@ public abstract class TaskFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (_callbacks == null)
+        if (_callbacks == null) {
             initCallbacks();
+        }
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (_callbacks == null)
+        if (_callbacks == null) {
             initCallbacks();
+        }
     }
 
     /**
@@ -141,14 +146,16 @@ public abstract class TaskFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (_callbacks != null)
+        if (_callbacks != null) {
             _callbacks.onResumeUI(getArguments());
+        }
     }
 
     @Override
     public void onPause() {
-        if (_callbacks != null)
+        if (_callbacks != null) {
             _callbacks.onSuspendUI(getArguments());
+        }
         super.onPause();
     }
 
@@ -194,10 +201,12 @@ public abstract class TaskFragment extends Fragment {
     }
 
     protected TaskCallbacks getTaskCallbacks(Activity activity) {
-        if (activity instanceof CallbacksProvider)
+        if (activity instanceof CallbacksProvider) {
             return ((CallbacksProvider) activity).getCallbacks(getTag());
-        if (activity instanceof TaskCallbacks)
+        }
+        if (activity instanceof TaskCallbacks) {
             return (TaskCallbacks) activity;
+        }
         return null;
     }
 
@@ -221,13 +230,14 @@ public abstract class TaskFragment extends Fragment {
     private void initCallbacks() {
         _callbacks = getTaskCallbacks(getActivity());
         if (_callbacks != null) {
-            if (_task.getStatus() != Status.FINISHED)
+            if (_task.getStatus() != Status.FINISHED) {
                 _callbacks.onPrepare(getArguments());
-            else
+            } else {
                 try {
                     _callbacks.onCompleted(getArguments(), _task.get());
                 } catch (Exception ignored) {
                 }
+            }
         }
     }
 
@@ -246,8 +256,9 @@ public abstract class TaskFragment extends Fragment {
 
         @Override
         protected void onProgressUpdate(Object... state) {
-            if (_callbacks != null)
+            if (_callbacks != null) {
                 _callbacks.onUpdateUI(state[0]);
+            }
 
         }
 
@@ -286,8 +297,9 @@ public abstract class TaskFragment extends Fragment {
 
             @Override
             public void updateUI(Object state) {
-                if (!isTaskCancelled())
+                if (!isTaskCancelled()) {
                     publishProgress(state);
+                }
             }
 
             @Override

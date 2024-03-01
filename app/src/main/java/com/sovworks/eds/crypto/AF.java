@@ -65,8 +65,9 @@ public class AF {
 
         for (int i = 0; i < blocks; i++)
             hashBuf(src, srcOffset + ds * i, dst, dstOffset + ds * i, ds, i);
-        if (padding > 0)
+        if (padding > 0) {
             hashBuf(src, srcOffset + ds * blocks, dst, dstOffset + ds * blocks, padding, blocks);
+        }
     }
 
     private void hashBuf(byte[] src, int srcOffset, byte[] dst, int dstOffset, int len, int iv) throws DigestException {

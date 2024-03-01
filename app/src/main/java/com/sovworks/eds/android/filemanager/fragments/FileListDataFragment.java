@@ -68,8 +68,9 @@ public class FileListDataFragment extends RxFragment {
     }
 
     static {
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_READING_OBSERVABLE = BehaviorSubject.createDefault(false);
+        }
 
     }
 
@@ -100,10 +101,11 @@ public class FileListDataFragment extends RxFragment {
 
     public static Uri getLocationUri(Intent intent, Bundle state) {
         Uri locUri;
-        if (state != null)
+        if (state != null) {
             locUri = state.getParcelable(LocationsManager.PARAM_LOCATION_URI);
-        else
+        } else {
             locUri = intent.getData();
+        }
         return locUri;
     }
 
@@ -124,9 +126,10 @@ public class FileListDataFragment extends RxFragment {
         super.onActivityCreated(savedInstanceState);
         // TODO remove dependency
         synchronized (_filesListSync) {
-            if (_fileList != null)
+            if (_fileList != null) {
                 for (BrowserRecord br : _fileList)
                     br.setHostActivity((FileManagerActivity) getActivity());
+            }
         }
     }
 
@@ -134,8 +137,9 @@ public class FileListDataFragment extends RxFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_OPEN_LOCATION) {
-            if (resultCode != Activity.RESULT_OK)
+            if (resultCode != Activity.RESULT_OK) {
                 getActivity().setIntent(new Intent());
+            }
             lifecycle().
                     filter(event -> event == FragmentEvent.RESUME).
                     firstElement().
@@ -143,12 +147,14 @@ public class FileListDataFragment extends RxFragment {
                                     loadLocation(null, false),
                             err ->
                             {
-                                if (!(err instanceof CancellationException))
+                                if (!(err instanceof CancellationException)) {
                                     Logger.log(err);
+                                }
                             });
 
-        } else
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -156,9 +162,10 @@ public class FileListDataFragment extends RxFragment {
         super.onDetach();
         // TODO remove dependency
         synchronized (_filesListSync) {
-            if (_fileList != null)
+            if (_fileList != null) {
                 for (BrowserRecord br : _fileList)
                     br.setHostActivity(null);
+            }
         }
     }
 
@@ -189,32 +196,38 @@ public class FileListDataFragment extends RxFragment {
     public ArrayList<BrowserRecord> getSelectedFiles() {
         ArrayList<BrowserRecord> res = new ArrayList<>();
         synchronized (_filesListSync) {
-            if (_fileList != null)
+            if (_fileList != null) {
                 for (BrowserRecord rec : _fileList) {
-                    if (rec.isSelected())
+                    if (rec.isSelected()) {
                         res.add(rec);
+                    }
                 }
+            }
         }
         return res;
     }
 
     public boolean hasSelectedFiles() {
         synchronized (_filesListSync) {
-            if (_fileList != null)
+            if (_fileList != null) {
                 for (BrowserRecord rec : _fileList) {
-                    if (rec.isSelected())
+                    if (rec.isSelected()) {
                         return true;
+                    }
                 }
+            }
         }
         return false;
     }
 
     public BrowserRecord findLoadedFileByPath(Path path) {
         synchronized (_filesListSync) {
-            if (_fileList != null)
+            if (_fileList != null) {
                 for (BrowserRecord f : _fileList)
-                    if (path.equals(f.getPath()))
+                    if (path.equals(f.getPath())) {
                         return f;
+                    }
+            }
         }
         return null;
     }
@@ -238,8 +251,9 @@ public class FileListDataFragment extends RxFragment {
     public void copyToAdapter(FileListViewAdapter adapter) {
         synchronized (_filesListSync) {
             adapter.clear();
-            if (_fileList != null)
+            if (_fileList != null) {
                 adapter.addAll(_fileList);
+            }
         }
     }
 
@@ -279,12 +293,14 @@ public class FileListDataFragment extends RxFragment {
         cancelReadDirTask();
         clearCurrentFiles();
         _location = location;
-        if (_location == null)
+        if (_location == null) {
             return;
+        }
 
         FileManagerActivity activity = (FileManagerActivity) getActivity();
-        if (activity == null)
+        if (activity == null) {
             return;
+        }
         Context context = activity.getApplicationContext();
         boolean showRootFolder = activity.getIntent().
                 getBooleanExtra(
@@ -317,8 +333,9 @@ public class FileListDataFragment extends RxFragment {
                         Location parentLocation = location.copy();
                         parentLocation.setCurrentPath(location.getCurrentPath().getParentPath());
                         loadLocationInfo.location = parentLocation;
-                    } else
+                    } else {
                         loadLocationInfo.location = location;
+                    }
                     CachedPathInfo cpi = new CachedPathInfoBase();
                     cpi.init(loadLocationInfo.location.getCurrentPath());
                     loadLocationInfo.folder = cpi;
@@ -356,8 +373,9 @@ public class FileListDataFragment extends RxFragment {
                         },
                         err ->
                         {
-                            if (!(err instanceof CancellationException))
+                            if (!(err instanceof CancellationException)) {
                                 Logger.log(err);
+                            }
                         }
                 );
 
@@ -383,8 +401,9 @@ public class FileListDataFragment extends RxFragment {
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(rec -> {
                             addRecordToList(rec);
-                            if (!emitter.isDisposed())
+                            if (!emitter.isDisposed()) {
                                 emitter.onSuccess(rec);
+                            }
                         },
                         err -> Logger.showAndLog(getActivity(), err)));
     }
@@ -400,10 +419,12 @@ public class FileListDataFragment extends RxFragment {
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
                 subscribe(rec -> {
-                            if (findLoadedFileByPath(rec.getPath()) == null)
+                            if (findLoadedFileByPath(rec.getPath()) == null) {
                                 addRecordToList(rec);
-                            if (!emitter.isDisposed())
+                            }
+                            if (!emitter.isDisposed()) {
                                 emitter.onSuccess(rec);
+                            }
                         },
                         err -> Logger.showAndLog(getActivity(), err)));
 
@@ -413,8 +434,9 @@ public class FileListDataFragment extends RxFragment {
         FileManagerActivity fm = (FileManagerActivity) getActivity();
         rec.setHostActivity(fm);
         synchronized (_filesListSync) {
-            if (_fileList != null)
+            if (_fileList != null) {
                 _fileList.add(rec);
+            }
         }
     }
 
@@ -426,8 +448,9 @@ public class FileListDataFragment extends RxFragment {
         _locationLoading.onNext(loadInfo);
         synchronized (_filesListSync) {
             TreeSet<BrowserRecord> n = new TreeSet<>(initSorter());
-            if (_fileList != null)
+            if (_fileList != null) {
                 n.addAll(_fileList);
+            }
             _fileList = n;
         }
         loadInfo = loadInfo.clone();
@@ -445,8 +468,9 @@ public class FileListDataFragment extends RxFragment {
         if (id != null) {
             List<HistoryItem> cur = new ArrayList<>(_navigHistory);
             for (HistoryItem hi : cur)
-                if (id.equals(hi.locationId))
+                if (id.equals(hi.locationId)) {
                     _navigHistory.remove(hi);
+                }
         }
     }
 
@@ -517,8 +541,9 @@ public class FileListDataFragment extends RxFragment {
     private void restoreNavigHistory(Bundle state) {
         if (state.containsKey(STATE_NAVIG_HISTORY)) {
             ArrayList<HistoryItem> l = state.getParcelableArrayList(STATE_NAVIG_HISTORY);
-            if (l != null)
+            if (l != null) {
                 _navigHistory.addAll(l);
+            }
         }
     }
 
@@ -530,8 +555,9 @@ public class FileListDataFragment extends RxFragment {
         } catch (Exception e) {
             Logger.showAndLog(getActivity(), e);
         }
-        if (loc == null)
+        if (loc == null) {
             loc = getFallbackLocation();
+        }
 
         if (autoOpen && !LocationsManager.isOpen(loc)) {
             Intent i = new Intent(getActivity(), OpenLocationsActivity.class);
@@ -540,8 +566,9 @@ public class FileListDataFragment extends RxFragment {
         } else if (savedState == null) {
             resetIntent();
             readLocation(loc, null);
-        } else
+        } else {
             restoreState(savedState);
+        }
     }
 
     private void resetIntent() {
@@ -569,8 +596,9 @@ public class FileListDataFragment extends RxFragment {
         restoreNavigHistory(state);
         ArrayList<Path> selectedFiles = new ArrayList<>();
         Location loc = _locationsManager.getFromBundle(state, selectedFiles);
-        if (loc != null)
+        if (loc != null) {
             readLocation(loc, selectedFiles);
+        }
     }
 
     private Location initLocationFromUri(Uri locationUri) throws Exception {

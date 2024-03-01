@@ -60,16 +60,18 @@ public class LocationCloserBaseFragment extends Fragment {
         protected void doWork(TaskState taskState) throws Exception {
             PowerManager pm = (PowerManager) _context.getSystemService(Context.POWER_SERVICE);
             PowerManager.WakeLock wl = pm == null ? null : pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, toString());
-            if (wl != null)
+            if (wl != null) {
                 wl.acquire(30000);
+            }
             try {
                 Uri locationUri = getArguments().getParcelable(LocationsManager.PARAM_LOCATION_URI);
                 Location location = _locationsManager.getLocation(locationUri);
                 procLocation(taskState, location);
                 taskState.setResult(location);
             } finally {
-                if (wl != null)
+                if (wl != null) {
                     wl.release();
+                }
             }
         }
 
@@ -90,8 +92,9 @@ public class LocationCloserBaseFragment extends Fragment {
                 FragmentTransaction trans = fm.beginTransaction();
                 trans.remove(this);
                 LocationCloserBaseFragment f = (LocationCloserBaseFragment) fm.findFragmentByTag(getArguments().getString(ARG_CLOSER_TAG));
-                if (f != null)
+                if (f != null) {
                     trans.remove(f);
+                }
                 trans.commitAllowingStateLoss();
                 Logger.debug(String.format("TaskFragment %s has been removed from the fragment manager", this));
                 onEvent(EventType.Removed, this);
@@ -104,8 +107,9 @@ public class LocationCloserBaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        if (getFragmentManager().findFragmentByTag(getCloseLocationTaskTag()) == null)
+        if (getFragmentManager().findFragmentByTag(getCloseLocationTaskTag()) == null) {
             closeLocation();
+        }
     }
 
     @Override
@@ -142,8 +146,9 @@ public class LocationCloserBaseFragment extends Fragment {
                 @Override
                 public void onCancel(DialogInterface dialog) {
                     CloseLocationTaskFragment f = (CloseLocationTaskFragment) getFragmentManager().findFragmentByTag(CloseLocationTaskFragment.TAG);
-                    if (f != null)
+                    if (f != null) {
                         f.cancel();
+                    }
                 }
             });
             _dialog.show();
@@ -185,8 +190,9 @@ public class LocationCloserBaseFragment extends Fragment {
     protected Bundle initCloseLocationTaskParams(Location location) {
         Bundle b = new Bundle();
         b.putString(CloseLocationTaskFragment.ARG_CLOSER_TAG, getTag());
-        if (getArguments().containsKey(ARG_FORCE_CLOSE))
+        if (getArguments().containsKey(ARG_FORCE_CLOSE)) {
             b.putBoolean(ARG_FORCE_CLOSE, getArguments().getBoolean(ARG_FORCE_CLOSE, false));
+        }
         LocationsManager.storePathsInBundle(b, location, null);
         return b;
     }
@@ -200,18 +206,20 @@ public class LocationCloserBaseFragment extends Fragment {
 
     protected void finishCloser(boolean closed, Location location, Bundle closeTaskArgs) {
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
-        if (closed)
+        if (closed) {
             onLocationClosed(location, closeTaskArgs);
-        else
+        } else {
             onLocationNotClosed(location, closeTaskArgs);
+        }
     }
 
     protected void onLocationClosed(Location location, Bundle closeTaskArgs) {
         String recTag = getArguments() != null ? getArguments().getString(PARAM_RECEIVER_FRAGMENT_TAG) : null;
         if (recTag != null) {
             CloseLocationReceiver rec = (CloseLocationReceiver) getFragmentManager().findFragmentByTag(recTag);
-            if (rec != null)
+            if (rec != null) {
                 rec.onTargetLocationClosed(location, closeTaskArgs);
+            }
         }
     }
 
@@ -219,8 +227,9 @@ public class LocationCloserBaseFragment extends Fragment {
         String recTag = getArguments() != null ? getArguments().getString(PARAM_RECEIVER_FRAGMENT_TAG) : null;
         if (recTag != null) {
             CloseLocationReceiver rec = (CloseLocationReceiver) getFragmentManager().findFragmentByTag(recTag);
-            if (rec != null)
+            if (rec != null) {
                 rec.onTargetLocationNotClosed(location, closeTaskArgs);
+            }
         }
     }
 

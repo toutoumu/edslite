@@ -17,10 +17,11 @@ public class MACBytesPerBlockPropertyEditor extends SwitchPropertyEditor {
 
     @Override
     protected void saveValue(boolean value) {
-        if (value)
+        if (value) {
             getHostFragment().getState().putInt(CreateEncFsTaskFragment.ARG_MAC_BYTES, 8);
-        else
+        } else {
             getHostFragment().getState().remove(CreateEncFsTaskFragment.ARG_MAC_BYTES);
+        }
     }
 
 

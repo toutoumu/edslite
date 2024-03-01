@@ -25,15 +25,17 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
 
     @Override
     public void saveState(Bundle state) {
-        if (isExpanded())
+        if (isExpanded()) {
             state.putInt(STATE_EXPANDED_POSITION, getPositionInAdapter());
+        }
     }
 
     @Override
     public void restoreState(Bundle state) {
         int expPos = state.getInt(STATE_EXPANDED_POSITION, -1);
-        if (expPos >= 0 && expPos == getPositionInAdapter())
+        if (expPos >= 0 && expPos == getPositionInAdapter()) {
             expand();
+        }
     }
 
     public boolean isExpanded() {
@@ -55,8 +57,9 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
         TextView tv = (TextView) view.findViewById(android.R.id.text1);
         tv.setPressed(_isExpanded);
         Drawable drawable = view.getBackground();
-        if (drawable != null)
+        if (drawable != null) {
             drawable.setState(_isExpanded ? new int[]{android.R.attr.state_expanded} : new int[0]);
+        }
         ImageView iv = (ImageView) view.findViewById(android.R.id.icon);
         if (iv != null && (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN || !iv.hasTransientState())) {
             iv.setVisibility(View.VISIBLE);
@@ -70,13 +73,15 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
             icon.clearAnimation();
             ObjectAnimator anim = ObjectAnimator.ofFloat(icon, View.ROTATION, isExpanded() ? 0 : 180);
             anim.setDuration(200);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 icon.setHasTransientState(true);
+            }
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         icon.setHasTransientState(false);
+                    }
                 }
             });
             anim.start();
@@ -84,38 +89,42 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
     }
 
     public void rotateIconAndChangeState(View view) {
-        if (!isExpanded())
+        if (!isExpanded()) {
             rotateExpandedIcons();
+        }
         final ImageView icon = (ImageView) view.findViewById(android.R.id.icon); // getIconImageView();
         if (icon != null) {
             IS_ANIMATING = true;
             icon.clearAnimation();
             ObjectAnimator anim = ObjectAnimator.ofFloat(icon, View.ROTATION, isExpanded() ? 0 : 180);
             anim.setDuration(200);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 icon.setHasTransientState(true);
+            }
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if (isExpanded())
+                    if (isExpanded()) {
                         collapse();
-                    else {
+                    } else {
                         collapseAll();
                         expand();
                     }
                     getAdapter().notifyDataSetChanged();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         icon.setHasTransientState(false);
+                    }
                     IS_ANIMATING = false;
 
                 }
             });
             anim.start();
         } else {
-            if (isExpanded())
+            if (isExpanded()) {
                 collapse();
-            else
+            } else {
                 expand();
+            }
         }
     }
 
@@ -138,8 +147,9 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
     public View findView(ListView list) {
         for (int i = 0, n = list.getChildCount(); i < n; i++) {
             View v = list.getChildAt(i);
-            if (v.getTag() == this)
+            if (v.getTag() == this) {
                 return v;
+            }
         }
         /*int start = list.getFirstVisiblePosition();
         for (int i = start, j = list.getLastVisiblePosition(); i <= j; i++)
@@ -163,9 +173,10 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
         _subItems = getSubItems();
         if (_subItems != null) {
             int pos = getPositionInAdapter();
-            if (pos >= 0)
+            if (pos >= 0) {
                 for (DrawerMenuItemBase sub : _subItems)
                     adapter.insert(sub, ++pos);
+            }
         }
     }
 
@@ -182,8 +193,9 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
             Object di = lv.getItemAtPosition(i);
             if (di instanceof DrawerSubMenuBase && ((DrawerSubMenuBase) di).isExpanded()) {
                 View v = ((DrawerSubMenuBase) di).findView(lv);
-                if (v != null)
+                if (v != null) {
                     ((DrawerSubMenuBase) di).rotateIcon(v);
+                }
             }
         }
     }
@@ -192,8 +204,9 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
         ListView lv = getDrawerController().getDrawerListView();
         for (int i = 0; i < lv.getCount(); i++) {
             Object di = lv.getItemAtPosition(i);
-            if (di instanceof DrawerSubMenuBase && ((DrawerSubMenuBase) di).isExpanded())
+            if (di instanceof DrawerSubMenuBase && ((DrawerSubMenuBase) di).isExpanded()) {
                 ((DrawerSubMenuBase) di).collapse();
+            }
 
         }
     }

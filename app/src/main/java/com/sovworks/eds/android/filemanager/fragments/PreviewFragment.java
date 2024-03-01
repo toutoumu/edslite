@@ -66,8 +66,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
 
     public static PreviewFragment newInstance(Path currentImagePath) {
         Bundle b = new Bundle();
-        if (currentImagePath != null)
+        if (currentImagePath != null) {
             b.putString(STATE_CURRENT_PATH, currentImagePath.getPathString());
+        }
         PreviewFragment pf = new PreviewFragment();
         pf.setArguments(b);
         return pf;
@@ -200,8 +201,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
         _progressLayout = view.findViewById(R.id.progressLayout);
         _mainImageView.setOnLoadOptimImageListener(srcImageRect ->
         {
-            if (_isOptimSupported)
+            if (_isOptimSupported) {
                 loadImage(srcImageRect);
+            }
         });
         _mainImageView.setOnSizeChangedListener(() ->
         {
@@ -210,8 +212,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
         });
 
 
-        if (UserSettings.getSettings(getActivity()).isImageViewerFullScreenModeEnabled())
+        if (UserSettings.getSettings(getActivity()).isImageViewerFullScreenModeEnabled()) {
             _mainImageView.setFullscreenMode(true);
+        }
         return view;
     }
 
@@ -228,8 +231,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (_currentImagePath != null)
+        if (_currentImagePath != null) {
             outState.putString(STATE_CURRENT_PATH, _currentImagePath.getPathString());
+        }
     }
 
     @Override
@@ -289,8 +293,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
     }
 
     public void updateImageViewFullScreen() {
-        if (_mainImageView != null && _isFullScreen)
+        if (_mainImageView != null && _isFullScreen) {
             _mainImageView.setFullscreenMode(true);
+        }
     }
 
     private GestureImageViewWithFullScreenMode _mainImageView;
@@ -320,8 +325,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
                                     getActivity().invalidateOptionsMenu();
                                 },
                                 err -> {
-                                    if (!(err instanceof CancellationException))
+                                    if (!(err instanceof CancellationException)) {
                                         Logger.showAndLog(getActivity(), err);
+                                    }
                                 }
                         );
             }
@@ -335,8 +341,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
         UserSettings.getSettings(getActivity()).getSharedPreferences().edit().putBoolean(IMAGE_VIEWER_FULL_SCREEN_ENABLED, _isFullScreen).commit();
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (_mainImageView != null)
+            if (_mainImageView != null) {
                 _mainImageView.setFullscreenMode(_isFullScreen);
+            }
         }
         getPreviewFragmentHost().onToggleFullScreen();
         getActivity().invalidateOptionsMenu();
@@ -344,16 +351,18 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
 
     private void initParams(Bundle args) throws IOException, ApplicationException {
         Host act = getPreviewFragmentHost();
-        if (act == null)
+        if (act == null) {
             return;
+        }
         Location loc = act.getLocation();
         try {
             _currentImagePath = args.containsKey(STATE_CURRENT_PATH) ? loc.getFS().getPath(args.getString(STATE_CURRENT_PATH)) : null;
         } catch (IOException e) {
             Logger.showAndLog(getActivity(), e);
         }
-        if (_currentImagePath == null)
+        if (_currentImagePath == null) {
             _currentImagePath = getFirstImagePath();
+        }
     }
 
     private Path getFirstImagePath() {
@@ -419,8 +428,9 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
             Host h = getPreviewFragmentHost();
             // noinspection unchecked
             NavigableSet<CachedPathInfo> files = (NavigableSet<CachedPathInfo>) h.getCurrentFiles();
-            if (files.isEmpty())
+            if (files.isEmpty()) {
                 return;
+            }
             Context ctx = getActivity().getApplicationContext();
             CachedPathInfo cur = curImageFileInfo;
             while (cur != null) {
@@ -454,17 +464,20 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
                 compose(bindToLifecycle()).
                 subscribe(res -> loadImage(null), err ->
                 {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.log(err);
+                    }
                 });
     }
 
     private void loadImage(Rect regionRect) {
-        if (_currentImagePath == null)
+        if (_currentImagePath == null) {
             return;
+        }
         Logger.debug(TAG + ": loading image");
-        if (regionRect == null)
+        if (regionRect == null) {
             showLoading();
+        }
         Single<LoadedImage> loadImageTaskObservable = LoadedImage.createObservable(getActivity().getApplicationContext(), _currentImagePath, _viewRect, regionRect).
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
@@ -485,18 +498,21 @@ public class PreviewFragment extends RxFragment implements FileManagerFragment {
                         res.getFlipY());
                 _isOptimSupported = res.isOptimSupported();
                 showImage();
-            } else
+            } else {
                 _mainImageView.setOptimImage(res.getImageData(), res.getSampleSize());
+            }
 
         }, err -> {
-            if (!(err instanceof CancellationException))
+            if (!(err instanceof CancellationException)) {
                 Logger.showAndLog(getActivity(), err);
+            }
         });
     }
 
     static {
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_LOAD_IMAGE_TASK_OBSERVABLE = PublishSubject.create();
+        }
 
     }
 

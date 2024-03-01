@@ -50,8 +50,9 @@ public abstract class FileOpsServiceBase extends IntentService {
         if (workDir != null && !workDir.isEmpty()) {
             try {
                 res = LocationsManager.getLocationsManager(context).getLocation(Uri.parse(workDir));
-                if (!res.getCurrentPath().isDirectory())
+                if (!res.getCurrentPath().isDirectory()) {
                     res = null;
+                }
             } catch (Exception e) {
                 Logger.log(e);
                 res = null;
@@ -59,8 +60,12 @@ public abstract class FileOpsServiceBase extends IntentService {
         }
         if (res == null) {
             File extDir = context.getExternalFilesDir(null);
-            if (extDir == null) extDir = context.getFilesDir();
-            if (extDir == null) extDir = context.getCacheDir();
+            if (extDir == null) {
+                extDir = context.getFilesDir();
+            }
+            if (extDir == null) {
+                extDir = context.getCacheDir();
+            }
             res = new DeviceBasedLocation(
                     UserSettings.getSettings(context),
                     extDir.getAbsolutePath()
@@ -123,7 +128,9 @@ public abstract class FileOpsServiceBase extends IntentService {
                 Pattern p = Pattern.compile("^\\s*" + filenameExtension + "\\s+([^\\s]+)$",
                         Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
                 Matcher m = p.matcher(custMimes);
-                if (m.find()) return m.group(1);
+                if (m.find()) {
+                    return m.group(1);
+                }
             } catch (Exception e) {
                 Logger.showAndLog(context, e);
             }
@@ -144,8 +151,9 @@ public abstract class FileOpsServiceBase extends IntentService {
             throws UserException {
         try {
             Uri uri = fileLocation.getDeviceAccessibleUri(fileLocation.getCurrentPath());
-            if (uri == null)
+            if (uri == null) {
                 uri = MainContentProvider.getContentUriFromLocation(fileLocation);
+            }
             FileOpsService.startFileViewer(
                     context,
                     uri,
@@ -159,10 +167,11 @@ public abstract class FileOpsServiceBase extends IntentService {
     public static void startFileViewer(Context context, Uri uri, String mimeType)
             throws UserException {
         Intent intent = new Intent(Intent.ACTION_VIEW);// ,Uri.fromFile(_targetFile.devicePath));
-        if (mimeType != null && !mimeType.isEmpty())
+        if (mimeType != null && !mimeType.isEmpty()) {
             intent.setDataAndType(uri, mimeType);
-        else
+        } else {
             intent.setData(uri);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                         Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS |
                         Intent.FLAG_GRANT_READ_URI_PERMISSION |
@@ -267,8 +276,9 @@ public abstract class FileOpsServiceBase extends IntentService {
         Intent i = new Intent(context, FileOpsService.class);
         i.setAction(ACTION_SEND_TASK);
         LocationsManager.storePathsInIntent(i, srcLocation, paths);
-        if (mimeType != null)
+        if (mimeType != null) {
             i.putExtra(ActionSendTask.ARG_MIME_TYPE, mimeType);
+        }
         context.startService(i);
     }
 
@@ -310,9 +320,9 @@ public abstract class FileOpsServiceBase extends IntentService {
         _taskCancelled = false;
         Task task = getTask(intent);
 
-        if (task == null)
+        if (task == null) {
             Logger.log("Unsupported action: " + intent.getAction());
-        else {
+        } else {
             _currentTask = task;
             Result result = null;
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);

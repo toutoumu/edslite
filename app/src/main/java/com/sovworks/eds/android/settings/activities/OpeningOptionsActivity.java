@@ -22,8 +22,9 @@ public class OpeningOptionsActivity extends SettingsBaseActivity {
             } catch (Exception e) {
                 Logger.showAndLog(this, e);
             }
-        } else
+        } else {
             super.onBackPressed();
+        }
     }
 
     @Override

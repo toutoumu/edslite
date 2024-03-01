@@ -106,8 +106,9 @@ public abstract class AboutDialogBase extends DialogFragment {
 
     protected void setWidthHeight() {
         Window w = getDialog().getWindow();
-        if (w != null)
+        if (w != null) {
             w.setLayout(calcWidth(), calcHeight());
+        }
     }
 
     protected int calcWidth() {
@@ -136,8 +137,9 @@ public abstract class AboutDialogBase extends DialogFragment {
     private void saveDebugLog() throws IOException, ApplicationException {
         Context ctx = getActivity();
         File out = ctx.getExternalFilesDir(null);
-        if (out == null || !out.canWrite())
+        if (out == null || !out.canWrite()) {
             out = ctx.getFilesDir();
+        }
         Location loc = new DeviceBasedLocation(
                 UserSettings.getSettings(ctx),
                 new StringPathUtil(out.getPath()).combine(

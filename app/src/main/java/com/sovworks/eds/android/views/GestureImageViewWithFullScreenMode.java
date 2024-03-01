@@ -32,8 +32,9 @@ public class GestureImageViewWithFullScreenMode extends GestureImageView// imple
         } else {
             _isFullScreenMode = false;
             Handler h = getHandler();
-            if (h != null)
+            if (h != null) {
                 h.removeCallbacks(_navHider);
+            }
             setSystemUiVisibility(0);
         }
 
@@ -44,8 +45,9 @@ public class GestureImageViewWithFullScreenMode extends GestureImageView// imple
         int newVis = SYSTEM_UI_FLAG_LAYOUT_STABLE
                 | SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-        if (!visible)
+        if (!visible) {
             newVis |= SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_IMMERSIVE | SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        }
 
         final boolean changed = newVis == getSystemUiVisibility();
 
@@ -53,8 +55,9 @@ public class GestureImageViewWithFullScreenMode extends GestureImageView// imple
         // changing the visibility, or making the UI visible.
         if (changed || visible) {
             Handler h = getHandler();
-            if (h != null)
+            if (h != null) {
                 h.removeCallbacks(_navHider);
+            }
         }
 
         // Set the new desired visibility.

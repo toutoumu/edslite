@@ -45,16 +45,18 @@ public class WriteSettingsTask extends TaskFragment {
     protected TaskCallbacks getTaskCallbacks(Activity activity) {
         EDSLocationSettingsFragment f = (EDSLocationSettingsFragment)
                 getFragmentManager().findFragmentByTag(SettingsBaseActivity.SETTINGS_FRAGMENT_TAG);
-        if (f == null)
+        if (f == null) {
             return null;
+        }
         return new ProgressDialogTaskFragmentCallbacks(activity, R.string.saving_changes) {
             @Override
             public void onCompleted(Bundle args, TaskFragment.Result result) {
                 super.onCompleted(args, result);
                 try {
                     result.getResult();
-                    if (args.getBoolean(WriteSettingsTask.ARG_FIN_ACTIVITY, false))
+                    if (args.getBoolean(WriteSettingsTask.ARG_FIN_ACTIVITY, false)) {
                         getActivity().finish();
+                    }
                 } catch (Throwable e) {
                     Logger.showAndLog(_context, result.getError());
                 }

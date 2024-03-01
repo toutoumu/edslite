@@ -38,8 +38,9 @@ public class PathsStore {
         JSONObject jo;
         try {
             jo = new JSONObject(data);
-            if (jo.has("location"))
+            if (jo.has("location")) {
                 return true;
+            }
 
         } catch (JSONException ignored) {
         }
@@ -81,10 +82,12 @@ public class PathsStore {
 
     @Override
     public String toString() {
-        if (_location == null)
+        if (_location == null) {
             return super.toString();
-        if (_paths.isEmpty() && _params.length() == 0)
+        }
+        if (_paths.isEmpty() && _params.length() == 0) {
             return _location.getLocationUri().toString();
+        }
         JSONObject jo = new JSONObject();
         try {
             jo.put("location", _location.getLocationUri().toString());
@@ -94,8 +97,9 @@ public class PathsStore {
                     ja.put(p.getPathString());
                 jo.put("paths", ja);
             }
-            if (_params.length() > 0)
+            if (_params.length() > 0) {
                 jo.put("params", _params);
+            }
         } catch (JSONException e) {
             return "error";
         }
@@ -116,8 +120,9 @@ public class PathsStore {
             for (int i = 0; i < ja.length(); i++)
                 _paths.add(_location.getFS().getPath(ja.getString(i)));
         }
-        if (jo.has("params"))
+        if (jo.has("params")) {
             _params = jo.getJSONObject("params");
+        }
 
     }
 

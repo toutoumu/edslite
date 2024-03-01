@@ -36,10 +36,11 @@ public class RenameFileTask extends TaskFragment {
         String newName = getArguments().getString(ARG_NEW_NAME);
         Location target = LocationsManager.getLocationsManager(_context).getFromBundle(getArguments(), null);
         Path path = target.getCurrentPath();
-        if (path.isFile())
+        if (path.isFile()) {
             path.getFile().rename(newName);
-        else if (path.isDirectory())
+        } else if (path.isDirectory()) {
             path.getDirectory().rename(newName);
+        }
     }
 
     @Override

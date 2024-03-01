@@ -44,10 +44,11 @@ public abstract class TextPropertyEditor extends PropertyEditorBase implements T
     @Override
     public void load(Bundle b) {
         if (_selectedValueTextView != null) {
-            if (isInstantSave())
+            if (isInstantSave()) {
                 load();
-            else
+            } else {
                 _selectedValueTextView.setText(b.getString(getBundleKey()));
+            }
         }
     }
 
@@ -58,8 +59,9 @@ public abstract class TextPropertyEditor extends PropertyEditorBase implements T
 
     @Override
     public void save(Bundle b) {
-        if (!isInstantSave() && _selectedValueTextView != null)
+        if (!isInstantSave() && _selectedValueTextView != null) {
             b.putString(getBundleKey(), _selectedValueTextView.getText().toString());
+        }
     }
 
     public void setResult(String value) throws Exception {
@@ -89,19 +91,21 @@ public abstract class TextPropertyEditor extends PropertyEditorBase implements T
         b.putInt(PropertyEditor.ARG_PROPERTY_ID, getId());
         b.putInt(TextEditDialog.ARG_MESSAGE_ID, _titleResId);
         b.putInt(TextEditDialog.ARG_EDIT_TEXT_RES_ID, getDialogViewResId());
-        if (_hostFragmentTag != null)
+        if (_hostFragmentTag != null) {
             b.putString(PropertyEditor.ARG_HOST_FRAGMENT_TAG, _hostFragmentTag);
+        }
         return b;
     }
 
     protected void onTextChanged(String newValue) {
         _selectedValueTextView.setText(newValue);
-        if (!_host.getPropertiesView().isLoadingProperties() && _host.getPropertiesView().isInstantSave())
+        if (!_host.getPropertiesView().isLoadingProperties() && _host.getPropertiesView().isInstantSave()) {
             try {
                 save();
             } catch (Exception e) {
                 Logger.showAndLog(getHost().getContext(), e);
             }
+        }
     }
 
     private final String _hostFragmentTag;

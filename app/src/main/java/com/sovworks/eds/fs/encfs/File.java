@@ -77,19 +77,21 @@ public class File extends FileWrapper {
         try {
             switch (accessMode) {
                 case Read: {
-                    if (_enableIVHeader && getBase().getSize() < Header.SIZE)
+                    if (_enableIVHeader && getBase().getSize() < Header.SIZE) {
                         return base;
+                    }
                     return initEncryptedFile(
                             base,
                             initFileLayout(_enableIVHeader ? new RandomAccessInputStream(base) : null)
                     );
                 }
                 case ReadWrite:
-                    if (getPath().exists() && getBase().getSize() >= Header.SIZE)
+                    if (getPath().exists() && getBase().getSize() >= Header.SIZE) {
                         return initEncryptedFile(
                                 base,
                                 initFileLayout(_enableIVHeader ? new RandomAccessInputStream(base) : null)
                         );
+                    }
                 case ReadWriteTruncate:
                 case Write:
                     return initEncryptedFile(
@@ -97,8 +99,9 @@ public class File extends FileWrapper {
                             initFileLayout(_enableIVHeader ? new RandomAccessOutputStream(base) : null)
                     );
                 case WriteAppend:
-                    if (_enableIVHeader)
+                    if (_enableIVHeader) {
                         throw new IllegalArgumentException("Can't write header in WriteAppend mode");
+                    }
                     return initEncryptedFile(
                             base,
                             initFileLayout((RandomAccessOutputStream) null)
@@ -168,10 +171,12 @@ public class File extends FileWrapper {
     @Override
     public long getSize() throws IOException {
         long size = super.getSize();
-        if (_enableIVHeader && size >= Header.SIZE)
+        if (_enableIVHeader && size >= Header.SIZE) {
             size -= Header.SIZE;
-        if (_randBytes > 0 || _macBytes > 0)
+        }
+        if (_randBytes > 0 || _macBytes > 0) {
             size = MACFile.calcVirtPosition(size, _fileBlockSize - _randBytes - _macBytes, _randBytes + _macBytes);
+        }
 
         return size;
     }
@@ -189,8 +194,9 @@ public class File extends FileWrapper {
             }
             delete();
             setPath(newFile.getPath());
-        } else
+        } else {
             super.rename(newEncodedPath.getFileName());
+        }
     }
 
     @Override
@@ -205,8 +211,9 @@ public class File extends FileWrapper {
             }
             delete();
             setPath(newFile.getPath());
-        } else
+        } else {
             super.moveTo(newParent);
+        }
     }
 
     @Override
@@ -298,9 +305,10 @@ public class File extends FileWrapper {
         public void setEncryptionEngineIV(FileEncryptionEngine eng, long decryptedVolumeOffset) {
             byte[] iv = new byte[eng.getIVSize()];
             ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).putLong(decryptedVolumeOffset / _dataEncDec.getFileBlockSize());
-            if (_fileIV != null)
+            if (_fileIV != null) {
                 for (int i = 0; i < _fileIV.length; i++)
                     iv[i] ^= _fileIV[i];
+            }
             eng.setIV(iv);
         }
 
@@ -325,8 +333,9 @@ public class File extends FileWrapper {
         if (_enableIVHeader) {
             h = initNewHeader();
             writeHeader(out, h);
-        } else
+        } else {
             h = null;
+        }
         return initFileLayout(h);
     }
 
@@ -352,8 +361,9 @@ public class File extends FileWrapper {
 
     public Header readHeader(InputStream input) throws IOException {
         byte[] buf = new byte[Header.SIZE];
-        if (Util.readBytes(input, buf) != Header.SIZE)
+        if (Util.readBytes(input, buf) != Header.SIZE) {
             throw new IOException("Failed reading header");
+        }
         EncryptionEngine ee = _encryptionInfo.getStreamEncDec();
         try {
             ee.setKey(_encryptionKey);

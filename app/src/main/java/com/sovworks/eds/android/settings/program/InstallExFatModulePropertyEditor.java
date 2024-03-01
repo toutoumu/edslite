@@ -50,8 +50,9 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor {
         protected void doWork(TaskState uiUpdater) throws Exception {
 
             Location moduleLocation = LocationsManager.getLocationsManager(_context).getFromBundle(getArguments(), null);
-            if (!moduleLocation.getCurrentPath().isFile())
+            if (!moduleLocation.getCurrentPath().isFile()) {
                 throw new UserException(_context, R.string.file_not_found);
+            }
 
             File targetPath = ExFat.getModulePath();
             Path targetFolderPath = StdFs.getStdFs().getPath(
@@ -65,8 +66,9 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor {
             if (!ExFat.isModuleInstalled() && !ExFat.isModuleIncompatible()) {
                 ExFat.loadNativeLibrary();
                 uiUpdater.setResult(true);
-            } else
+            } else {
                 uiUpdater.setResult(false);
+            }
 
         }
 
@@ -76,10 +78,11 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor {
                 @Override
                 public void onCompleted(Bundle args, Result result) {
                     try {
-                        if ((Boolean) result.getResult())
+                        if ((Boolean) result.getResult()) {
                             Toast.makeText(activity, R.string.module_has_been_installed, Toast.LENGTH_LONG).show();
-                        else
+                        } else {
                             Toast.makeText(activity, R.string.restart_application, Toast.LENGTH_LONG).show();
+                        }
                     } catch (Throwable e) {
                         Logger.showAndLog(_context, e);
                     }
@@ -109,8 +112,9 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor {
 
     @Override
     protected void onPropertyRequestResult(int propertyRequestCode, int resultCode, Intent data) {
-        if (propertyRequestCode == SELECT_PATH_REQ_CODE && resultCode == Activity.RESULT_OK && data != null)
+        if (propertyRequestCode == SELECT_PATH_REQ_CODE && resultCode == Activity.RESULT_OK && data != null) {
             onPathSelected(data);
+        }
     }
 
     private Intent getSelectPathIntent() throws IOException {

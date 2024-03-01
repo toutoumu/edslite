@@ -60,9 +60,9 @@ public abstract class DrawerMenuItemBase {
         if (iconView != null) {
             iconView.setContentDescription(getTitle());
             Drawable icon = getIcon();
-            if (icon == null)
+            if (icon == null) {
                 iconView.setVisibility(View.INVISIBLE);
-            else {
+            } else {
                 iconView.setVisibility(View.VISIBLE);
                 iconView.setImageDrawable(icon);
             }
@@ -73,8 +73,9 @@ public abstract class DrawerMenuItemBase {
         ListView list = getDrawerController().getDrawerListView();
         int start = list.getFirstVisiblePosition();
         for (int i = start, j = list.getLastVisiblePosition(); i <= j; i++)
-            if (this == list.getItemAtPosition(i))
+            if (this == list.getItemAtPosition(i)) {
                 return getAdapter().getView(i, list.getChildAt(i - start), list);
+            }
         return null;
     }
 

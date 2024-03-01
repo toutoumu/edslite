@@ -38,16 +38,21 @@ import java.util.UUID;
 public class VolumeLayout extends VolumeLayoutBase {
     @Override
     public void initNew() {
-        if (_encEngine == null)
+        if (_encEngine == null) {
             setEngine(new AESXTS());
+        }
         super.initNew();
-        if (_hashFunc == null) try {
-            _hashFunc = MessageDigest.getInstance("SHA1");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Failed getting sha1 instance");
+        if (_hashFunc == null) {
+            try {
+                _hashFunc = MessageDigest.getInstance("SHA1");
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException("Failed getting sha1 instance");
+            }
         }
         _activeKeyslotIndex = 0;
-        if (_uuid == null) _uuid = UUID.randomUUID();
+        if (_uuid == null) {
+            _uuid = UUID.randomUUID();
+        }
         _keySlots.clear();
         for (int i = 0; i < NUM_KEY_SLOTS; i++) {
             KeySlot ks = new KeySlot();
@@ -69,18 +74,22 @@ public class VolumeLayout extends VolumeLayoutBase {
 
         byte[] header = new byte[HEADER_SIZE];
         input.seek(getHeaderOffset());
-        if (Util.readBytes(input, header, HEADER_SIZE) != HEADER_SIZE)
+        if (Util.readBytes(input, header, HEADER_SIZE) != HEADER_SIZE) {
             return false;
+        }
         for (int i = 0; i < MAGIC.length; i++)
-            if (header[i] != MAGIC[i]) return false;
+            if (header[i] != MAGIC[i]) {
+                return false;
+            }
 
         MKInfo mki = deserializeHeaderData(header);
         int actSlot = 0;
         for (int i = 0; i < _keySlots.size(); i++) {
             KeySlot ks = _keySlots.get(i);
             if (ks.isActive) {
-                if (_openingProgressReporter != null)
+                if (_openingProgressReporter != null) {
                     ((ProgressReporter) _openingProgressReporter).setCurrentSlot(actSlot++);
+                }
                 if (tryPassword(input, ks, mki, _password)) {
                     _activeKeyslotIndex = i;
                     _volumeSize = calcVolumeSize(input.length());
@@ -166,27 +175,30 @@ public class VolumeLayout extends VolumeLayoutBase {
     }
 
     public FileEncryptionEngine findCipher(String cipherName, String modeName, int keySize) {
-        if (cipherName.equalsIgnoreCase("aes") && modeName.equalsIgnoreCase("xts-plain64") && keySize == 32)
+        if (cipherName.equalsIgnoreCase("aes") && modeName.equalsIgnoreCase("xts-plain64") && keySize == 32) {
             return new AESXTS(keySize);
+        }
 
         return findCipher(cipherName, modeName);
     }
 
     @Override
     public MessageDigest findHashFunc(String name) {
-        if (name.equalsIgnoreCase("sha512"))
+        if (name.equalsIgnoreCase("sha512")) {
             name = "SHA-512";
-        else if (name.equalsIgnoreCase("sha256"))
+        } else if (name.equalsIgnoreCase("sha256")) {
             name = "SHA-256";
+        }
         return super.findHashFunc(name);
     }
 
     @Override
     public void setOpeningProgressReporter(final ContainerOpeningProgressReporter reporter) {
-        if (reporter != null)
+        if (reporter != null) {
             _openingProgressReporter = new ProgressReporter(reporter);
-        else
+        } else {
             super.setOpeningProgressReporter(reporter);
+        }
     }
 
     protected class KeySlot {
@@ -303,8 +315,9 @@ public class VolumeLayout extends VolumeLayoutBase {
 
         @Override
         public void setProgress(int progress) {
-            if (_numberActiveSlots > 0)
+            if (_numberActiveSlots > 0) {
                 progress = (int) (((float) _currentSlot / _numberActiveSlots + ((_ksProcessed ? 80f : 0) + (float) progress * (_ksProcessed ? 0.2f : 0.8f)) / (100 * _numberActiveSlots)) * 100);
+            }
             _base.setProgress(progress);
 
         }
@@ -319,8 +332,9 @@ public class VolumeLayout extends VolumeLayoutBase {
             if (_currentSlot == 0) {
                 _numberActiveSlots = 0;
                 for (KeySlot ks : _keySlots)
-                    if (ks.isActive)
+                    if (ks.isActive) {
                         _numberActiveSlots++;
+                    }
             }
         }
 
@@ -398,8 +412,9 @@ public class VolumeLayout extends VolumeLayoutBase {
         bb.order(ByteOrder.BIG_ENDIAN);
         bb.position(MAGIC.length);
         short ver = bb.getShort();
-        if (ver > 1)
+        if (ver > 1) {
             throw new UnsupportedContainerTypeException("Unsupported container format version " + ver);
+        }
         byte[] buf = new byte[MAX_CIPHERNAME_LEN];
         bb.get(buf);
         String cipherName = new String(buf).trim();
@@ -412,16 +427,18 @@ public class VolumeLayout extends VolumeLayoutBase {
         String hfName = new String(buf).trim();
 
         _hashFunc = findHashFunc(hfName);
-        if (_hashFunc == null)
+        if (_hashFunc == null) {
             throw new ApplicationException(String.format("Unsupported hash algorithm: %s", hfName));
+        }
         _payloadOffsetSector = bb.getInt();
 
         MKInfo mki = new MKInfo();
         mki.deserialize(bb);
 
         setEngine(findCipher(cipherName, modeName, mki.keyLength));
-        if (_encEngine == null)
+        if (_encEngine == null) {
             throw new ApplicationException(String.format("Unsupported cipher/mode: %s-%s", cipherName, modeName));
+        }
 
         byte[] uuidBytes = new byte[UUID_LENGTH];
         bb.get(uuidBytes);
@@ -442,8 +459,9 @@ public class VolumeLayout extends VolumeLayoutBase {
         AF af = new AF(_hashFunc, mki.keyLength);
         int afSize = af.calcNumRequiredSectors(ks.numStripes) * SECTOR_SIZE;
         byte[] afKey = new byte[afSize];
-        if (Util.readBytes(io, afKey, afKey.length) != afKey.length)
+        if (Util.readBytes(io, afKey, afKey.length) != afKey.length) {
             throw new EOFException();
+        }
 
         if (_openingProgressReporter != null) {
             _openingProgressReporter.setCurrentKDFName(_hashFunc.getAlgorithm());
@@ -468,8 +486,9 @@ public class VolumeLayout extends VolumeLayoutBase {
         } catch (DigestException e) {
             throw new ApplicationException("AF merge failed", e);
         }
-        if (_openingProgressReporter != null)
+        if (_openingProgressReporter != null) {
             ((ProgressReporter) _openingProgressReporter).setKSProcessed(true);
+        }
         if (mki.isValidKey(mk)) {
             _masterKey = mk;
             _encEngine.setKey(_masterKey);

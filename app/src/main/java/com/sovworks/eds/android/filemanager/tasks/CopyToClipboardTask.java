@@ -33,8 +33,9 @@ public class CopyToClipboardTask extends TaskFragment {
 
     public static ClipData makeClipData(Context context, Location location, Iterable<Path> paths) {
         Iterator<Path> pi = paths.iterator();
-        if (!pi.hasNext())
+        if (!pi.hasNext()) {
             return null;
+        }
         Path path = pi.next();
         ContentResolver cr = context.getContentResolver();
         ClipData clip = ClipData.newUri(
@@ -65,8 +66,9 @@ public class CopyToClipboardTask extends TaskFragment {
 
     @Override
     protected void doWork(TaskState state) throws Exception {
-        if (GlobalConfig.isDebug())
+        if (GlobalConfig.isDebug()) {
             Logger.debug("CopyToClipboardTask args: " + getArguments());
+        }
         ArrayList<Path> paths = new ArrayList<>();
         Location location = LocationsManager.
                 getLocationsManager(_context).
@@ -80,10 +82,12 @@ public class CopyToClipboardTask extends TaskFragment {
             return;
         }
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard != null)
+        if (clipboard != null) {
             clipboard.setPrimaryClip(clip);
-        if (GlobalConfig.isDebug())
+        }
+        if (GlobalConfig.isDebug()) {
             Logger.debug("CopyToClipboardTask: clip has been set: " + clip);
+        }
     }
 
     @Override

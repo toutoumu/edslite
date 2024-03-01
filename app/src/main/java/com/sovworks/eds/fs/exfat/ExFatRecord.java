@@ -29,8 +29,9 @@ abstract class ExFatRecord implements FSRecord {
         StringPathUtil oldPath = getPath().getPathUtil();
         StringPathUtil newPath = oldPath.getParentPath().combine(newName);
         int res = _exFat.rename(oldPath.toString(), newPath.toString());
-        if (res != 0)
+        if (res != 0) {
             throw new IOException("Rename failed. Error code = " + res);
+        }
         _path = new ExFatPath(_exFat, newPath.toString());
     }
 
@@ -49,8 +50,9 @@ abstract class ExFatRecord implements FSRecord {
         StringPathUtil oldPath = getPath().getPathUtil();
         StringPathUtil newPath = ((ExFatDirectory) newParent).getPath().getPathUtil().combine(oldPath.getFileName());
         int res = _exFat.rename(oldPath.toString(), newPath.toString());
-        if (res != 0)
+        if (res != 0) {
             throw new IOException("moveTo failed. Error code = " + res);
+        }
         _path = new ExFatPath(_exFat, newPath.toString());
     }
 

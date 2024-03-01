@@ -23,10 +23,12 @@ public class BlockSizePropertyEditor extends IntPropertyEditor {
     @Override
     protected void saveValue(int value) {
         value -= value % 64;
-        if (value < 64)
+        if (value < 64) {
             value = 64;
-        if (value > 4096)
+        }
+        if (value > 4096) {
             value = 4096;
+        }
         getHostFragment().getState().putInt(CreateEncFsTaskFragment.ARG_BLOCK_SIZE, value);
     }
 

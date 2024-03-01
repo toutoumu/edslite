@@ -41,10 +41,11 @@ public class ExternalStorageOpenerFragment extends LocationOpenerBaseFragment {
         protected void doWork(TaskState state) throws Throwable {
             ExternalStorageLocation loc = getTargetLocation();
             DocumentTreeLocation docTreeLocation = getDocTreeLocation(_lm, loc);
-            if (docTreeLocation != null && docTreeLocation.getFS().getRootPath().exists())
+            if (docTreeLocation != null && docTreeLocation.getFS().getRootPath().exists()) {
                 state.setResult(ResultType.OK);
-            else
+            } else {
                 state.setResult(isWritable(loc) ? ResultType.DontAskPermission : ResultType.AskPermission);
+            }
         }
 
         private boolean isWritable(ExternalStorageLocation loc) {
@@ -86,9 +87,9 @@ public class ExternalStorageOpenerFragment extends LocationOpenerBaseFragment {
                 @Override
                 public void onCompleted(Bundle args, Result result) {
                     try {
-                        if (result.getResult() == ResultType.OK)
+                        if (result.getResult() == ResultType.OK) {
                             f.openLocation();
-                        else if (result.getResult() == ResultType.AskPermission) {
+                        } else if (result.getResult() == ResultType.AskPermission) {
                             f.askWritePermission();
                             return;
                         }
@@ -155,8 +156,9 @@ public class ExternalStorageOpenerFragment extends LocationOpenerBaseFragment {
                 }
                 openLocation();
             }
-        } else
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override

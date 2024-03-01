@@ -60,10 +60,12 @@ class ExFatPath extends PathBase implements Path {
         synchronized (ef._sync) {
             FileStat stat = new FileStat();
             int res = ef.getAttr(stat, _pathString);
-            if (res == NativeError.ENOENT)
+            if (res == NativeError.ENOENT) {
                 return null;
-            if (res != 0)
+            }
+            if (res != 0) {
                 throw new IOException("getAttr failed. Error code = " + res);
+            }
             return stat;
         }
     }

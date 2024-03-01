@@ -46,8 +46,9 @@ class PrepareTempFilesTask extends CopyFilesTask {
                         parentPath = srcPath.getParentPath();
                     } catch (IOException ignored) {
                     }
-                    if (parentPath == null)
+                    if (parentPath == null) {
                         parentPath = srcPath;
+                    }
                     SrcDstSingle sds = new SrcDstSingle(srcLoc, TempFilesMonitor.getTmpLocation(loc, parentPath, _context, wd));
                     SrcDstCollection sd = srcPath.isFile() ? sds : new SrcDstRec(sds);
                     cols.add(sd);
@@ -89,8 +90,9 @@ class PrepareTempFilesTask extends CopyFilesTask {
     protected boolean copyFile(SrcDst record) throws IOException {
         Location srcLoc = record.getSrcLocation().copy();
         Location dstLoc = record.getDstLocation();
-        if (dstLoc == null)
+        if (dstLoc == null) {
             throw new IOException("Failed to calc destination folder");
+        }
         dstLoc = dstLoc.copy();
         Path tmpPath = calcDstPath(srcLoc.getCurrentPath().getFile(), dstLoc.getCurrentPath().getDirectory());
         Location srcFolderLocation = srcLoc.copy();
@@ -122,12 +124,13 @@ class PrepareTempFilesTask extends CopyFilesTask {
     @Override
     protected Path calcDstPath(FSRecord src, Directory dstFolder) throws IOException {
         Path res = super.calcDstPath(src, dstFolder);
-        if (res == null)
+        if (res == null) {
             res = (src instanceof File) ?
                     dstFolder.createFile(src.getName()).getPath() :
                     (src instanceof Directory) ?
                             dstFolder.createDirectory(src.getName()).getPath() :
                             null;
+        }
 
         return res;
     }
@@ -143,8 +146,9 @@ class PrepareTempFilesTask extends CopyFilesTask {
                 return true;
             }
         }
-        if (srcFile.getSize() > _fileSizeLimit)
+        if (srcFile.getSize() > _fileSizeLimit) {
             throw new IOException(_context.getText(R.string.err_temp_file_is_too_big).toString());
+        }
         return super.copyFile(srcFile, targetFolder);
     }
 

@@ -48,23 +48,26 @@ public class OpenableLocationCloserFragment extends LocationCloserBaseFragment {
         try {
             location.close(forceClose);
         } catch (Exception e) {
-            if (forceClose)
+            if (forceClose) {
                 Logger.log(e);
-            else
+            } else {
                 throw e;
+            }
         }
         makePostCloseCheck(context, location);
         wipeMirror(context, location);
     }
 
     public static void makePostCloseCheck(Context context, Location loc) {
-        if (loc instanceof Openable && LocationsManager.isOpen(loc))
+        if (loc instanceof Openable && LocationsManager.isOpen(loc)) {
             return;
+        }
         LocationsManager lm = LocationsManager.getLocationsManager(context);
         LocationsManager.broadcastLocationChanged(context, loc);
         lm.unregOpenedLocation(loc);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && loc instanceof EDSLocation)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && loc instanceof EDSLocation) {
             ContainersDocumentProviderBase.notifyOpenedLocationsListChanged(context);
+        }
 
         if (!lm.hasOpenLocations()) {
             lm.broadcastAllContainersClosed();
@@ -79,10 +82,11 @@ public class OpenableLocationCloserFragment extends LocationCloserBaseFragment {
             try {
                 closeLocation(_context, (Openable) location, fc);
             } catch (Exception e) {
-                if (fc)
+                if (fc) {
                     Logger.log(e);
-                else
+                } else {
                     throw e;
+                }
             }
         }
     }

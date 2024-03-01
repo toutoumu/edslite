@@ -5,10 +5,11 @@ import java.util.List;
 
 public class ActivityResultHandler {
     public void addResult(Runnable r) {
-        if (_isResumed)
+        if (_isResumed) {
             r.run();
-        else
+        } else {
             _receivers.add(r);
+        }
     }
 
     public void handle() {

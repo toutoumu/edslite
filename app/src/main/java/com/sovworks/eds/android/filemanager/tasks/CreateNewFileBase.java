@@ -26,19 +26,22 @@ public abstract class CreateNewFileBase {
     public static Single<BrowserRecord> createObservable(Context context, Location location, String fileName, int fileType, boolean returnExisting) {
         Single<BrowserRecord> observable = Single.create(em -> {
             CreateNewFileBase cnf = new CreateNewFile(context, location, fileName, fileType, returnExisting);
-            if (!em.isDisposed())
+            if (!em.isDisposed()) {
                 em.onSuccess(cnf.create());
+            }
         });
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             observable = observable.
                     doOnSubscribe(res -> TEST_OBSERVABLE.onNext(true)).
                     doFinally(() -> TEST_OBSERVABLE.onNext(false));
+        }
         return observable;
     }
 
     static {
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_OBSERVABLE = PublishSubject.create();
+        }
 
     }
 
@@ -58,8 +61,9 @@ public abstract class CreateNewFileBase {
     protected BrowserRecord create() throws Exception {
         if (_returnExisting) {
             Path path = PathUtil.buildPath(_location.getCurrentPath(), _fileName);
-            if (path != null && path.exists())
+            if (path != null && path.exists()) {
                 return ReadDir.getBrowserRecordFromFsRecord(_context, _location, path, null);
+            }
         }
         return createFile(_fileName, _fileType);
     }

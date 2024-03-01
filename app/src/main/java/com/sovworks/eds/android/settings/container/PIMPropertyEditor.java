@@ -30,10 +30,11 @@ public class PIMPropertyEditor extends IntPropertyEditor {
 
     @Override
     protected void saveValue(int value) {
-        if (value < 0)
+        if (value < 0) {
             value = 0;
-        else if (value > 100000)
+        } else if (value > 100000) {
             value = 100000;
+        }
         getHost().getState().putInt(Openable.PARAM_KDF_ITERATIONS, value);
     }
 }

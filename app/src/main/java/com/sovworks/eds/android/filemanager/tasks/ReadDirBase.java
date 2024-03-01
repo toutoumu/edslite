@@ -37,16 +37,18 @@ public abstract class ReadDirBase {
             ReadDir rd = new ReadDir(context, targetLocation, selectedFiles, dirSettings, showRootFolderLink);
             rd.readDir(em);
         });
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             observable = observable.
                     doOnSubscribe(res -> TEST_READING_OBSERVABLE.onNext(true)).
                     doFinally(() -> TEST_READING_OBSERVABLE.onNext(false));
+        }
         return observable;
     }
 
     static {
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_READING_OBSERVABLE = BehaviorSubject.createDefault(false);
+        }
 
     }
 
@@ -54,13 +56,14 @@ public abstract class ReadDirBase {
 
     public static BrowserRecord getBrowserRecordFromFsRecord(Context context, Location loc, Path path, DirectorySettings directorySettings) throws IOException, ApplicationException {
         BrowserRecord rec = ReadDir.createBrowserRecordFromFile(context, loc, path, directorySettings);
-        if (rec != null)
+        if (rec != null) {
             try {
                 rec.init(loc, path);
             } catch (Exception e) {
                 Logger.log(e);
                 rec = null;
             }
+        }
         return rec;
     }
 
@@ -99,8 +102,9 @@ public abstract class ReadDirBase {
 
     void readDir(ObservableEmitter<BrowserRecord> em) throws IOException {
         Path targetPath = _targetLocation.getCurrentPath();
-        if (targetPath.isFile())
+        if (targetPath.isFile()) {
             targetPath = targetPath.getParentPath();
+        }
         if (targetPath == null) {
             em.onComplete();
             return;
@@ -130,13 +134,15 @@ public abstract class ReadDirBase {
         try {
             em.setCancellable(dirReader::close);
             for (Path path : dirReader) {
-                if (em.isDisposed())
+                if (em.isDisposed()) {
                     break;
+                }
 
                 BrowserRecord record = getBrowserRecordFromFsRecord(_targetLocation, path, _directorySettings);
                 // todo 过滤掉隐藏文件
-                if (record == null || record.getName().startsWith("."))
+                if (record == null || record.getName().startsWith(".")) {
                     continue;
+                }
                 procRecord(record, count++);
                 em.onNext(record);
             }
@@ -159,8 +165,9 @@ public abstract class ReadDirBase {
             BrowserRecord rec,
             int count
     ) {
-        if (_selectedFiles != null && _selectedFiles.contains(rec.getPath()))
+        if (_selectedFiles != null && _selectedFiles.contains(rec.getPath())) {
             rec.setSelected(true);
+        }
     }
 
     private final Context _context;

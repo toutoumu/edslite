@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.view.LayoutInflater;
 import android.widget.EditText;
 
@@ -31,8 +33,9 @@ public class TextEditDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         int mid = getArguments().getInt(ARG_MESSAGE_ID);
-        if (mid != 0)
+        if (mid != 0) {
             alert.setMessage(getString(mid));
+        }
         LayoutInflater inflater = LayoutInflater.from(getActivity());
 
         _input = (EditText) inflater.inflate(getArguments().getInt(ARG_EDIT_TEXT_RES_ID, R.layout.settings_edit_text), null);
@@ -45,12 +48,13 @@ public class TextEditDialog extends DialogFragment {
                         Host host = PropertiesView.getHost(TextEditDialog.this);
                         if (host != null) {
                             PropertyEditor pe = host.getPropertiesView().getPropertyById(getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID));
-                            if (pe != null)
+                            if (pe != null) {
                                 try {
                                     ((TextResultReceiver) pe).setResult(_input.getText().toString());
                                 } catch (Exception e) {
                                     Logger.showAndLog(getActivity(), e);
                                 }
+                            }
                         }
                     }
                 });

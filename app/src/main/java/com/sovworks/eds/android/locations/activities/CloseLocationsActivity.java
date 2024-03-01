@@ -25,8 +25,9 @@ public class CloseLocationsActivity extends Activity {
             super.onCreate(state);
             _locationsManager = LocationsManager.getLocationsManager(getActivity());
             _failedToClose = state != null && state.getBoolean(ARG_FAILED_TO_CLOSE_ALL);
-            if (MasterPasswordDialog.checkMasterPasswordIsSet(getActivity(), getFragmentManager(), getTag()))
+            if (MasterPasswordDialog.checkMasterPasswordIsSet(getActivity(), getFragmentManager(), getTag())) {
                 startClosingLocations(state);
+            }
         }
 
         @Override
@@ -38,16 +39,18 @@ public class CloseLocationsActivity extends Activity {
 
         @Override
         public void onTargetLocationClosed(Location location, Bundle closeTaskArgs) {
-            if (!_targetLocations.isEmpty())
+            if (!_targetLocations.isEmpty()) {
                 _targetLocations.remove(0);
+            }
             closeNextLocation();
         }
 
         @Override
         public void onTargetLocationNotClosed(Location location, Bundle closeTaskArgs) {
             _failedToClose = true;
-            if (!_targetLocations.isEmpty())
+            if (!_targetLocations.isEmpty()) {
                 _targetLocations.remove(0);
+            }
             closeNextLocation();
         }
 
@@ -74,16 +77,17 @@ public class CloseLocationsActivity extends Activity {
             try {
                 if (state == null) {
                     Intent i = getActivity().getIntent();
-                    if (i != null && (i.getData() != null || i.hasExtra(LocationsManager.PARAM_LOCATION_URIS)))
+                    if (i != null && (i.getData() != null || i.hasExtra(LocationsManager.PARAM_LOCATION_URIS))) {
                         _targetLocations = _locationsManager.getLocationsFromIntent(i);
-                    else {
+                    } else {
                         _targetLocations = new ArrayList<>();
                         for (Location l : _locationsManager.getLocationsClosingOrder())
                             _targetLocations.add(l);
                     }
 
-                } else
+                } else {
                     _targetLocations = _locationsManager.getLocationsFromBundle(state);
+                }
                 closeNextLocation();
             } catch (Exception e) {
                 Logger.showAndLog(getActivity(), e);
@@ -97,16 +101,18 @@ public class CloseLocationsActivity extends Activity {
             } else {
                 Location loc = _targetLocations.get(0);
                 String closerTag = LocationCloserBaseFragment.getCloserTag(loc);
-                if (getFragmentManager().findFragmentByTag(closerTag) != null)
+                if (getFragmentManager().findFragmentByTag(closerTag) != null) {
                     return;
+                }
                 Bundle args = new Bundle();
                 args.putString(LocationCloserBaseFragment.PARAM_RECEIVER_FRAGMENT_TAG, getTag());
                 LocationsManager.storePathsInBundle(args, loc, null);
                 Intent i = getActivity().getIntent();
-                if (i.hasExtra(LocationCloserBaseFragment.ARG_FORCE_CLOSE))
+                if (i.hasExtra(LocationCloserBaseFragment.ARG_FORCE_CLOSE)) {
                     args.putBoolean(LocationCloserBaseFragment.ARG_FORCE_CLOSE,
                             i.getBooleanExtra(LocationCloserBaseFragment.ARG_FORCE_CLOSE, false)
                     );
+                }
                 LocationCloserBaseFragment closer = LocationCloserBaseFragment.getDefaultCloserForLocation(loc);
                 closer.setArguments(args);
                 getFragmentManager().beginTransaction().add(closer, closerTag).commit();
@@ -122,10 +128,11 @@ public class CloseLocationsActivity extends Activity {
         // master passsword is not set
         @Override
         public void onPasswordNotEntered(PasswordDialog dlg) {
-            if (MasterPasswordDialog.checkSettingsKey(getActivity()))
+            if (MasterPasswordDialog.checkSettingsKey(getActivity())) {
                 startClosingLocations(null);
-            else
+            } else {
                 getActivity().finish();
+            }
         }
     }
 
@@ -134,7 +141,8 @@ public class CloseLocationsActivity extends Activity {
         // Util.setTheme(this);
         super.onCreate(savedInstanceState);
         setResult(RESULT_CANCELED);
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             getFragmentManager().beginTransaction().add(new MainFragment(), MainFragment.TAG).commit();
+        }
     }
 }

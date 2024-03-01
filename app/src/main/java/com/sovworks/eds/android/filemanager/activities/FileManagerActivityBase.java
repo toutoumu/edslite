@@ -64,8 +64,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     public static final String ACTION_ASK_OVERWRITE = "com.sovworks.eds.android.ACTION_ASK_OVERWRITE";
 
     static {
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_INIT_OBSERVABLE = BehaviorSubject.createDefault(false);
+        }
 
     }
 
@@ -99,8 +100,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
             boolean allowBrowseContainer) {
         Intent intent = new Intent(context, FileManagerActivity.class);
         intent.setAction(Intent.ACTION_PICK);
-        if (startPath == null)
+        if (startPath == null) {
             startPath = getStartLocation(context).getLocationUri();
+        }
 
         intent.setData(startPath);
 
@@ -211,8 +213,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         Logger.debug(TAG + ": goTo");
         closeIntegratedViewer();
         FileListViewFragment f = getFileListViewFragment();
-        if (f != null)
+        if (f != null) {
             f.goTo(location, scrollPosition, true);
+        }
     }
 
     public void goTo(Path path) {
@@ -226,8 +229,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
 
     public void rereadCurrentLocation() {
         FileListViewFragment f = getFileListViewFragment();
-        if (f != null)
+        if (f != null) {
             f.rereadCurrentLocation();
+        }
     }
 
     public boolean isWideScreenLayout() {
@@ -263,8 +267,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     public void showProperties(BrowserRecord currentFile, boolean allowInplace) {
         if (!hasSelectedFiles() && currentFile == null) {
             Logger.debug(TAG + ": showProperties (hide)");
-            if (getFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG) != null)
+            if (getFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG) != null) {
                 hideSecondaryFragment();
+            }
         } else if (_isLargeScreenLayout || !allowInplace) {
             Logger.debug(TAG + ": showProperties");
             showPropertiesFragment(currentFile);
@@ -274,34 +279,39 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     public void showPhoto(BrowserRecord currentFile, boolean allowInplace) {
         Logger.debug(TAG + ": showPhoto");
         Path contextPath = currentFile == null ? null : currentFile.getPath();
-        if (!hasSelectedFiles() && contextPath == null)
+        if (!hasSelectedFiles() && contextPath == null) {
             hideSecondaryFragment();
-        else if (_isLargeScreenLayout || !allowInplace)
+        } else if (_isLargeScreenLayout || !allowInplace) {
             showPreviewFragment(contextPath);
+        }
     }
 
     @SuppressLint("CheckResult")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_INIT_OBSERVABLE.onNext(false);
+        }
         // Util.setTheme(this);
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Logger.debug("fm start intent: " + getIntent());
         _settings = UserSettings.getSettings(this);
-        if (_settings.isFlagSecureEnabled())
+        if (_settings.isFlagSecureEnabled()) {
             CompatHelper.setWindowFlagSecure(this);
+        }
         _isLargeScreenLayout = UserSettings.isWideScreenLayout(_settings, this);
         setContentView(R.layout.main_activity);
         Fragment f = getFragmentManager().findFragmentById(R.id.fragment2);
         if (f != null) {
             View panel = findViewById(R.id.fragment2);
-            if (panel != null)
+            if (panel != null) {
                 panel.setVisibility(View.VISIBLE);
+            }
             panel = findViewById(R.id.fragment1);
-            if (panel != null)
+            if (panel != null) {
                 panel.setVisibility(View.GONE);
+            }
         }
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(_exitBroadcastReceiver, new IntentFilter(EdsApplication.BROADCAST_EXIT));
         registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationAddedIntentFilter());
@@ -317,8 +327,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
                     startAction(savedInstanceState);
                     addFileListFragments();
                 }, err -> {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.showAndLog(getApplicationContext(), err);
+                    }
                 });
 
     }
@@ -332,8 +343,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
                 firstElement().
                 subscribe(res -> startAction(null), err ->
                 {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.log(err);
+                    }
                 });
     }
 
@@ -342,8 +354,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
             PreviewFragment pf = (PreviewFragment) getFragmentManager().findFragmentByTag(PreviewFragment.TAG);
-            if (pf != null)
+            if (pf != null) {
                 pf.updateImageViewFullScreen();
+            }
         }
     }
 
@@ -377,19 +390,23 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     public void onBackPressed() {
         Logger.debug(TAG + ": onBackPressed");
 
-        if (_drawer.onBackPressed())
+        if (_drawer.onBackPressed()) {
             return;
+        }
 
         Fragment f = getFragmentManager().findFragmentById(R.id.fragment2);
-        if (f != null && ((FileManagerFragment) f).onBackPressed())
+        if (f != null && ((FileManagerFragment) f).onBackPressed()) {
             return;
+        }
 
-        if (hideSecondaryFragment())
+        if (hideSecondaryFragment()) {
             return;
+        }
 
         f = getFragmentManager().findFragmentById(R.id.fragment1);
-        if (f != null && ((FileManagerFragment) f).onBackPressed())
+        if (f != null && ((FileManagerFragment) f).onBackPressed()) {
             return;
+        }
 
         _drawer.openDrawer();
         // super.onBackPressed();
@@ -425,10 +442,12 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
                     if (locToOpen != null) {
                         setIntent(new Intent(Intent.ACTION_MAIN, locToOpen.getLocationUri()));
                         FileListDataFragment df = getFileListDataFragment();
-                        if (df != null)
+                        if (df != null) {
                             df.loadLocation(null, true);
-                    } else
+                        }
+                    } else {
                         setIntent(new Intent());
+                    }
                 } catch (Throwable e) {
                     Logger.showAndLog(_context, e);
                     setIntent(new Intent());
@@ -471,8 +490,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
 
     protected void startAction(Bundle savedState) {
         String action = getIntent().getAction();
-        if (action == null)
+        if (action == null) {
             action = "";
+        }
         Logger.log("FileManagerActivity action is " + action);
         try {
             switch (action) {
@@ -499,8 +519,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     @Override
     protected void onResume() {
         super.onResume();
-        if (GlobalConfig.isTest())
+        if (GlobalConfig.isTest()) {
             TEST_INIT_OBSERVABLE.onNext(true);
+        }
     }
 
     @Override
@@ -538,8 +559,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     private final BroadcastReceiver _locationChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (isFinishing())
+            if (isFinishing()) {
                 return;
+            }
 
             try {
                 Uri locUri = intent.getParcelableExtra(LocationsManager.PARAM_LOCATION_URI);
@@ -547,12 +569,14 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
                     Location changedLocation = LocationsManager.getLocationsManager(getApplicationContext()).getLocation(locUri);
                     if (changedLocation != null) {
                         Location loc = getRealLocation();
-                        if (loc != null && changedLocation.getId().equals(loc.getId()))
+                        if (loc != null && changedLocation.getId().equals(loc.getId())) {
                             checkIfCurrentLocationIsStillOpen();
+                        }
 
                         FileListDataFragment f = getFileListDataFragment();
-                        if (f != null && !LocationsManager.isOpen(changedLocation))
+                        if (f != null && !LocationsManager.isOpen(changedLocation)) {
                             f.removeLocationFromHistory(changedLocation);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -565,8 +589,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     private final BroadcastReceiver _locationAddedOrRemovedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (isFinishing())
+            if (isFinishing()) {
                 return;
+            }
             if (LocationsManager.BROADCAST_LOCATION_REMOVED.equals(intent.getAction())) {
                 try {
                     Uri locUri = intent.getParcelableExtra(LocationsManager.PARAM_LOCATION_URI);
@@ -574,8 +599,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
                         Location changedLocation = LocationsManager.getLocationsManager(getApplicationContext()).getLocation(locUri);
                         if (changedLocation != null) {
                             FileListDataFragment f = getFileListDataFragment();
-                            if (f != null)
+                            if (f != null) {
                                 f.removeLocationFromHistory(changedLocation);
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -595,8 +621,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
 
     protected void actionMain(Bundle savedState) throws Exception {
         if (savedState == null) {
-            if (getIntent().getData() == null)
+            if (getIntent().getData() == null) {
                 _drawer.showContainers();
+            }
             showPromoDialogIfNeeded();
         }
     }
@@ -642,12 +669,14 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         FragmentTransaction trans = getFragmentManager().beginTransaction();
         trans.replace(R.id.fragment2, f, tag);
         View panel = findViewById(R.id.fragment2);
-        if (panel != null)
+        if (panel != null) {
             panel.setVisibility(View.VISIBLE);
+        }
         if (!_isLargeScreenLayout) {
             panel = findViewById(R.id.fragment1);
-            if (panel != null)
+            if (panel != null) {
                 panel.setVisibility(View.GONE);
+            }
         }
         trans.disallowAddToBackStack();
         trans.commit();
@@ -662,12 +691,14 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
             trans.remove(f);
             trans.commit();
             View panel = findViewById(R.id.fragment1);
-            if (panel != null)
+            if (panel != null) {
                 panel.setVisibility(View.VISIBLE);
+            }
             if (!_isLargeScreenLayout) {
                 panel = findViewById(R.id.fragment2);
-                if (panel != null)
+                if (panel != null) {
                     panel.setVisibility(View.GONE);
+                }
             }
             invalidateOptionsMenu();
             return true;
@@ -687,8 +718,9 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     }
 
     protected void showPromoDialogIfNeeded() {
-        if (!GlobalConfig.isDebug())
+        if (!GlobalConfig.isDebug()) {
             startActivity(new Intent(this, VersionHistory.class));
+        }
     }
 
     private void showPropertiesFragment(BrowserRecord currentFile) {

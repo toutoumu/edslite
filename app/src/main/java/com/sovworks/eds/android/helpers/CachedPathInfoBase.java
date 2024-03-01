@@ -47,8 +47,9 @@ public class CachedPathInfoBase implements CachedPathInfo {
     @Override
     public void init(Path path) throws IOException {
         _path = path;
-        if (_path != null)
+        if (_path != null) {
             updateCommonPathParams();
+        }
     }
 
     public void setName(String name) {
@@ -69,8 +70,9 @@ public class CachedPathInfoBase implements CachedPathInfo {
                 Directory dir = _path.getDirectory();
                 _modDate = dir.getLastModified();
                 _name = dir.getName();
-            } else
+            } else {
                 _name = new StringPathUtil(_pathDesc).getFileName();
+            }
         } catch (IOException ignored) {
 
         }

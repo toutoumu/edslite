@@ -22,10 +22,11 @@ public class HashAlgHintPropertyEditor extends ChoiceDialogPropertyEditor {
 
     @Override
     protected void saveValue(int value) {
-        if (value == 0)
+        if (value == 0) {
             getHost().getLocation().getExternalSettings().setHashFuncName(null);
-        else
+        } else {
             getHost().getLocation().getExternalSettings().setHashFuncName(getHashFuncName(getSupportedHashFuncs().get(value - 1)));
+        }
         getHost().saveExternalSettings();
     }
 
@@ -34,8 +35,9 @@ public class HashAlgHintPropertyEditor extends ChoiceDialogPropertyEditor {
         String name = getHost().getLocation().getExternalSettings().getHashFuncName();
         if (name != null) {
             int i = findEngineIndexByName(name);
-            if (i >= 0)
+            if (i >= 0) {
                 return i + 1;
+            }
         }
         return 0;
     }
@@ -57,8 +59,9 @@ public class HashAlgHintPropertyEditor extends ChoiceDialogPropertyEditor {
     private int findEngineIndexByName(String name) {
         int i = 0;
         for (MessageDigest md : getSupportedHashFuncs()) {
-            if (name.equalsIgnoreCase(getHashFuncName(md)))
+            if (name.equalsIgnoreCase(getHashFuncName(md))) {
                 return i;
+            }
             i++;
         }
         return -1;

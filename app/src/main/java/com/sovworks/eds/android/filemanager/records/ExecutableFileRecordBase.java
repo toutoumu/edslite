@@ -32,20 +32,23 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
 
     @Override
     public boolean open() throws Exception {
-        if (!isFile())
+        if (!isFile()) {
             return false;
+        }
         String mime = FileOpsService.getMimeTypeFromExtension(_host, new StringPathUtil(getName()).getFileExtension());
-        if (mime.startsWith("image/"))
+        if (mime.startsWith("image/")) {
             openImageFile(_loc, this, false);
-        else
+        } else {
             startDefaultFileViewer(_loc, this);
+        }
         return true;
     }
 
     @Override
     public boolean openInplace() throws Exception {
-        if (!isFile())
+        if (!isFile()) {
             return false;
+        }
 
         String mime = FileOpsService.getMimeTypeFromExtension(_host, new StringPathUtil(getName()).getFileExtension());
         if (mime.startsWith("image/")) {
@@ -60,8 +63,9 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
     protected final Settings _settings;
 
     protected void extractFileAndStartViewer(Location location, BrowserRecord rec) throws UserException, IOException {
-        if (rec.getSize() > 1024 * 1024 * _settings.getMaxTempFileSize())
+        if (rec.getSize() > 1024 * 1024 * _settings.getMaxTempFileSize()) {
             throw new UserException(_host, R.string.err_temp_file_is_too_big);
+        }
         Location loc = location.copy();
         loc.setCurrentPath(rec.getPath());
         TempFilesMonitor.getMonitor(_context).startFile(loc);
@@ -69,10 +73,11 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
 
     protected void startDefaultFileViewer(Location location, BrowserRecord rec) throws IOException, UserException, ApplicationException {
         Uri devUri = location.getDeviceAccessibleUri(rec.getPath());
-        if (devUri != null)
+        if (devUri != null) {
             FileOpsService.startFileViewer(_host, devUri, FileOpsService.getMimeTypeFromExtension(_context, new StringPathUtil(rec.getName()).getFileExtension()));
-        else
+        } else {
             extractFileAndStartViewer(location, rec);
+        }
     }
 
     protected void openImageFile(Location location, BrowserRecord rec, boolean inplace) throws IOException, UserException, ApplicationException {
@@ -80,11 +85,12 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
         if (ivMode == SettingsCommon.USE_INTERNAL_IMAGE_VIEWER_ALWAYS ||
                 (ivMode == SettingsCommon.USE_INTERNAL_IMAGE_VIEWER_VIRT_FS &&
                         location instanceof Openable)
-        )
+        ) {
             _host.showPhoto(rec, inplace);
-        else {
-            if (inplace)
+        } else {
+            if (inplace) {
                 _host.showPhoto(rec, true);
+            }
             startDefaultFileViewer(location, rec);
         }
     }

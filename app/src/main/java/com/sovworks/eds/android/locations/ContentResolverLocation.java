@@ -39,8 +39,9 @@ public class ContentResolverLocation extends LocationBase {
     @Override
     public void loadFromUri(Uri uri) {
         super.loadFromUri(uri);
-        if (uri.getPath() != null && uri.getPath().length() > 1)
+        if (uri.getPath() != null && uri.getPath().length() > 1) {
             _currentPathString = uri.toString();
+        }
     }
 
     @Override
@@ -50,8 +51,9 @@ public class ContentResolverLocation extends LocationBase {
 
     @Override
     public synchronized ContentResolverFs getFS() throws IOException {
-        if (getSharedData().fs == null)
+        if (getSharedData().fs == null) {
             getSharedData().fs = new ContentResolverFs(getContext().getContentResolver());
+        }
 
         return (ContentResolverFs) getSharedData().fs;
     }
@@ -68,8 +70,9 @@ public class ContentResolverLocation extends LocationBase {
 
     @Override
     public Uri getLocationUri() {
-        if (_currentPathString != null)
+        if (_currentPathString != null) {
             return Uri.parse(_currentPathString);
+        }
 
         Uri.Builder ub = new Uri.Builder();
         ub.scheme(URI_SCHEME);

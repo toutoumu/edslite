@@ -41,10 +41,11 @@ public class PropertiesView extends LinearLayout {
 
     public static PropertyEditor.Host getHost(Fragment f) {
         final PropertyEditor.Host host;
-        if (f.getArguments().containsKey(PropertyEditor.ARG_HOST_FRAGMENT_TAG))
+        if (f.getArguments().containsKey(PropertyEditor.ARG_HOST_FRAGMENT_TAG)) {
             host = (PropertyEditor.Host) f.getFragmentManager().findFragmentByTag(f.getArguments().getString(PropertyEditor.ARG_HOST_FRAGMENT_TAG));
-        else
+        } else {
             host = (PropertyEditor.Host) f.getActivity();
+        }
         return host;
     }
 
@@ -58,21 +59,24 @@ public class PropertiesView extends LinearLayout {
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         for (PropertyEditor pe : listDisplayedProperties()) {
-            if (pe.onActivityResult(requestCode, resultCode, data))
+            if (pe.onActivityResult(requestCode, resultCode, data)) {
                 return true;
+            }
         }
         return false;
     }
 
     public int addProperty(PropertyEditor pe) {
-        if (pe.getId() == 0)
+        if (pe.getId() == 0) {
             pe.setId(_properties.size());
+        }
         PropertyInfo pi = new PropertyInfo();
         pi.isEnabled = true;
         pi.property = pe;
         _properties.put(pe.getId(), pi);
-        if (pe.getStartPosition() == 0)
+        if (pe.getStartPosition() == 0) {
             pe.setStartPosition(_properties.size());
+        }
         displayProperty(pe);
         return pe.getId();
     }
@@ -117,17 +121,19 @@ public class PropertiesView extends LinearLayout {
     }
 
     public void loadProperties(Collection<PropertyEditor> properties, Bundle b) {
-        if (_isLoadingProperties)
+        if (_isLoadingProperties) {
             return;
+        }
         beginUpdate();
         try {
             for (PropertyEditor pe : properties) {
                 View v = pe.getView(this);
                 v.setId(pe.getId());
-                if (b == null)
+                if (b == null) {
                     pe.load();
-                else
+                } else {
                     pe.load(b);
+                }
             }
         } finally {
             endUpdate(b);
@@ -153,25 +159,29 @@ public class PropertiesView extends LinearLayout {
 
     public synchronized PropertyEditor getPropertyByType(Class<? extends PropertyEditor> type) {
         for (PropertyInfo pi : _properties.values())
-            if (pi.property.getClass().equals(type))
+            if (pi.property.getClass().equals(type)) {
                 return pi.property;
+            }
         return null;
     }
 
     public synchronized void setPropertyState(int propertyId, boolean enabled) {
         PropertyInfo pi = _properties.get(propertyId);
-        if (pi == null)
+        if (pi == null) {
             throw new IllegalArgumentException("Property not found. id=" + propertyId);
+        }
         setPropertyState(pi, enabled);
-        if (!_isLoadingProperties)
+        if (!_isLoadingProperties) {
             commitProperties();
+        }
     }
 
     @SuppressWarnings("unused")
     public void removeProperty(int propertyId) {
         PropertyInfo pi = _properties.get(propertyId);
-        if (pi == null)
+        if (pi == null) {
             throw new IllegalArgumentException("Property not found. id=" + propertyId);
+        }
         removeView(pi.property.getView(this));
         _properties.remove(propertyId);
     }
@@ -179,19 +189,22 @@ public class PropertiesView extends LinearLayout {
     public synchronized void setPropertiesState(Iterable<Integer> ids, boolean enabled) {
         for (int id : ids) {
             PropertyInfo pi = _properties.get(id);
-            if (pi == null)
+            if (pi == null) {
                 throw new IllegalArgumentException("Property not found. id=" + id);
+            }
             setPropertyState(pi, enabled);
         }
-        if (!_isLoadingProperties)
+        if (!_isLoadingProperties) {
             commitProperties();
+        }
     }
 
     public synchronized void setPropertiesState(boolean enabled) {
         for (PropertyInfo pi : _properties.values())
             setPropertyState(pi, enabled);
-        if (!_isLoadingProperties)
+        if (!_isLoadingProperties) {
             commitProperties();
+        }
     }
 
     public void setInstantSave(boolean val) {
@@ -219,8 +232,9 @@ public class PropertiesView extends LinearLayout {
     protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
         if (container != null) {
             Bundle b = (Bundle) container.get(getId());
-            if (b != null)
+            if (b != null) {
                 loadProperties(b);
+            }
         }
     }
 
@@ -254,22 +268,25 @@ public class PropertiesView extends LinearLayout {
         ArrayList<PropertyEditor> toRemove = new ArrayList<>();
         Set<Integer> added = new HashSet<>();
         for (PropertyEditor pe : listDisplayedProperties()) {
-            if (!_properties.get(pe.getId()).isEnabled)
+            if (!_properties.get(pe.getId()).isEnabled) {
                 toRemove.add(pe);
+            }
             added.add(pe.getId());
         }
         for (PropertyEditor pe : toRemove)
             removeView(pe.getView(this));
         for (PropertyInfo pi : _properties.values())
-            if (pi.isEnabled && !added.contains(pi.property.getId()))
+            if (pi.isEnabled && !added.contains(pi.property.getId())) {
                 displayProperty(pi.property);
+            }
     }
 
     private synchronized ArrayList<PropertyEditor> getCurrentlyEnabledProperties() {
         ArrayList<PropertyEditor> res = new ArrayList<>();
         for (PropertyInfo pi : _properties.values())
-            if (pi.isEnabled)
+            if (pi.isEnabled) {
                 res.add(pi.property);
+            }
         return res;
     }
 
@@ -283,8 +300,9 @@ public class PropertiesView extends LinearLayout {
     private void displayProperty(final PropertyEditor pe) {
         List<PropertyEditor> curList = listDisplayedProperties();
         int pos = Collections.binarySearch(curList, pe, _comparator);
-        if (pos < 0)
+        if (pos < 0) {
             pos = -pos - 1;
+        }
         View v = pe.getView(this);
         v.setTag(pe);
         v.setOnClickListener(new View.OnClickListener() {

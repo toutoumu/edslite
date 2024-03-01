@@ -79,8 +79,9 @@ public class FS extends FileSystemWrapper {
         } catch (DigestException e) {
             throw new ApplicationException("Failed deriving the key", e);
         } finally {
-            if (derivedKey != null)
+            if (derivedKey != null) {
                 Arrays.fill(derivedKey, (byte) 0);
+            }
         }
     }
 
@@ -105,8 +106,9 @@ public class FS extends FileSystemWrapper {
         } catch (DigestException e) {
             throw new ApplicationException("Failed deriving the key", e);
         } finally {
-            if (derivedKey != null)
+            if (derivedKey != null) {
                 Arrays.fill(derivedKey, (byte) 0);
+            }
         }
         _config.write(_rootRealPath);
     }
@@ -147,10 +149,12 @@ public class FS extends FileSystemWrapper {
     }
 
     synchronized com.sovworks.eds.fs.encfs.Path getPathFromRealPath(Path realPath) throws IOException {
-        if (realPath == null)
+        if (realPath == null) {
             return null;
-        if (realPath.equals(_rootRealPath))
+        }
+        if (realPath.equals(_rootRealPath)) {
             return _rootPath;
+        }
         com.sovworks.eds.fs.encfs.Path p = getCachedPath(realPath);
         if (p == null) {
             p = new com.sovworks.eds.fs.encfs.Path(
@@ -237,8 +241,9 @@ public class FS extends FileSystemWrapper {
         try {
             cc.init(derivedKey);
             int checksum2 = cc.calc32(volumeKey, 0, volumeKey.length);
-            if (checksum2 != checksum)
+            if (checksum2 != checksum) {
                 throw new WrongPasswordException();
+            }
         } finally {
             cc.close();
         }

@@ -34,16 +34,19 @@ public abstract class AddExistingContainerTaskFragmentBase extends AddExistingED
             }
         } else if (cp.isDirectory()) {
             Path cfgPath = Config.getConfigFilePath(cp.getDirectory());
-            if (cfgPath == null)
+            if (cfgPath == null) {
                 throw new UserException("EncFs config file doesn't exist", R.string.encfs_config_file_not_found);
+            }
             isEncFs = true;
-        } else
+        } else {
             throw new UserException("Wrong path", R.string.wrong_path);
+        }
 
-        if (isEncFs)
+        if (isEncFs) {
             return new EncFsLocation(locationLocation, _context);
-        else
+        } else {
             return createContainerBasedLocation(locationLocation);
+        }
     }
 
     protected ContainerLocation createContainerBasedLocation(Location locationLocation) throws Exception {
@@ -53,8 +56,9 @@ public abstract class AddExistingContainerTaskFragmentBase extends AddExistingED
 
     protected ContainerLocation createContainerLocationBase(Location locationLocation, Settings settings) throws IOException {
         String formatName = getArguments().getString(CreateContainerTaskFragmentBase.ARG_CONTAINER_FORMAT);
-        if (formatName == null)
+        if (formatName == null) {
             formatName = "";
+        }
         return ContainerFormatter.createBaseContainerLocationFromFormatInfo(
                 formatName,
                 locationLocation,

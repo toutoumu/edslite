@@ -46,10 +46,11 @@ public class MACInputStream extends TransInputStream {
     @Override
     protected int readFromBaseAndTransformBuffer(byte[] buf, int offset, int count, long bufferPosition) throws IOException {
         int br = readFromBase(_transBuffer, offset, count + _overhead);
-        if (br > 0)
+        if (br > 0) {
             return transformBufferFromBase(_transBuffer, offset, br, bufferPosition, buf);
-        else
+        } else {
             return 0;
+        }
     }
 
     @Override

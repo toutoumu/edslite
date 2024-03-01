@@ -61,8 +61,9 @@ public class Path extends PathBase {
 
     @Override
     public Path getParentPath() throws IOException {
-        if (_realPath.equals(getFileSystem().getEncFSRootPath()))
+        if (_realPath.equals(getFileSystem().getEncFSRootPath())) {
             return null;
+        }
         com.sovworks.eds.fs.Path pp = _realPath.getParentPath();
         return pp == null ? null : getFileSystem().getPathFromRealPath(pp);
     }
@@ -74,12 +75,14 @@ public class Path extends PathBase {
         Path newPath = getFileSystem().getPathFromRealPath(newRealPath);
         if (newPath._decodedPath == null) {
             StringPathUtil decodedParts = _decodedPath;
-            if (decodedParts != null)
+            if (decodedParts != null) {
                 decodedParts = decodedParts.combine(part);
+            }
             newPath.setDecodedPath(decodedParts);
         }
-        if (newPath._encodedPath == null)
+        if (newPath._encodedPath == null) {
             newPath.setEncodedPath(encodedParts);
+        }
 
         return newPath;
     }
@@ -90,8 +93,9 @@ public class Path extends PathBase {
         byte[] iv = _namingInfo.useChainedNamingIV() ? getChainedIV() : null;
         try {
             codec.init(_encryptionKey);
-            if (iv != null)
+            if (iv != null) {
                 codec.setIV(iv);
+            }
             return encodedParts.combine(codec.encodeName(part));
         } finally {
             codec.close();
@@ -130,19 +134,21 @@ public class Path extends PathBase {
     }
 
     public synchronized StringPathUtil getDecodedPath() {
-        if (_decodedPath == null)
+        if (_decodedPath == null) {
             try {
                 _decodedPath = decodePath();
             } catch (IOException e) {
                 Logger.log(e);
                 _decodedPath = new StringPathUtil(_realPath.getPathString());
             }
+        }
         return _decodedPath;
     }
 
     public synchronized StringPathUtil getEncodedPath() throws IOException {
-        if (_encodedPath == null)
+        if (_encodedPath == null) {
             _encodedPath = buildEncodedPathFromRealPath(_realPath);
+        }
         return _encodedPath;
     }
 
@@ -155,12 +161,13 @@ public class Path extends PathBase {
     }
 
     public synchronized byte[] getChainedIV() {
-        if (_chainedIV == null)
+        if (_chainedIV == null) {
             try {
                 _chainedIV = calcChaindedIV();
             } catch (IOException e) {
                 Logger.log(e);
             }
+        }
         return _chainedIV;
     }
 
@@ -184,11 +191,13 @@ public class Path extends PathBase {
         NameCodec codec = _namingInfo.getEncDec();
         try {
             codec.init(_encryptionKey);
-            if (_namingInfo.useChainedNamingIV() && parent != null)
+            if (_namingInfo.useChainedNamingIV() && parent != null) {
                 codec.setIV(parent.getChainedIV());
+            }
             String decodedName = codec.decodeName(encodedParts.getFileName());
-            if (_namingInfo.useChainedNamingIV())
+            if (_namingInfo.useChainedNamingIV()) {
                 _chainedIV = codec.getChainedIV(decodedName);
+            }
             return decodedParent.combine(decodedName);
         } finally {
             codec.close();
@@ -215,8 +224,9 @@ public class Path extends PathBase {
         while (!realPath.equals(rootPath)) {
             encodedParts = new StringPathUtil(PathUtil.getNameFromPath(realPath), encodedParts);
             realPath = realPath.getParentPath();
-            if (realPath == null)
+            if (realPath == null) {
                 throw new IOException("Failed building path");
+            }
         }
         return encodedParts;
     }

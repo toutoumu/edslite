@@ -31,8 +31,9 @@ public abstract class LocationSettingsBaseFragment extends PropertiesFragmentBas
         if (_location == null) {
             _location = createNewLocation();
             _location.getExternalSettings().setVisibleToUser(true);
-        } else
+        } else {
             _propertiesView.setInstantSave(true);
+        }
 
         super.initProperties(state);
     }
@@ -97,8 +98,9 @@ public abstract class LocationSettingsBaseFragment extends PropertiesFragmentBas
             @Override
             protected void saveText(String text) {
                 _location.getExternalSettings().setTitle(text.trim());
-                if (getPropertiesView().isInstantSave())
+                if (getPropertiesView().isInstantSave()) {
                     saveExternalSettings();
+                }
             }
         });
         int id = _propertiesView.addProperty(new UseExternalFileManagerPropertyEditor(this));

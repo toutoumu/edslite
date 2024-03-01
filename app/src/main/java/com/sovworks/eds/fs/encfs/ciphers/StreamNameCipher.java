@@ -28,9 +28,10 @@ public class StreamNameCipher implements NameCodec {
         ByteBuffer.wrap(res).order(ByteOrder.BIG_ENDIAN).putShort(mac);
         byte[] iv = new byte[_cipher.getIVSize()];
         ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).putLong(mac & 0xFFFFL);
-        if (_iv != null)
+        if (_iv != null) {
             for (int i = 0; i < _iv.length; i++)
                 iv[i] ^= _iv[i];
+        }
         _cipher.setIV(iv);
         try {
             _cipher.encrypt(res, 2, len);
@@ -49,9 +50,10 @@ public class StreamNameCipher implements NameCodec {
         short mac = ByteBuffer.wrap(buf).order(ByteOrder.BIG_ENDIAN).getShort();
         byte[] iv = new byte[_cipher.getIVSize()];
         ByteBuffer.wrap(iv).order(ByteOrder.BIG_ENDIAN).putLong(mac & 0xFFFFL);
-        if (_iv != null)
+        if (_iv != null) {
             for (int i = 0; i < _iv.length; i++)
                 iv[i] ^= _iv[i];
+        }
         _cipher.setIV(iv);
         try {
             _cipher.decrypt(buf, 2, decodedLen);
@@ -62,8 +64,9 @@ public class StreamNameCipher implements NameCodec {
             _hmac.setChainedIV(_iv);
             short mac2 = _hmac.calc16(buf, 2, decodedLen);
             _chainedIV = _hmac.getChainedIV();
-            if (mac != mac2)
+            if (mac != mac2) {
                 throw new IllegalArgumentException("Failed decoding name. Checksum mismatch. Name=" + encodedName);
+            }
             return new String(buf, 2, decodedLen);
         } finally {
             Arrays.fill(buf, (byte) 0);
@@ -94,8 +97,9 @@ public class StreamNameCipher implements NameCodec {
 
     @Override
     public byte[] getChainedIV(String plaintextName) {
-        if (_chainedIV == null)
+        if (_chainedIV == null) {
             _chainedIV = calcChainedIV(plaintextName);
+        }
         return _chainedIV;
     }
 

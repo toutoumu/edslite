@@ -38,10 +38,11 @@ public class DrawerExitMenuItem extends DrawerMenuItemBase {
 
         private void closeNextOrExit() {
             Iterator<Location> it = LocationsManager.getLocationsManager(getActivity()).getLocationsClosingOrder().iterator();
-            if (it.hasNext())
+            if (it.hasNext()) {
                 launchCloser(it.next());
-            else
+            } else {
                 exit();
+            }
         }
 
         private void launchCloser(Location loc) {

@@ -41,8 +41,9 @@ public class PrepareToSendTask extends TaskFragment {
 
     @Override
     protected void doWork(TaskState state) throws Exception {
-        if (GlobalConfig.isDebug())
+        if (GlobalConfig.isDebug()) {
             Logger.debug("PrepareToSendTask args: " + getArguments());
+        }
         ArrayList<Path> paths = new ArrayList<>();
         Location location = LocationsManager.
                 getLocationsManager(_context).
@@ -56,8 +57,9 @@ public class PrepareToSendTask extends TaskFragment {
         for (Path p : paths) {
             if (p.isFile()) {
                 Uri uri = location.getDeviceAccessibleUri(p);
-                if (uri != null)
+                if (uri != null) {
                     uris.add(uri);
+                }
                 checkedPaths.add(p);
                 String[] mimeType = FileOpsService.getMimeTypeFromExtension(_context, p).split("/", 2);
                 if (mime1 == null) {
@@ -68,8 +70,9 @@ public class PrepareToSendTask extends TaskFragment {
                         mime1 = "*";
                         mime2 = "*";
                     } else if (!mime2.equals("*")) {
-                        if (!mime2.equals(mimeType[1]))
+                        if (!mime2.equals(mimeType[1])) {
                             mime2 = "*";
+                        }
                     }
                 }
             }
@@ -81,10 +84,12 @@ public class PrepareToSendTask extends TaskFragment {
         if (!checkedPaths.isEmpty()) {
             if (uris.size() == checkedPaths.size()) {
                 result.urisToSend = uris;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     result.clipData = makeClipData(_context, location, checkedPaths);
-            } else
+                }
+            } else {
                 result.tempFilesToPrepare = checkedPaths;
+            }
         }
         state.setResult(result);
     }
@@ -112,10 +117,11 @@ public class PrepareToSendTask extends TaskFragment {
             public void onCompleted(Bundle args, Result result) {
                 try {
                     PrepareSendResult res = (PrepareSendResult) result.getResult();
-                    if (res.urisToSend != null)
+                    if (res.urisToSend != null) {
                         ActionSendTask.sendFiles(activity, res.urisToSend, res.mimeType, res.clipData);
-                    else if (res.tempFilesToPrepare != null)
+                    } else if (res.tempFilesToPrepare != null) {
                         FileOpsService.sendFile(activity, res.mimeType, res.location, res.tempFilesToPrepare);
+                    }
                 } catch (Throwable e) {
                     Logger.showAndLog(activity, e);
                 }

@@ -25,8 +25,9 @@ public class FolderRecord extends FsBrowserRecord {
 
     @Override
     public View createView(int position, ViewGroup parent) {
-        if (_host == null)
+        if (_host == null) {
             return null;
+        }
 
         LayoutInflater inflater = (LayoutInflater) _host.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.fs_browser_folder_row, parent, false);
@@ -42,8 +43,9 @@ public class FolderRecord extends FsBrowserRecord {
 
     @Override
     public boolean open() throws Exception {
-        if (_path != null)
+        if (_path != null) {
             _host.goTo(_path);
+        }
         return true;
     }
 

@@ -17,13 +17,15 @@ public abstract class SettingsBaseActivity extends RxAppCompatActivity {
         // Util.setTheme(this);
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        if (UserSettings.getSettings(this).isFlagSecureEnabled())
+        if (UserSettings.getSettings(this).isFlagSecureEnabled()) {
             CompatHelper.setWindowFlagSecure(this);
-        if (savedInstanceState == null)
+        }
+        if (savedInstanceState == null) {
             getFragmentManager().
                     beginTransaction().
                     add(android.R.id.content, getSettingsFragment(), SETTINGS_FRAGMENT_TAG).
                     commit();
+        }
     }
 
     protected abstract Fragment getSettingsFragment();

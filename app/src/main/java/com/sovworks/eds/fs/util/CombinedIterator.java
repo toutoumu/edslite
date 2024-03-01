@@ -15,15 +15,17 @@ public class CombinedIterator<T> implements Iterator<T> {
     @Override
     public T next() {
         Iterator<T> iter = getCurrentIter();
-        if (iter == null)
+        if (iter == null) {
             throw new IllegalStateException("No more elements");
+        }
         return iter.next();
     }
 
     @Override
     public void remove() {
-        if (_iter == null)
+        if (_iter == null) {
             throw new IllegalStateException("Current element is not set");
+        }
         _iter.remove();
     }
 
@@ -32,10 +34,11 @@ public class CombinedIterator<T> implements Iterator<T> {
             _iter = null;
             while (_iterIter.hasNext()) {
                 _iter = _iterIter.next();
-                if (_iter.hasNext())
+                if (_iter.hasNext()) {
                     break;
-                else
+                } else {
                     _iter = null;
+                }
             }
 
         }

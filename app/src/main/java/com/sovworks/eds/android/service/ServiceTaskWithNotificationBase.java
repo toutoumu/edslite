@@ -59,8 +59,9 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
         String msg = ex.getLocalizedMessage();
         if (msg == null) {
             msg = ex.getMessage();
-            if (msg == null)
+            if (msg == null) {
                 msg = "";
+            }
         }
         return msg;
     }
@@ -71,8 +72,9 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
     }
 
     private void showNotificationMessage(String title, String message) {
-        if (title == null)
+        if (title == null) {
             return;
+        }
         NotificationCompat.Builder nb = new NotificationCompat.Builder(_context, CompatHelper.getFileOperationsNotificationsChannelId(_context))
                 .setSmallIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? R.drawable.ic_notification_new : R.drawable.ic_notification)
                 .setOngoing(false)
@@ -85,8 +87,9 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
         nb.setContentIntent(pi);
 
         NotificationManager nm = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null)
+        if (nm != null) {
             nm.notify(FileOpsService.getNewNotificationId(), nb.build());
+        }
     }
 
     ServiceTaskWithNotificationBase() {
@@ -103,7 +106,7 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
                         _context.getString(android.R.string.cancel),
                         FileOpsService.getCancelTaskActionPendingIntent(_context, _taskId)
                 );
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             nb.setContentIntent(
                     PendingIntent.getActivity(
                             _context,
@@ -112,20 +115,23 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
                             PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE
                     )
             );
+        }
         return nb;
     }
 
     void removeNotification() {
         NotificationManager nm = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null)
+        if (nm != null) {
             nm.cancel(_taskId);
+        }
 
     }
 
     private void updateNotification() {
         NotificationManager nm = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (nm != null)
+        if (nm != null) {
             nm.notify(_taskId, _notificationBuilder.build());
+        }
     }
 
     void updateUIOnTime() {

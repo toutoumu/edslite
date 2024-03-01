@@ -86,13 +86,15 @@ public abstract class EDSLocationFormatterBase {
 
     public EDSLocation format(Location location) throws Exception {
         EDSLocation loc = createLocation(location);
-        if (!_dontReg)
+        if (!_dontReg) {
             addLocationToList(loc);
+        }
         loc.getFS();
         initLocationSettings(loc);
         loc.close(false);
-        if (!_dontReg)
+        if (!_dontReg) {
             notifyLocationCreated(loc);
+        }
         return loc;
     }
 
@@ -115,23 +117,26 @@ public abstract class EDSLocationFormatterBase {
         LocationsManager lm = LocationsManager.getLocationsManager(_context, true);
         if (lm != null) {
             Location prevLoc = lm.findExistingLocation(loc);
-            if (prevLoc == null)
+            if (prevLoc == null) {
                 lm.addNewLocation(loc, store);
-            else
+            } else {
                 lm.replaceLocation(prevLoc, loc, store);
+            }
         }
 
     }
 
     protected void notifyLocationCreated(EDSLocation loc) {
-        if (_context != null)
+        if (_context != null) {
             LocationsManager.broadcastLocationAdded(_context, loc);
+        }
     }
 
     protected void initLocationSettings(EDSLocation loc) throws IOException, ApplicationException {
         writeInternalContainerSettings(loc);
-        if (!_dontReg)
+        if (!_dontReg) {
             setExternalContainerSettings(loc);
+        }
     }
 
     protected void setExternalContainerSettings(EDSLocation loc) throws ApplicationException, IOException {
@@ -140,14 +145,16 @@ public abstract class EDSLocationFormatterBase {
         loc.getExternalSettings().setTitle(title);
         loc.getExternalSettings().setVisibleToUser(true);
 
-        if (_context == null || !UserSettings.getSettings(_context).neverSaveHistory())
+        if (_context == null || !UserSettings.getSettings(_context).neverSaveHistory()) {
             loc.saveExternalSettings();
+        }
 
     }
 
     protected void writeInternalContainerSettings(EDSLocation loc) throws IOException {
-        if (_disableDefaultSettings)
+        if (_disableDefaultSettings) {
             return;
+        }
         DirectorySettings ds = new DirectorySettings();
         ds.setHiddenFilesMasks(Collections.singletonList("(?iu)\\.eds.*"));
         FileSystem fs = loc.getFS();
@@ -161,8 +168,9 @@ public abstract class EDSLocationFormatterBase {
     private static boolean checkExistingTitle(String title, LocationsManager lm, EDSLocation ignore) {
         Uri igUri = ignore.getLocation().getLocationUri();
         for (EDSLocation cnt : lm.getLoadedEDSLocations(true))
-            if (cnt != ignore && !cnt.getLocation().getLocationUri().equals(igUri) && cnt.getTitle().equals(title))
+            if (cnt != ignore && !cnt.getLocation().getLocationUri().equals(igUri) && cnt.getTitle().equals(title)) {
                 return true;
+            }
         return false;
     }
 }

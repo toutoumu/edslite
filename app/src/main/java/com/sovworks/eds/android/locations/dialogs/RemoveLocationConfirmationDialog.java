@@ -29,11 +29,13 @@ public class RemoveLocationConfirmationDialog extends ConfirmationDialog {
 
     @Override
     protected void onYes() {
-        if (_loc == null)
+        if (_loc == null) {
             return;
+        }
         LocationListBaseFragment f = (LocationListBaseFragment) getFragmentManager().findFragmentByTag(LocationListBaseFragment.TAG);
-        if (f == null)
+        if (f == null) {
             return;
+        }
         f.removeLocation(_loc);
     }
 

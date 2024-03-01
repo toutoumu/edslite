@@ -22,8 +22,9 @@ public abstract class CheckBoxPropertyEditor extends PropertyEditorBase {
         _checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!_loadingValue)
+                if (!_loadingValue) {
                     onChecked(isChecked);
+                }
             }
         });
         return view;
@@ -42,9 +43,9 @@ public abstract class CheckBoxPropertyEditor extends PropertyEditorBase {
     @Override
     public void load(Bundle b) {
         if (_checkBox != null) {
-            if (isInstantSave())
+            if (isInstantSave()) {
                 load();
-            else {
+            } else {
                 _loadingValue = true;
                 try {
                     _checkBox.setChecked(b.getBoolean(getBundleKey()));
@@ -62,8 +63,9 @@ public abstract class CheckBoxPropertyEditor extends PropertyEditorBase {
 
     @Override
     public void save(Bundle b) {
-        if (!isInstantSave() && _checkBox != null)
+        if (!isInstantSave() && _checkBox != null) {
             b.putBoolean(getBundleKey(), _checkBox.isChecked());
+        }
     }
 
     @Override
@@ -79,7 +81,8 @@ public abstract class CheckBoxPropertyEditor extends PropertyEditorBase {
     protected abstract void saveValue(boolean value);
 
     protected void onChecked(boolean isChecked) {
-        if (_host.getPropertiesView().isInstantSave())
+        if (_host.getPropertiesView().isInstantSave()) {
             save();
+        }
     }
 }

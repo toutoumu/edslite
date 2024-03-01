@@ -88,8 +88,9 @@ public abstract class PBKDF {
                     prevPrc = prc;
                     _progressReporter.setProgress(prc);
                 }
-                if (_progressReporter.isCancelled())
+                if (_progressReporter.isCancelled()) {
                     throw new CancellationException();
+                }
             }
         }
         Arrays.fill(j, (byte) 0);

@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
+
 import android.widget.EditText;
 
 import com.sovworks.eds.android.R;
@@ -38,8 +40,9 @@ public class RenameFileDialog extends DialogFragment {
         input.setText(filename);
         StringPathUtil spu = new StringPathUtil(filename);
         String fnWoExt = spu.getFileNameWithoutExtension();
-        if (fnWoExt.length() > 0)
+        if (fnWoExt.length() > 0) {
             input.setSelection(0, fnWoExt.length());
+        }
         alert.setView(input);
 
         alert.setPositiveButton(getString(android.R.string.ok),

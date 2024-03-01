@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -32,8 +33,9 @@ public class ExtStorageWritePermisisonCheckFragment extends RxFragment {
                         activity,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED)
-        )
+        ) {
             return Completable.complete();
+        }
 
         FragmentManager fm = activity.getFragmentManager();
         ExtStorageWritePermisisonCheckFragment f = (ExtStorageWritePermisisonCheckFragment) fm.findFragmentByTag(TAG);

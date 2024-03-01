@@ -43,13 +43,16 @@ public abstract class OpeningOptionsFragmentBase extends PropertiesFragmentBase 
         _settings = UserSettings.getSettings(getActivity());
         _propertiesView.setInstantSave(true);
         Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null)
+        if (extras != null) {
             _state.putAll(extras);
+        }
         createOpenableProperties();
-        if (_location instanceof EDSLocation)
+        if (_location instanceof EDSLocation) {
             createEDSLocationProperties();
-        if (_location instanceof ContainerLocation)
+        }
+        if (_location instanceof ContainerLocation) {
             createContainerProperties();
+        }
     }
 
     protected Openable _location;
@@ -61,11 +64,13 @@ public abstract class OpeningOptionsFragmentBase extends PropertiesFragmentBase 
 
     protected void createOpenableProperties() {
         int id = _propertiesView.addProperty(new PIMPropertyEditor(this));
-        if (!_location.hasCustomKDFIterations())
+        if (!_location.hasCustomKDFIterations()) {
             _propertiesView.setPropertyState(id, false);
+        }
         id = _propertiesView.addProperty(new UseExternalFileManagerPropertyEditor(this));
-        if (_settings.getExternalFileManagerInfo() == null)
+        if (_settings.getExternalFileManagerInfo() == null) {
             _propertiesView.setPropertyState(id, false);
+        }
     }
 
     protected void createContainerProperties() {

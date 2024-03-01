@@ -110,8 +110,9 @@ public abstract class LocationShortcutWidgetConfigActivityBase extends SettingsB
                 _propertiesView.saveProperties();
                 String title = _state.getString(ARG_TITLE);
                 String path = _state.getString(ARG_URI);
-                if (title == null || title.trim().isEmpty() || path == null || path.trim().isEmpty())
+                if (title == null || title.trim().isEmpty() || path == null || path.trim().isEmpty()) {
                     return;
+                }
 
                 initWidgetFields(title, path);
 

@@ -15,10 +15,12 @@ import java.util.List;
 
 public class HashingAlgorithmPropertyEditor extends ChoiceDialogPropertyEditor {
     public static String getHashFuncName(MessageDigest md) {
-        if (md instanceof RIPEMD160)
+        if (md instanceof RIPEMD160) {
             return "RIPEMD-160";
-        if (md instanceof Whirlpool)
+        }
+        if (md instanceof Whirlpool) {
             return "Whirlpool";
+        }
         return md.getAlgorithm();
     }
 
@@ -29,16 +31,18 @@ public class HashingAlgorithmPropertyEditor extends ChoiceDialogPropertyEditor {
     @Override
     protected int loadValue() {
         List<MessageDigest> algs = getCurrentHashAlgList();
-        if (algs == null)
+        if (algs == null) {
             return -1;
+        }
         String algName = getHostFragment().getState().getString(CreateContainerTaskFragmentBase.ARG_HASHING_ALG);
         if (algName != null) {
             MessageDigest md = VolumeLayoutBase.findHashFunc(algs, algName);
             return algs.indexOf(md);
-        } else if (!algs.isEmpty())
+        } else if (!algs.isEmpty()) {
             return 0;
-        else
+        } else {
             return -1;
+        }
     }
 
     @Override

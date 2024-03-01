@@ -40,11 +40,13 @@ public abstract class AddExistingEDSLocationTaskFragment extends TaskFragment {
         if (exCont != null) {
             if (lm.isStoredLocation(exCont.getId()) && exCont.getClass().equals(loc.getClass())) {
                 exCont.getExternalSettings().setVisibleToUser(true);
-                if (storeLink)
+                if (storeLink) {
                     exCont.saveExternalSettings();
+                }
                 return exCont;
-            } else
+            } else {
                 lm.removeLocation(exCont);
+            }
         }
         addEDSLocation(lm, loc, storeLink);
         setLocationSettings(loc, storeLink);
@@ -54,8 +56,9 @@ public abstract class AddExistingEDSLocationTaskFragment extends TaskFragment {
     protected void setLocationSettings(EDSLocation loc, boolean storeLink) {
         loc.getExternalSettings().setTitle(ContainerFormatterBase.makeTitle(loc, LocationsManager.getLocationsManager(_context)));
         loc.getExternalSettings().setVisibleToUser(true);
-        if (storeLink)
+        if (storeLink) {
             loc.saveExternalSettings();
+        }
     }
 
     protected void addEDSLocation(LocationsManager lm, EDSLocation loc, boolean storeLink) throws Exception {

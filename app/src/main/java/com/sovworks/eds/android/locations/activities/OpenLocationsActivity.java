@@ -12,6 +12,7 @@ import com.sovworks.eds.android.locations.opener.fragments.LocationOpenerBaseFra
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.concurrent.CancellationException;
 
@@ -43,20 +44,23 @@ public class OpenLocationsActivity extends RxAppCompatActivity {
 
         @Override
         public void onTargetLocationOpened(Bundle openerArgs, Location location) {
-            if (!_targetLocations.isEmpty())
+            if (!_targetLocations.isEmpty()) {
                 _targetLocations.remove(0);
+            }
             openNextLocation();
         }
 
         @Override
         public void onTargetLocationNotOpened(Bundle openerArgs) {
-            if (!_targetLocations.isEmpty())
+            if (!_targetLocations.isEmpty()) {
                 _targetLocations.remove(0);
+            }
             if (_targetLocations.isEmpty()) {
                 getActivity().setResult(Activity.RESULT_CANCELED);
                 getActivity().finish();
-            } else
+            } else {
                 openNextLocation();
+            }
         }
 
         protected void onFirstStart() {
@@ -73,8 +77,9 @@ public class OpenLocationsActivity extends RxAppCompatActivity {
             } else {
                 Location loc = _targetLocations.get(0);
                 String openerTag = LocationOpenerBaseFragment.getOpenerTag(loc);
-                if (getFragmentManager().findFragmentByTag(openerTag) != null)
+                if (getFragmentManager().findFragmentByTag(openerTag) != null) {
                     return;
+                }
                 loc.getExternalSettings().setVisibleToUser(true);
                 loc.saveExternalSettings();
                 Bundle args = new Bundle();
@@ -109,8 +114,9 @@ public class OpenLocationsActivity extends RxAppCompatActivity {
                 compose(bindToLifecycle()).
                 subscribe(this::addMainFragment, err ->
                 {
-                    if (!(err instanceof CancellationException))
+                    if (!(err instanceof CancellationException)) {
                         Logger.log(err);
+                    }
                 });
     }
 
@@ -120,7 +126,8 @@ public class OpenLocationsActivity extends RxAppCompatActivity {
 
     protected void addMainFragment() {
         FragmentManager fm = getFragmentManager();
-        if (fm.findFragmentByTag(MainFragment.TAG) == null)
+        if (fm.findFragmentByTag(MainFragment.TAG) == null) {
             fm.beginTransaction().add(createFragment(), MainFragment.TAG).commit();
+        }
     }
 }

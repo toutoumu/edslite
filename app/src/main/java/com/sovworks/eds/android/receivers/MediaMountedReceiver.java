@@ -19,8 +19,9 @@ public class MediaMountedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Logger.debug("MediaMountedReceiver");
         LocationsManagerBase lm = _lm;
-        if (lm == null)
+        if (lm == null) {
             return;
+        }
         String mountPath = intent.getDataString();
         ExternalStorageLocation loc = mountPath != null ? new ExternalStorageLocation(context, "ext storage", mountPath, null) : null;
         try {

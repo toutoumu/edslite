@@ -30,8 +30,9 @@ public class NumKDFIterationsPropertyEditor extends IntPropertyEditor {
 
     @Override
     protected void saveValue(int value) {
-        if (value < 1000)
+        if (value < 1000) {
             value = 1000;
+        }
         getHost().getState().putInt(Openable.PARAM_KDF_ITERATIONS, value);
     }
 }

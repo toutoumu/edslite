@@ -39,8 +39,9 @@ public class DummyUpDirRecord extends FolderRecord {
     public boolean open() throws Exception {
         super.open();
         Stack<FileListDataFragment.HistoryItem> nh = _host.getFileListDataFragment().getNavigHistory();
-        if (!nh.empty())
+        if (!nh.empty()) {
             nh.pop();
+        }
         return true;
     }
 

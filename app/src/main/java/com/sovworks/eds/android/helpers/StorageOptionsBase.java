@@ -40,8 +40,9 @@ public abstract class StorageOptionsBase {
     }
 
     public static synchronized List<StorageInfo> getStoragesList(Context context) {
-        if (_storagesList == null)
+        if (_storagesList == null) {
             loadStorageList(context);
+        }
         return _storagesList;
     }
 
@@ -56,8 +57,9 @@ public abstract class StorageOptionsBase {
 
     public static StorageInfo getDefaultDeviceLocation(Context context) {
         for (StorageInfo si : getStoragesList(context))
-            if (!si.isExternal)
+            if (!si.isExternal) {
                 return si;
+            }
         return !getStoragesList(context).isEmpty() ? getStoragesList(context).get(0) : null;
     }
 
@@ -77,8 +79,9 @@ public abstract class StorageOptionsBase {
         StorageInfo si = getDefaultStorage();
         if (si != null) {
             res.add(si);
-            if (si.isExternal)
+            if (si.isExternal) {
                 extStoragesCounter++;
+            }
         }
         addFromMountsFile(res, extStoragesCounter);
         return res;
@@ -93,12 +96,14 @@ public abstract class StorageOptionsBase {
         StringPathUtil mpu = new StringPathUtil(mountPath);
         for (StorageInfo si : storages) {
             StringPathUtil spu = new StringPathUtil(si.path);
-            if (spu.equals(mpu) || spu.equals(dpu))
+            if (spu.equals(mpu) || spu.equals(dpu)) {
                 return true;
+            }
             if (((mountPath.startsWith("/mnt/media_rw/") && si.path.startsWith("/storage/")) ||
                     (si.path.startsWith("/mnt/media_rw/") && mountPath.startsWith("/storage/"))) &&
-                    spu.getFileName().equals(mpu.getFileName()))
+                    spu.getFileName().equals(mpu.getFileName())) {
                 return true;
+            }
         }
         return false;
     }
@@ -112,9 +117,9 @@ public abstract class StorageOptionsBase {
                     Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD ||
                             (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB && !Environment.isExternalStorageRemovable()) ||
                             (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && (!Environment.isExternalStorageRemovable() || Environment.isExternalStorageEmulated()))
-            )
+            ) {
                 info.label = _context.getString(R.string.built_in_memory_card);
-            else {
+            } else {
                 info.isExternal = true;
                 info.label = _context.getString(R.string.external_storage) + " 1";
             }
@@ -141,13 +146,15 @@ public abstract class StorageOptionsBase {
 
     private int addFromMountsFile(Collection<StorageInfo> storages, int extCounter) {
         ArrayList<StorageInfo> mounts = parseMountsFile(readMountsFile());
-        if (mounts.isEmpty())
+        if (mounts.isEmpty()) {
             return extCounter;
+        }
         Settings settings = UserSettings.getSettings(_context);
         for (StorageInfo si : mounts) {
             if (si.type.equals("vfat") || si.path.startsWith("/mnt/") || si.path.startsWith("/storage/")) {
-                if (isStorageAdded(storages, si.dev, si.path))
+                if (isStorageAdded(storages, si.dev, si.path)) {
                     continue;
+                }
                 if ((si.dev.startsWith("/dev/block/vold/") &&
                         (!si.path.startsWith("/mnt/secure")
                                 && !si.path.startsWith("/mnt/asec")
@@ -171,8 +178,9 @@ public abstract class StorageOptionsBase {
 
     ArrayList<StorageInfo> parseMountsFile(String mountsStr) {
         ArrayList<StorageInfo> res = new ArrayList<>();
-        if (mountsStr == null || mountsStr.isEmpty())
+        if (mountsStr == null || mountsStr.isEmpty()) {
             return res;
+        }
         Pattern p = Pattern.compile("^([^\\s]+)\\s+([^\\s+]+)\\s+([^\\s+]+)\\s+([^\\s+]+).*?$", Pattern.MULTILINE);
         Matcher m = p.matcher(mountsStr);
         while (m.find()) {
@@ -193,8 +201,9 @@ public abstract class StorageOptionsBase {
     }
 
     protected boolean checkMountPoint(Settings s, StorageOptionsBase.StorageInfo si) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return true;
+        }
         File f = new File(si.path);
         return f.isDirectory() && !si.path.startsWith("/mnt/media_rw");
     }

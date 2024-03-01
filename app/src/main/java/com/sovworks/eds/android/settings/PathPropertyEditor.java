@@ -24,7 +24,7 @@ public abstract class PathPropertyEditor extends TextPropertyEditor {
     public View createView(ViewGroup parent) {
         View view = super.createView(parent);
         Button b = (Button) view.findViewById(android.R.id.button2);
-        if (b != null)
+        if (b != null) {
             b.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -35,6 +35,7 @@ public abstract class PathPropertyEditor extends TextPropertyEditor {
                     }
                 }
             });
+        }
         return view;
     }
 
@@ -42,8 +43,9 @@ public abstract class PathPropertyEditor extends TextPropertyEditor {
 
     @Override
     protected void onPropertyRequestResult(int propertyRequestCode, int resultCode, Intent data) {
-        if (propertyRequestCode == SELECT_PATH_REQ_CODE && resultCode == Activity.RESULT_OK && data != null)
+        if (propertyRequestCode == SELECT_PATH_REQ_CODE && resultCode == Activity.RESULT_OK && data != null) {
             onPathSelected(data);
+        }
     }
 
     protected void onPathSelected(Intent result) {

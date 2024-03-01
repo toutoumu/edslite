@@ -15,8 +15,9 @@ public abstract class FileSystemInfo implements Parcelable {
     public static List<FileSystemInfo> getSupportedFileSystems() {
         ArrayList<FileSystemInfo> res = new ArrayList<>();
         res.add(new FATInfo());
-        if (ExFat.isModuleInstalled())
+        if (ExFat.isModuleInstalled()) {
             res.add(new ExFATInfo());
+        }
         return res;
     }
 

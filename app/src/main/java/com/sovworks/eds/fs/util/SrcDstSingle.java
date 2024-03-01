@@ -3,6 +3,7 @@ package com.sovworks.eds.fs.util;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import com.sovworks.eds.android.Logger;
@@ -52,8 +53,9 @@ public class SrcDstSingle implements SrcDstCollection, SrcDst {
             }
 
             public SrcDst next() {
-                if (_shown)
+                if (_shown) {
                     throw new NoSuchElementException();
+                }
                 _shown = true;
                 return SrcDstSingle.this;
             }
