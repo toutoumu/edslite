@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:minHeight="64dp"
+    android:orientation="vertical"
     android:padding="5dp">
 
     <TextView
         android:id="@+id/title_edit"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginBottom="4dp"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="4dp"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/desc"

@@ -15,8 +15,6 @@
         <!-- Custom styles -->
         <item name="android:actionModeBackground">?android:colorAccent</item>
         <!--<item name="actionBarTheme">@style/MyActionBar</item>-->
-
-        <item name="leftDrawerStyle">@style/LeftDrawer.Dark</item>
     </style>
 
     <style name="Button">
