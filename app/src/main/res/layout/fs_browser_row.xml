@@ -16,7 +16,6 @@
         android:layout_centerVertical="true"
         android:scaleType="center"
         android:src="@drawable/ic_storage_dark"
-        app:tint="?attr/colorPrimary"
         tools:ignore="ContentDescription" />
 
     <ImageView
