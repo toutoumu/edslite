@@ -22,5 +22,6 @@
         android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="?attr/colorPrimaryVariant"
         android:choiceMode="singleChoice" />
 </androidx.drawerlayout.widget.DrawerLayout>

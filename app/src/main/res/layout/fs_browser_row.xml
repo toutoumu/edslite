@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/FileListRow">
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="4dp">
 
     <ImageView
         android:id="@android:id/icon"
@@ -27,29 +30,25 @@
 
     <CheckBox
         android:id="@android:id/checkbox"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true" />
 
     <RadioButton
         android:id="@+id/radio"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true" />
 
     <LinearLayout
         android:id="@+id/message"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toStartOf="@android:id/checkbox"
-        android:layout_toLeftOf="@android:id/checkbox"
         android:layout_toEndOf="@android:id/icon1"
-        android:layout_toRightOf="@android:id/icon1"
         android:orientation="vertical">
 
         <TextView
