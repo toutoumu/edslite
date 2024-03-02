@@ -2,11 +2,14 @@
 
     <style name="Theme.EDS" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
+        <!--主题色-->
         <item name="colorPrimary">#673ab7</item>
         <item name="colorPrimaryVariant">#212121</item>
+        <!-- button 等控件默认文字颜色-->
         <item name="colorOnPrimary">@android:color/white</item>
+
         <!-- Secondary brand color. -->
-        <!--<item name="colorSecondary">#009688</item>-->
+        <!-- switch radio checkbox 等控件的颜色-->
         <item name="colorSecondary">#673ab7</item>
         <item name="colorSecondaryVariant">#ff018786</item>
         <item name="colorOnSecondary">@android:color/white</item>
@@ -16,6 +19,7 @@
         <!-- Custom styles -->
         <item name="android:actionModeBackground">?android:colorAccent</item>
         <item name="actionBarTheme">@style/MyActionBar</item>
+
     </style>
 
     <style name="Button">
@@ -24,12 +28,20 @@
         <item name="android:layout_margin">5dp</item>
     </style>
 
+    <!--标题栏样式-->
     <style name="MyActionBar" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="android:panelColorBackground">@android:color/white</item>
-        <item name="colorControlNormal">@android:color/white</item>
-        <item name="colorBackgroundFloating">@android:color/black</item>
-        <item name="android:background">@android:color/black</item>
+        <!--<item name="android:panelColorBackground">@android:color/white</item>-->
+        <!--<item name="colorControlNormal">@android:color/white</item>-->
+        <!--<item name="colorBackgroundFloating">@android:color/black</item>-->
+        <item name="colorPrimary">#673ab7</item>
         <item name="colorAccent">?android:colorPrimary</item>
+        <item name="android:background">@android:color/black</item>
+        <item name="colorPrimaryVariant">#212121</item>
+
+        <!--标题栏弹出菜单背景-->
+        <item name="popupMenuBackground">@drawable/popupmenu_background_night</item>
+        <!--<item name="android:itemBackground">@drawable/popupmenu_item_night</item>-->
+
     </style>
 
 </resources>
