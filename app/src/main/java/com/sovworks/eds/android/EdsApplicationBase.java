@@ -13,7 +13,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.widget.Toast;
 
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.FormatStrategy;
 import com.sovworks.eds.android.helpers.ExtendedFileInfoLoader;
+import com.sovworks.eds.android.log.PrettyFormatStrategy;
 import com.sovworks.eds.android.providers.MainContentProvider;
 import com.sovworks.eds.android.settings.UserSettings;
 import com.sovworks.eds.crypto.SecureBuffer;
@@ -31,6 +34,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.sovworks.eds.android.settings.UserSettings.getSettings;
+
+import org.jetbrains.annotations.NotNull;
+
+import timber.log.Timber;
 
 public class EdsApplicationBase extends Application {
     public static final String BROADCAST_EXIT = "com.sovworks.eds.android.BROADCAST_EXIT";
@@ -88,7 +95,33 @@ public class EdsApplicationBase extends Application {
             return;
         }
         init(us);
+        initLog();
+
         Logger.debug("Android sdk version is " + Build.VERSION.SDK_INT);
+    }
+
+    /**
+     * 初始化日志打印
+     */
+    private void initLog() {
+        // 日志格式化策略,使用自定义的策略
+        FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()//
+                .showThreadInfo(false)      // (Optional) Whether to show thread info or not. Default true
+                .methodCount(1)             // (Optional) How many method line to show. Default 2
+                .methodOffset(5)            // (Optional) Hides internal method calls up to offset. Default 5
+                // .logStrategy(customLog)  // (Optional) Changes the log strategy to print out. Default LogCat
+                .tag("")                    // (Optional) Global tag for every log. Default PRETTY_LOGGER
+                .build();
+
+        com.orhanobut.logger.Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
+
+        // Timber 使用Logger库打印日志
+        Timber.plant(new Timber.DebugTree() {
+            @Override
+            protected void log(int priority, String tag, @NotNull String message, Throwable t) {
+                com.orhanobut.logger.Logger.log(priority, tag, message, t);
+            }
+        });
     }
 
     public synchronized static SecureBuffer getMasterPassword() {

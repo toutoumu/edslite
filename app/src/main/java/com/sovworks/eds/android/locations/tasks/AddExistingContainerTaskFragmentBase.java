@@ -15,12 +15,15 @@ import com.sovworks.eds.settings.Settings;
 
 import java.io.IOException;
 
+import timber.log.Timber;
+
 public abstract class AddExistingContainerTaskFragmentBase extends AddExistingEDSLocationTaskFragment {
     public static final String TAG = "com.sovworks.eds.android.locations.tasks.AddExistingContainerTaskFragment";
 
     @Override
     protected EDSLocation createEDSLocation(Location locationLocation) throws Exception {
-        Logger.debug("Adding EDS loc at " + locationLocation.getLocationUri());
+
+        Timber.d("Adding EDS loc at %s", locationLocation.getLocationUri());
         Path cp = locationLocation.getCurrentPath();
         boolean isEncFs = false;
         if (cp.isFile()) {
