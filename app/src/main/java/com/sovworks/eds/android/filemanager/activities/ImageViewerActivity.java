@@ -23,7 +23,7 @@ import com.sovworks.eds.fs.util.Util;
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.settings.Settings;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.NavigableSet;

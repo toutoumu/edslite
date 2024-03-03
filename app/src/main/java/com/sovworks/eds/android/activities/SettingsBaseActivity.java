@@ -7,7 +7,7 @@ import android.os.Bundle;
 import com.sovworks.eds.android.helpers.CompatHelper;
 import com.sovworks.eds.android.helpers.Util;
 import com.sovworks.eds.android.settings.UserSettings;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
 
 public abstract class SettingsBaseActivity extends RxAppCompatActivity {
     public static final String SETTINGS_FRAGMENT_TAG = "com.sovworks.eds.android.locations.SETTINGS_FRAGMENT";

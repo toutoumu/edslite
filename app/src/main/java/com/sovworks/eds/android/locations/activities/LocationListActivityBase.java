@@ -12,7 +12,7 @@ import com.sovworks.eds.android.locations.fragments.ContainerListFragment;
 import com.sovworks.eds.android.locations.fragments.DocumentTreeLocationsListFragment;
 import com.sovworks.eds.android.locations.fragments.LocationListBaseFragment;
 import com.sovworks.eds.android.settings.UserSettings;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
 
 public abstract class LocationListActivityBase extends RxAppCompatActivity {
     public static final String EXTRA_LOCATION_TYPE = "com.sovworks.eds.android.LOCATION_TYPE";

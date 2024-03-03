@@ -12,9 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.sovworks.eds.android.dialogs.AskPrimaryStoragePermissionDialog;
-import com.trello.rxlifecycle2.android.FragmentEvent;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
-import com.trello.rxlifecycle2.components.RxFragment;
+import com.trello.rxlifecycle3.android.FragmentEvent;
+import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle3.components.RxFragment;
 
 import io.reactivex.Completable;
 import io.reactivex.subjects.CompletableSubject;
