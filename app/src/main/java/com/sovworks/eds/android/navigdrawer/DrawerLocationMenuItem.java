@@ -1,6 +1,6 @@
 package com.sovworks.eds.android.navigdrawer;
 
-import android.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -82,7 +82,7 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
     }
 
     public void openLocation() {
-        FragmentManager fm = getDrawerController().getMainActivity().getFragmentManager();
+        FragmentManager fm = getDrawerController().getMainActivity().getSupportFragmentManager();
         String openerTag = LocationOpenerBaseFragment.getOpenerTag(_location);
         if (fm.findFragmentByTag(openerTag) == null) {
             LocationOpenerBaseFragment opener = getOpener();
@@ -92,7 +92,7 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
     }
 
     public void closeLocation() {
-        FragmentManager fm = getDrawerController().getMainActivity().getFragmentManager();
+        FragmentManager fm = getDrawerController().getMainActivity().getSupportFragmentManager();
         String closerTag = LocationCloserBaseFragment.getCloserTag(_location);
         if (fm.findFragmentByTag(closerTag) == null) {
             LocationCloserBaseFragment closer = getCloser();
@@ -148,7 +148,7 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
     private FileListDataFragment.HistoryItem findPrevLocation(Location loc) {
         FileListDataFragment df = (FileListDataFragment) getDrawerController().
                 getMainActivity().
-                getFragmentManager().
+                getSupportFragmentManager().
                 findFragmentByTag(FileListDataFragment.TAG);
         if (df != null) {
             Stack<FileListDataFragment.HistoryItem> hist = df.getNavigHistory();

@@ -1,6 +1,6 @@
 package com.sovworks.eds.android.dialogs;
 
-import android.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -22,7 +22,7 @@ import com.sovworks.eds.fs.util.SrcDstCollection.SrcDst;
 import com.sovworks.eds.fs.util.SrcDstPlain;
 import com.sovworks.eds.locations.Location;
 import com.trello.rxlifecycle3.android.FragmentEvent;
-import com.trello.rxlifecycle3.components.RxDialogFragment;
+import com.trello.rxlifecycle3.components.support.RxDialogFragment;
 
 import java.io.IOException;
 import java.util.Iterator;

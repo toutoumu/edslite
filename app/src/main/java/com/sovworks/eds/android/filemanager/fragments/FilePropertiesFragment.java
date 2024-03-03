@@ -2,8 +2,8 @@ package com.sovworks.eds.android.filemanager.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.format.Formatter;

@@ -1,7 +1,6 @@
 package com.sovworks.eds.android.locations.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.ListFragment;
 
 import android.util.TypedValue;
 import android.view.ActionMode;

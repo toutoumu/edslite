@@ -1,6 +1,6 @@
 package com.sovworks.eds.android.settings.container;
 
-import android.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.os.Bundle;
 
 import com.sovworks.eds.android.R;

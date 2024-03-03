@@ -2,8 +2,8 @@ package com.sovworks.eds.android.filemanager.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;

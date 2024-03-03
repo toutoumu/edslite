@@ -2,7 +2,9 @@ package com.sovworks.eds.android.filemanager.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.FragmentManager;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -65,7 +67,7 @@ import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.trello.rxlifecycle3.android.FragmentEvent;
-import com.trello.rxlifecycle3.components.RxFragment;
+import com.trello.rxlifecycle3.components.support.RxFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -399,7 +401,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     }
 
     public TaskFragment.TaskCallbacks getOpenAsContainerTaskCallbacks() {
-        return new ProgressDialogTaskFragmentCallbacks(getActivity(), R.string.loading) {
+        return new ProgressDialogTaskFragmentCallbacks((AppCompatActivity) getActivity(), R.string.loading) {
             @Override
             public void onCompleted(Bundle args, TaskFragment.Result result) {
                 try {

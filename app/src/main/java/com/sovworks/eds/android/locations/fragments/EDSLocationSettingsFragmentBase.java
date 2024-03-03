@@ -1,6 +1,7 @@
 package com.sovworks.eds.android.locations.fragments;
 
-import android.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.text.format.Formatter;
 
@@ -130,7 +131,7 @@ public abstract class EDSLocationSettingsFragmentBase extends PropertiesFragment
 
     class LoadLocationInfoTaskCallbacks extends ProgressDialogTaskFragmentCallbacks {
         LoadLocationInfoTaskCallbacks() {
-            super(getActivity(), R.string.loading);
+            super((AppCompatActivity) getActivity(), R.string.loading);
         }
 
         @Override

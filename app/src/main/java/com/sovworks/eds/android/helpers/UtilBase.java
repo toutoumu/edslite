@@ -1,11 +1,12 @@
 package com.sovworks.eds.android.helpers;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.TypedValue;
+
+import androidx.fragment.app.DialogFragment;
 
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.settings.UserSettings;

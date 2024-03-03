@@ -1,7 +1,7 @@
 package com.sovworks.eds.android.locations.dialogs;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import com.sovworks.eds.android.R;

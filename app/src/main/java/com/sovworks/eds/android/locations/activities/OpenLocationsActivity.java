@@ -1,8 +1,8 @@
 package com.sovworks.eds.android.locations.activities;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 
 import com.sovworks.eds.android.Logger;
@@ -125,7 +125,7 @@ public class OpenLocationsActivity extends RxAppCompatActivity {
     }
 
     protected void addMainFragment() {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         if (fm.findFragmentByTag(MainFragment.TAG) == null) {
             fm.beginTransaction().add(createFragment(), MainFragment.TAG).commit();
         }

@@ -1,7 +1,7 @@
 package com.sovworks.eds.android.activities;
 
 import android.app.Activity;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 
 import com.sovworks.eds.android.helpers.CompatHelper;
@@ -21,7 +21,7 @@ public abstract class SettingsBaseActivity extends RxAppCompatActivity {
             CompatHelper.setWindowFlagSecure(this);
         }
         if (savedInstanceState == null) {
-            getFragmentManager().
+            getSupportFragmentManager().
                     beginTransaction().
                     add(android.R.id.content, getSettingsFragment(), SETTINGS_FRAGMENT_TAG).
                     commit();

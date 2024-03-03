@@ -28,6 +28,8 @@ import java.io.IOException;
 
 import static com.sovworks.eds.locations.LocationsManagerBase.PARAM_LOCATION_URI;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor {
 
     public static class InstallExfatModuleTask extends TaskFragment {
@@ -74,7 +76,7 @@ public class InstallExFatModulePropertyEditor extends ButtonPropertyEditor {
 
         @Override
         protected TaskCallbacks getTaskCallbacks(final Activity activity) {
-            return new ProgressDialogTaskFragmentCallbacks(activity, R.string.loading) {
+            return new ProgressDialogTaskFragmentCallbacks((AppCompatActivity) activity, R.string.loading) {
                 @Override
                 public void onCompleted(Bundle args, Result result) {
                     try {

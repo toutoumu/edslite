@@ -1,7 +1,7 @@
 package com.sovworks.eds.android.fragments;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;

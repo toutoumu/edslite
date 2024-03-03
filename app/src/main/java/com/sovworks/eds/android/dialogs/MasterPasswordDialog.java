@@ -1,6 +1,6 @@
 package com.sovworks.eds.android.dialogs;
 
-import android.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -39,7 +39,7 @@ public class MasterPasswordDialog extends PasswordDialog {
         try {
             s.getSettingsProtectionKey();
         } catch (Settings.InvalidSettingsPassword e) {
-            FragmentManager fm = activity.getFragmentManager();
+            FragmentManager fm = activity.getSupportFragmentManager();
             MasterPasswordDialog mpd = (MasterPasswordDialog) fm.findFragmentByTag(TAG);
             if (mpd == null) {
                 MasterPasswordDialog masterPasswordDialog = new MasterPasswordDialog();

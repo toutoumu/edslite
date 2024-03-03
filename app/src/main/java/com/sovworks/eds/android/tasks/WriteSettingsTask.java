@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.activities.SettingsBaseActivity;
@@ -48,7 +50,7 @@ public class WriteSettingsTask extends TaskFragment {
         if (f == null) {
             return null;
         }
-        return new ProgressDialogTaskFragmentCallbacks(activity, R.string.saving_changes) {
+        return new ProgressDialogTaskFragmentCallbacks((AppCompatActivity) activity, R.string.saving_changes) {
             @Override
             public void onCompleted(Bundle args, TaskFragment.Result result) {
                 super.onCompleted(args, result);

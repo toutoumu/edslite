@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.activities.SettingsBaseActivity;
@@ -37,7 +39,7 @@ public abstract class ChangeEDSLocationPasswordBaseTask extends TaskFragment {
         if (f == null) {
             return null;
         }
-        return new ProgressDialogTaskFragmentCallbacks(activity, R.string.changing_password) {
+        return new ProgressDialogTaskFragmentCallbacks((AppCompatActivity) activity, R.string.changing_password) {
             @Override
             public void onCompleted(Bundle args, Result result) {
                 super.onCompleted(args, result);

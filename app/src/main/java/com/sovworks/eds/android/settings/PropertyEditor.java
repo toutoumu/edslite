@@ -1,6 +1,6 @@
 package com.sovworks.eds.android.settings;
 
-import android.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;

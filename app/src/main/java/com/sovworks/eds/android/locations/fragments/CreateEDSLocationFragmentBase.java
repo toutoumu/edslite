@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.fragments.PropertiesFragmentBase;
@@ -160,7 +162,7 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
     }
 
     public TaskFragment.TaskCallbacks getAddExistingEDSLocationTaskCallbacks() {
-        return new ProgressDialogTaskFragmentCallbacks(getActivity(), R.string.loading) {
+        return new ProgressDialogTaskFragmentCallbacks((AppCompatActivity) getActivity(), R.string.loading) {
 
             @Override
             public void onCompleted(Bundle args, TaskFragment.Result result) {

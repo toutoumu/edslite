@@ -1,7 +1,7 @@
 package com.sovworks.eds.android.locations.activities;
 
 import android.app.Activity;
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 
 import com.sovworks.eds.android.helpers.CompatHelper;
@@ -26,7 +26,7 @@ public abstract class LocationListActivityBase extends RxAppCompatActivity {
             CompatHelper.setWindowFlagSecure(this);
         }
         if (savedInstanceState == null) {
-            getFragmentManager().
+            getSupportFragmentManager().
                     beginTransaction().
                     add(android.R.id.content, getCreateLocationFragment(), LocationListBaseFragment.TAG).
                     commit();

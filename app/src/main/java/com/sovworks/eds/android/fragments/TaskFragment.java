@@ -1,8 +1,8 @@
 package com.sovworks.eds.android.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;

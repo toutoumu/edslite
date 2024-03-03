@@ -2,9 +2,9 @@ package com.sovworks.eds.android.filemanager.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.view.KeyEvent;
@@ -251,7 +252,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     }
 
     public Location getLocation() {
-        FileListDataFragment f = (FileListDataFragment) getFragmentManager().findFragmentByTag(FileListDataFragment.TAG);
+        FileListDataFragment f = (FileListDataFragment) getSupportFragmentManager().findFragmentByTag(FileListDataFragment.TAG);
         return f == null ? null : f.getLocation();
     }
 
@@ -267,7 +268,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     public void showProperties(BrowserRecord currentFile, boolean allowInplace) {
         if (!hasSelectedFiles() && currentFile == null) {
             Logger.debug(TAG + ": showProperties (hide)");
-            if (getFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG) != null) {
+            if (getSupportFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG) != null) {
                 hideSecondaryFragment();
             }
         } else if (_isLargeScreenLayout || !allowInplace) {
@@ -302,7 +303,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         }
         _isLargeScreenLayout = UserSettings.isWideScreenLayout(_settings, this);
         setContentView(R.layout.main_activity);
-        Fragment f = getFragmentManager().findFragmentById(R.id.fragment2);
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment2);
         if (f != null) {
             View panel = findViewById(R.id.fragment2);
             if (panel != null) {
@@ -353,7 +354,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            PreviewFragment pf = (PreviewFragment) getFragmentManager().findFragmentByTag(PreviewFragment.TAG);
+            PreviewFragment pf = (PreviewFragment) getSupportFragmentManager().findFragmentByTag(PreviewFragment.TAG);
             if (pf != null) {
                 pf.updateImageViewFullScreen();
             }
@@ -371,7 +372,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         // Prevent selection clearing when back button is pressed while properties fragment is active
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
             if (!_isLargeScreenLayout && hasSelectedFiles()) {
-                Fragment f = getFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG);
+                Fragment f = getSupportFragmentManager().findFragmentByTag(FilePropertiesFragment.TAG);
                 if (f != null) {
                     hideSecondaryFragment();
                     return true;
@@ -394,7 +395,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
             return;
         }
 
-        Fragment f = getFragmentManager().findFragmentById(R.id.fragment2);
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment2);
         if (f != null && ((FileManagerFragment) f).onBackPressed()) {
             return;
         }
@@ -403,7 +404,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
             return;
         }
 
-        f = getFragmentManager().findFragmentById(R.id.fragment1);
+        f = getSupportFragmentManager().findFragmentById(R.id.fragment1);
         if (f != null && ((FileManagerFragment) f).onBackPressed()) {
             return;
         }
@@ -419,12 +420,12 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     }
 
     public FileListDataFragment getFileListDataFragment() {
-        FileListDataFragment f = (FileListDataFragment) getFragmentManager().findFragmentByTag(FileListDataFragment.TAG);
+        FileListDataFragment f = (FileListDataFragment) getSupportFragmentManager().findFragmentByTag(FileListDataFragment.TAG);
         return f != null && f.isAdded() ? f : null;
     }
 
     public FileListViewFragment getFileListViewFragment() {
-        FileListViewFragment f = (FileListViewFragment) getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
+        FileListViewFragment f = (FileListViewFragment) getSupportFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
         return f != null && f.isAdded() ? f : null;
     }
 
@@ -634,7 +635,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
             if (dataUri != null) {
                 String mime = getIntent().getType();
                 if (!FOLDER_MIME_TYPE.equalsIgnoreCase(mime)) {
-                    getFragmentManager().
+                    getSupportFragmentManager().
                             beginTransaction().
                             add(
                                     CheckStartPathTask.newInstance(dataUri, false),
@@ -649,16 +650,16 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
 
     private void actionAskOverwrite() {
         AskOverwriteDialog.showDialog(
-                getFragmentManager(),
+                getSupportFragmentManager(),
                 getIntent().getExtras()
         );
         setIntent(new Intent());
     }
 
     protected void addFileListFragments() {
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         if (fm.findFragmentByTag(FileListDataFragment.TAG) == null) {
-            FragmentTransaction trans = getFragmentManager().beginTransaction();
+            androidx.fragment.app.FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
             trans.add(FileListDataFragment.newInstance(), FileListDataFragment.TAG);
             trans.add(R.id.fragment1, FileListViewFragment.newInstance(), FileListViewFragment.TAG);
             trans.commit();
@@ -666,7 +667,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     }
 
     protected void showSecondaryFragment(Fragment f, String tag) {
-        FragmentTransaction trans = getFragmentManager().beginTransaction();
+        androidx.fragment.app.FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         trans.replace(R.id.fragment2, f, tag);
         View panel = findViewById(R.id.fragment2);
         if (panel != null) {
@@ -684,7 +685,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
 
     protected boolean hideSecondaryFragment() {
         Logger.debug(TAG + ": hideSecondaryFragment");
-        FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         Fragment f = fm.findFragmentById(R.id.fragment2);
         if (f != null) {
             FragmentTransaction trans = fm.beginTransaction();

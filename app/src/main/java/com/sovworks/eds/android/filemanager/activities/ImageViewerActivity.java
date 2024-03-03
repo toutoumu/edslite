@@ -80,7 +80,7 @@ public class ImageViewerActivity extends RxAppCompatActivity implements PreviewF
             enableFullScreen();
         }
         _location = LocationsManager.getLocationsManager(this).getFromIntent(getIntent(), null);
-        getFragmentManager().beginTransaction().add(RestorePathsTask.newInstance(), RestorePathsTask.TAG).commit();
+        getSupportFragmentManager().beginTransaction().add(RestorePathsTask.newInstance(), RestorePathsTask.TAG).commit();
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ImageViewerActivity extends RxAppCompatActivity implements PreviewF
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        PreviewFragment pf = (PreviewFragment) getFragmentManager().findFragmentByTag(PreviewFragment.TAG);
+        PreviewFragment pf = (PreviewFragment) getSupportFragmentManager().findFragmentByTag(PreviewFragment.TAG);
         if (pf != null) {
             pf.updateImageViewFullScreen();
         }
@@ -136,12 +136,12 @@ public class ImageViewerActivity extends RxAppCompatActivity implements PreviewF
     private Location _location;
 
     private PreviewFragment getPreviewFragment() {
-        return (PreviewFragment) getFragmentManager().findFragmentByTag(PreviewFragment.TAG);
+        return (PreviewFragment) getSupportFragmentManager().findFragmentByTag(PreviewFragment.TAG);
     }
 
     private void showFragment(String currentImagePathString) {
         PreviewFragment f = PreviewFragment.newInstance(currentImagePathString);
-        getFragmentManager().beginTransaction().add(android.R.id.content, f, PreviewFragment.TAG).commit();
+        getSupportFragmentManager().beginTransaction().add(android.R.id.content, f, PreviewFragment.TAG).commit();
     }
 
     private void enableFullScreen() {

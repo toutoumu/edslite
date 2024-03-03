@@ -1,7 +1,9 @@
 package com.sovworks.eds.android.helpers;
 
 import android.app.Activity;
-import android.app.DialogFragment;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
@@ -34,7 +36,7 @@ public class ProgressDialogTaskFragmentCallbacks implements TaskCallbacks {
         }
     }
 
-    public ProgressDialogTaskFragmentCallbacks(Activity context, int dialogTextResId) {
+    public ProgressDialogTaskFragmentCallbacks(AppCompatActivity context, int dialogTextResId) {
         _context = context;
         _dialogTextResId = dialogTextResId;
     }
@@ -48,7 +50,7 @@ public class ProgressDialogTaskFragmentCallbacks implements TaskCallbacks {
     public void onResumeUI(Bundle args) {
         _dialog = initDialog(args);
         if (_dialog != null) {
-            _dialog.show(_context.getFragmentManager(), Dialog.TAG);
+            _dialog.show(_context.getSupportFragmentManager(), Dialog.TAG);
         }
     }
 
@@ -69,7 +71,7 @@ public class ProgressDialogTaskFragmentCallbacks implements TaskCallbacks {
 
     }
 
-    protected final Activity _context;
+    protected final AppCompatActivity _context;
 
     protected DialogFragment initDialog(Bundle args) {
         return Dialog.newInstance(_context.getText(_dialogTextResId).toString());

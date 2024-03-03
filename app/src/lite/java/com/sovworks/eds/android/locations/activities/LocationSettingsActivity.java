@@ -1,6 +1,6 @@
 package com.sovworks.eds.android.locations.activities;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.net.Uri;
 
 import com.sovworks.eds.android.activities.SettingsBaseActivity;

@@ -30,7 +30,7 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
     }
 
     public static void updateRowView(FileManagerActivity host, Object item) {
-        updateRowView((FileListViewFragment) host.getFragmentManager().findFragmentByTag(FileListViewFragment.TAG), item);
+        updateRowView((FileListViewFragment) host.getSupportFragmentManager().findFragmentByTag(FileListViewFragment.TAG), item);
     }
 
     public static void updateRowView(FileListViewFragment host, Object item) {
@@ -68,7 +68,7 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
         if (host == null) {
             return null;
         }
-        FileListViewFragment f = (FileListViewFragment) host.getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
+        FileListViewFragment f = (FileListViewFragment) host.getSupportFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
         return getCurrentRowViewInfo(f, item);
     }
 
@@ -226,7 +226,7 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
     protected abstract Drawable getDefaultIcon();
 
     protected FileListViewFragment getHostFragment() {
-        return _host == null ? null : (FileListViewFragment) _host.getFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
+        return _host == null ? null : (FileListViewFragment) _host.getSupportFragmentManager().findFragmentByTag(FileListViewFragment.TAG);
     }
 
     private boolean _isSelected;
