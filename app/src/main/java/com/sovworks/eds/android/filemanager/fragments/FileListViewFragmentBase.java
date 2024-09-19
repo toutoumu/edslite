@@ -67,6 +67,7 @@ import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.trello.rxlifecycle3.android.FragmentEvent;
+import com.trello.rxlifecycle3.components.support.RxAppCompatDialogFragment;
 import com.trello.rxlifecycle3.components.support.RxFragment;
 
 import java.io.IOException;
@@ -87,7 +88,7 @@ import io.reactivex.subjects.Subject;
 
 import static com.sovworks.eds.android.settings.UserSettingsCommon.FILE_BROWSER_SORT_MODE;
 
-public abstract class FileListViewFragmentBase extends RxFragment implements
+public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment implements
         SortDialog.SortingReceiver,
         FileManagerFragment,
         LocationOpenerBaseFragment.LocationOpenerResultReceiver,

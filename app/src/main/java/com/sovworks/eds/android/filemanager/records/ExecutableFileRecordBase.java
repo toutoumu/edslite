@@ -142,8 +142,8 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
         }
 
         int index = images.indexOf(this);
-        new StfalconImageViewer.Builder<>(_host.getBaseContext(), images, (imageView, image) ->
-                Glide.with(_host.getBaseContext())
+        new StfalconImageViewer.Builder<>(_host, images, (imageView, image) ->
+                Glide.with(_host)
                         .load(image.getPath())
                         .into(imageView))
                 .withStartPosition(index)
