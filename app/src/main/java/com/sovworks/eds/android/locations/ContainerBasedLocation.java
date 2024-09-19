@@ -190,7 +190,7 @@ public class ContainerBasedLocation extends EDSLocationBase implements Container
 
     @Override
     public void close(boolean force) throws IOException {
-        com.sovworks.eds.android.Logger.debug("Closing container at " + getLocation().getLocationUri());
+        Logger.debug("Closing container at " + getLocation().getLocationUri());
         super.close(force);
         if (isOpen()) {
             try {
@@ -203,7 +203,7 @@ public class ContainerBasedLocation extends EDSLocationBase implements Container
             }
             getSharedData().container = null;
         }
-        com.sovworks.eds.android.Logger.debug("Container has been closed");
+        Logger.debug("Container has been closed");
     }
 
     @Override

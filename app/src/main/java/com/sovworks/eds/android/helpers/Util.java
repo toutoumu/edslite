@@ -1,18 +1,14 @@
 package com.sovworks.eds.android.helpers;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.provider.Settings;
 
 import com.sovworks.eds.android.Logger;
-import com.sovworks.eds.android.R;
-import com.sovworks.eds.android.settings.UserSettings;
 import com.sovworks.eds.crypto.SecureBuffer;
 import com.sovworks.eds.crypto.SimpleCrypto;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.locations.Openable;
-import com.sovworks.eds.settings.SettingsCommon;
 
 import java.io.IOException;
 

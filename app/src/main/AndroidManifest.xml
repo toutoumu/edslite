@@ -194,5 +194,27 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/close_all_containers_widget_info" />
         </receiver>
+
+        <provider
+            android:name=".providers.MainContentProvider"
+            android:authorities="com.sovworks.eds.android.providers.main.lite"
+            android:enabled="true"
+            android:exported="true">
+            <grant-uri-permission android:path="selection" />
+            <grant-uri-permission android:path="/" />
+        </provider>
+        <provider
+            android:name=".providers.ContainersDocumentProvider"
+            android:authorities="com.sovworks.eds.android.providers.documents.lite"
+            android:enabled="@bool/atLeastKitKat"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS">
+            <!--suppress AndroidElementNotAllowed -->
+            <intent-filter>
+                <!--suppress AndroidElementNotAllowed -->
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
     </application>
 </manifest> 

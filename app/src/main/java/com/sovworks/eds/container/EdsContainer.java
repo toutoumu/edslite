@@ -1,6 +1,7 @@
 package com.sovworks.eds.container;
 
 import com.sovworks.eds.fs.Path;
+import com.sovworks.eds.veracrypt.FormatInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +16,7 @@ public class EdsContainer extends EdsContainerBase {
 
     private static final ContainerFormatInfo[] SUPPORTED_FORMATS =
             new ContainerFormatInfo[]{
-                    new com.sovworks.eds.veracrypt.FormatInfo(),
+                    new FormatInfo(),
                     new com.sovworks.eds.truecrypt.FormatInfo(),
                     new com.sovworks.eds.luks.FormatInfo()
             };
