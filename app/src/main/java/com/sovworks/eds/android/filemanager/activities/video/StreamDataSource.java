@@ -1,4 +1,4 @@
-package com.sovworks.eds.android.filemanager.activities;
+package com.sovworks.eds.android.filemanager.activities.video;
 
 
 import static com.sovworks.eds.android.providers.MainContentProviderBase.getLocationFromProviderUri;

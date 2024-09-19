@@ -1,4 +1,4 @@
-package com.sovworks.eds.android.filemanager.activities;
+package com.sovworks.eds.android.filemanager.activities.video;
 
 import android.content.res.Configuration;
 import android.net.Uri;

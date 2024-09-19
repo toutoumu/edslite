@@ -33,6 +33,10 @@
             android:paddingBottom="5dp"
             android:text="@string/create_new_container" />
 
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
+
         <Button
             android:id="@+id/add_existing_container_button"
             android:layout_width="0dp"

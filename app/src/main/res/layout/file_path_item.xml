@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:paddingHorizontal="8dp"
+    tools:background="#ff0000">
+
+    <TextView
+        android:id="@+id/tv_value"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:drawableRight="@mipmap/ic_arrow"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:text="@string/app_name"
+        android:textColor="#ffffff"
+        android:textSize="14sp" />
+
+</LinearLayout>

@@ -16,13 +16,10 @@ public class FileManagerActivity extends FileManagerActivityBase {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // 文件管理授权
-            if (Environment.isExternalStorageManager()) {
-                // 已经授权
-            } else {
+            // 管理全部文件的权限判断是否获取MANAGE_EXTERNAL_STORAGE权限：
+            if (!Environment.isExternalStorageManager()) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                Uri uri = Uri.fromParts("package", getPackageName(), null);
-                intent.setData(uri);
+                intent.setData(Uri.parse("package:" + getPackageName()));
                 startActivityForResult(intent, 123);
             }
         } else {

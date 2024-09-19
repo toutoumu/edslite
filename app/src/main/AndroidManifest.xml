@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.sovworks.eds.android"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.sovworks.eds.android">
 
     <supports-screens android:anyDensity="true" />
 
@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -24,7 +25,7 @@
         android:label="@string/eds"
         android:theme="@style/Theme.EDS">
         <activity
-            android:name=".filemanager.activities.VideoActivity"
+            android:name=".filemanager.activities.video.VideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -35,9 +36,31 @@
             </intent-filter>-->
         </activity>
         <activity
+            android:name=".filemanager.activities.zip.ZipFileActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
+            android:name=".filemanager.activities.rar.RarFileActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
+        <activity
             android:name=".filemanager.activities.FileManagerActivity"
-            android:label="@string/eds"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/eds">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -89,8 +112,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".locations.activities.LocationSettingsActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/settings" />
+            android:label="@string/settings"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.LocationShortcutWidgetConfigActivity"
             android:exported="true">
@@ -101,8 +124,8 @@
         <activity
             android:name=".activities.CancelTaskActivity"
             android:excludeFromRecents="true"
-            android:label="@string/eds"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/eds">
             <intent-filter>
                 <action android:name="com.sovworks.eds.android.ACTION_CANCEL_TASK" />
             </intent-filter>
@@ -129,13 +152,19 @@
             android:label="@string/settings"
             android:windowSoftInputMode="adjustPan" />
 
-        <service android:name=".service.FileOpsService" />
-        <service android:name=".service.LocationsService" />
+        <service
+            android:name=".service.FileOpsService"
+            android:exported="true"
+            android:foregroundServiceType="dataSync" />
+        <service
+            android:name=".service.LocationsService"
+            android:exported="true"
+            android:foregroundServiceType="dataSync" />
 
         <receiver
             android:name=".widgets.LocationShortcutWidget"
-            android:label="@string/eds_shortcut"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/eds_shortcut">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -149,8 +178,8 @@
         </receiver>
         <receiver
             android:name=".widgets.CloseAllContainersWidget"
-            android:label="@string/close_all_containers"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/close_all_containers">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

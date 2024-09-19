@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "com.sovworks.eds.android"
-        minSdkVersion 21
-        targetSdkVersion 33
+        minSdkVersion 24
+        targetSdkVersion 34
         versionCode 237
         versionName "2.0.0.237"
         multiDexEnabled true
@@ -16,27 +16,27 @@ android {
         ndk {
             // Specifies the ABI configurations of your native
             // libraries Gradle should build and package with your APK.
-            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+            abiFilters /*'x86', 'x86_64', 'armeabi-v7a',*/ 'arm64-v8a'
         }
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
-    // ndkVersion = "16.1.4479499"
+    ndkVersion = "25.1.8937393"
 
-	signingConfigs {
+    signingConfigs {
         debug {
             storeFile file('../misc/keys.keystore')
             storePassword 'android'
             keyAlias 'eds-debug-key'
             keyPassword 'android'
         }
-    }    
+    }
 
     flavorDimensions "fullOrLite", "licCheckType", "inet", "fsm"
 
     productFlavors {
-        
+
         lite {
             dimension "fullOrLite"
             applicationId "com.sovworks.edslite"
@@ -75,7 +75,7 @@ android {
     }
 
     buildTypes {
-        
+
         debug {
             signingConfig signingConfigs.debug
             externalNativeBuild {
@@ -97,8 +97,8 @@ android {
     }
 
     lintOptions {
-          //checkReleaseBuilds false
-          abortOnError false
+        //checkReleaseBuilds false
+        abortOnError false
     }
 
     applicationVariants.all { variant ->
@@ -110,7 +110,7 @@ android {
     externalNativeBuild {
 
         cmake {
-           path "CMakeLists.txt"
+            path "CMakeLists.txt"
         }
     }
 
@@ -143,13 +143,26 @@ dependencies {
     // 日志
     api "com.jakewharton.timber:timber:4.7.1"
     api "com.orhanobut:logger:2.2.0"
+
+    implementation 'com.github.stfalcon-studio:StfalconImageViewer:v1.0.1'
+    // https://www.jianshu.com/p/54bf089d0b04 解决Glide启用过渡时Placeholder变形问题
+    implementation 'com.github.WenHuayu:GlidePlaceholderDrawable:1.0.0'
+    //Glide 4.x https://github.com/bumptech/glide
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    //implementation 'jp.wasabeef:glide-transformations:3.0.1'
+    //implementation 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.31'
+    implementation "net.lingala.zip4j:zip4j:2.11.5"
+    implementation("com.github.junrar:junrar:7.5.5")
 }
 
 
 apply from: 'build-full.gradle'
 
 if (file('build-local').exists()) {
-	apply from: 'build-local.gradle'
+    apply from: 'build-local.gradle'
 }
 
 configurations.all {
