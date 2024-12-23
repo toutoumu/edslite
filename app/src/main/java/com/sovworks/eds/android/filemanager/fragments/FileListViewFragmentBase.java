@@ -547,7 +547,9 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
                 filter(records -> !records.isEmpty()).
                 compose(bindToLifecycle()).
                 observeOn(AndroidSchedulers.mainThread()).
-                subscribe(adapter::addAll, err ->
+                subscribe(records -> {
+                    // adapter::addAll
+                }, err ->
                 {
                     if (!(err instanceof CancellationException)) {
                         Logger.log(err);
@@ -559,6 +561,7 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
         showFileIfNeeded(loadInfo.file);
     }
 
+    @SuppressLint("CheckResult")
     private void setLocationNotLoading() {
         Logger.debug(TAG + ": Finished loading");
         if (_loadingRecordObserver != null) {
