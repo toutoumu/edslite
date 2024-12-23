@@ -1,5 +1,7 @@
 package com.sovworks.eds.android.locations.fragments;
 
+import static android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM;
+
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -144,6 +146,7 @@ public abstract class LocationListBaseFragment extends ListFragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.add).setVisible(getDefaultLocationType() != null);
+        menu.findItem(R.id.add).setShowAsAction(SHOW_AS_ACTION_IF_ROOM);
     }
 
     @Override

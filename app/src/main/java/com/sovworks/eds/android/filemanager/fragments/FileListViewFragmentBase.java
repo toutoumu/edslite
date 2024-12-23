@@ -1,10 +1,13 @@
 package com.sovworks.eds.android.filemanager.fragments;
 
+import static android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -231,19 +234,19 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
                 isReading, isSendAction, hasInClipboard, isSelectAction));
 
         menu.findItem(R.id.progressbar).setVisible(isReading);
-        menu.findItem(R.id.copy).setVisible(!isReading && !isSelectAction && (isSendAction || hasInClipboard));
-        menu.findItem(R.id.move).setVisible(!isReading && !isSelectAction && hasInClipboard);
+        menu.findItem(R.id.copy).setVisible(!isReading && !isSelectAction && (isSendAction || hasInClipboard)).setShowAsAction(SHOW_AS_ACTION_IF_ROOM);
+        menu.findItem(R.id.move).setVisible(!isReading && !isSelectAction && hasInClipboard).setShowAsAction(SHOW_AS_ACTION_IF_ROOM);
 
         menu.findItem(R.id.new_file).setVisible(
                 !isReading
                         && !isSendAction
                         && allowCreateNewFile()
                         && (!isSelectAction || getFileManagerActivity().allowFileSelect())
-        );
+        ).setShowAsAction(SHOW_AS_ACTION_IF_ROOM);
         menu.findItem(R.id.new_dir).setVisible(
                 !isReading
                         && allowCreateNewFolder()
-        );
+        ).setShowAsAction(SHOW_AS_ACTION_IF_ROOM);
         menu.findItem(R.id.select_all).setVisible((!isSelectAction || !isSingleSelectionMode()) && !getSelectableFiles().isEmpty());
     }
 

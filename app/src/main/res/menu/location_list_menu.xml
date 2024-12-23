@@ -5,6 +5,6 @@
         android:title="@string/add_new"
         android:id="@+id/add"
         android:icon="@drawable/ic_menu_add"
-        android:showAsAction="never"
+        android:showAsAction="ifRoom"
         tools:ignore="AppCompatResource" />
 </menu>

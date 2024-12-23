@@ -1,5 +1,7 @@
 package com.sovworks.eds.android.locations.fragments;
 
+import static android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -60,6 +62,7 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem mi = menu.findItem(R.id.confirm);
+        mi.setShowAsAction(SHOW_AS_ACTION_IF_ROOM);
         mi.setVisible(_state.containsKey(ARG_ADD_EXISTING_LOCATION));
         mi.setTitle(_state.getBoolean(ARG_ADD_EXISTING_LOCATION) ? R.string.add_container : R.string.create_new_container);
         boolean enabled = checkParams();
