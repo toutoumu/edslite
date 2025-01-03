@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import androidx.ijk.R;
 
-import org.jetbrains.annotations.NotNull;
-
 
 /**
  * Author: Relin
@@ -45,7 +43,7 @@ public class IJKControlViewHolder {
      * 进度
      */
     private SeekBar seek_ijk_bar;
-    private ProgressBar progress_bar;
+    private ProgressBar small_progress_bar;
     /**
      * 时长
      */
@@ -57,11 +55,6 @@ public class IJKControlViewHolder {
     /**
      * 屏幕中间控件
      */
-    // private ImageView iv_ijk_center;
-    /**
-     * 屏幕中间进度条
-     */
-    private IJKCircleProgressView ijk_center_progress;
     /**
      * loading
      */
@@ -111,11 +104,9 @@ public class IJKControlViewHolder {
         progress_layout = controlView.findViewById(R.id.progress_layout);
         tv_ijk_current = controlView.findViewById(R.id.tv_ijk_current);
         seek_ijk_bar = controlView.findViewById(R.id.seek_ijk_bar);
-        progress_bar = controlView.findViewById(R.id.progress_bar);
+        small_progress_bar = controlView.findViewById(R.id.small_progress_bar);
         tv_ijk_duration = controlView.findViewById(R.id.tv_ijk_duration);
         iv_ijk_screen = controlView.findViewById(R.id.iv_ijk_screen);
-        // iv_ijk_center = controlView.findViewById(R.id.iv_ijk_center);
-        ijk_center_progress = controlView.findViewById(R.id.ijk_center_progress);
         fl_ijk_loading = controlView.findViewById(R.id.fl_ijk_loading);
         iv_ijk_loading = controlView.findViewById(R.id.iv_ijk_loading);
         iv_ijk_cover = controlView.findViewById(R.id.iv_ijk_cover);
@@ -190,8 +181,8 @@ public class IJKControlViewHolder {
         return seek_ijk_bar;
     }
 
-    public ProgressBar getProgressBar() {
-        return progress_bar;
+    public ProgressBar getSmallProgressBar() {
+        return small_progress_bar;
     }
 
     /**
@@ -210,24 +201,6 @@ public class IJKControlViewHolder {
      */
     public ImageView getScreenSwitchView() {
         return iv_ijk_screen;
-    }
-
-    /**
-     * 获取屏幕中间图片
-     *
-     * @return
-     */
-    /* public ImageView getCenterImageView() {
-        return iv_ijk_center;
-    } */
-
-    /**
-     * 获取音量、亮度控件
-     *
-     * @return
-     */
-    public IJKCircleProgressView getVoiceLightProgressView() {
-        return ijk_center_progress;
     }
 
     /**
@@ -277,7 +250,7 @@ public class IJKControlViewHolder {
 
     public void showController() {
         progress_layout.setVisibility(View.VISIBLE);
-        progress_bar.setVisibility(View.GONE);
+        small_progress_bar.setVisibility(View.GONE);
         if (fl_ijk_loading.getVisibility() != View.VISIBLE) {
             iv_ijk_play.setVisibility(View.VISIBLE);
         }
@@ -285,7 +258,7 @@ public class IJKControlViewHolder {
 
     public void hideController() {
         progress_layout.setVisibility(View.GONE);
-        progress_bar.setVisibility(View.VISIBLE);
+        small_progress_bar.setVisibility(View.VISIBLE);
         iv_ijk_play.setVisibility(View.GONE);
     }
 }

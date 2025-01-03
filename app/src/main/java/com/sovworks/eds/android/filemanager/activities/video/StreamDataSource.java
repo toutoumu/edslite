@@ -6,8 +6,8 @@ import static com.sovworks.eds.android.providers.MainContentProviderBase.getLoca
 import android.content.Context;
 import android.net.Uri;
 
+import androidx.ijk.view.IJKMediaDataSource;
 
-import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.fs.File;
 import com.sovworks.eds.fs.RandomAccessIO;
 import com.sovworks.eds.fs.util.Util;
@@ -16,9 +16,9 @@ import com.sovworks.eds.locations.Location;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import tv.danmaku.ijk.media.player.misc.IMediaDataSource;
-
-public class StreamDataSource implements IMediaDataSource {
+public class StreamDataSource implements IJKMediaDataSource {
+    private final Uri uri;
+    private final Context context;
     private long mPosition = 0;
 
     private RandomAccessIO stream;
@@ -26,6 +26,8 @@ public class StreamDataSource implements IMediaDataSource {
     File f;
 
     public StreamDataSource(Context context, Uri uri) throws IOException {
+        this.uri = uri;
+        this.context = context;
         Location loc = getLocationFromProviderUri(context, uri);
         File.AccessMode am = Util.getAccessModeFromString("r");
         if (!loc.getCurrentPath().isFile() && am == File.AccessMode.Read) {
@@ -39,15 +41,15 @@ public class StreamDataSource implements IMediaDataSource {
     @Override
     public int readAt(long position, byte[] buffer, int offset, int size) throws IOException {
         if (size <= 0) {
-            Logger.debug("未读取,position = " + size + " size = " + size + " offset = " + offset);
+            // Logger.debug("未读取,position = " + size + " size = " + size + " offset = " + offset);
             return size;
         }
-        Logger.debug("读取开始");
+        // Logger.debug("读取开始");
         if (mPosition != position) {
             stream.seek(position);
         }
         int length = stream.read(buffer, offset, size);
-        Logger.debug("读取数据长度: " + length);
+        // Logger.debug("读取数据长度: " + length);
         mPosition += length;
         return length;
     }
@@ -61,9 +63,14 @@ public class StreamDataSource implements IMediaDataSource {
     @Override
     public void close() throws IOException {
         if (stream != null) {
-            Logger.debug("读取结束,关闭");
+            // Logger.debug("读取结束,关闭");
             stream.close();
         }
         stream = null;
+    }
+
+    @Override
+    public IJKMediaDataSource newDataSource() throws IOException {
+        return new StreamDataSource(context, uri);
     }
 }

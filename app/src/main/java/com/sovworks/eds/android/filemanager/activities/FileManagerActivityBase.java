@@ -2,6 +2,7 @@ package com.sovworks.eds.android.filemanager.activities;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -335,6 +336,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
 
     }
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -470,14 +472,20 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     }
 
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     protected void onStart() {
         super.onStart();
         checkIfCurrentLocationIsStillOpen();
         getDrawerController().updateMenuItemViews();
-        registerReceiver(_updatePathReceiver, new IntentFilter(
-                FileOpsService.BROADCAST_FILE_OPERATION_COMPLETED));
-        registerReceiver(_closeAllReceiver, new IntentFilter(LocationsManager.BROADCAST_CLOSE_ALL));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(_updatePathReceiver, new IntentFilter(FileOpsService.BROADCAST_FILE_OPERATION_COMPLETED), Context.RECEIVER_NOT_EXPORTED);
+            registerReceiver(_closeAllReceiver, new IntentFilter(LocationsManager.BROADCAST_CLOSE_ALL), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(_updatePathReceiver, new IntentFilter(FileOpsService.BROADCAST_FILE_OPERATION_COMPLETED));
+            registerReceiver(_closeAllReceiver, new IntentFilter(LocationsManager.BROADCAST_CLOSE_ALL));
+        }
+
         Logger.debug("FileManagerActivity has started");
     }
 

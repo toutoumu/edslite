@@ -5,7 +5,7 @@ import androidx.ijk.helper.Orientation;
 public interface OnIJKVideoSwitchScreenListener {
 
     /**
-     * IJK屏幕切换
+     * IJK屏幕旋转方向监听
      *
      * @param orientation
      */

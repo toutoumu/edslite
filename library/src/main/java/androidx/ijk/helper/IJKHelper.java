@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -55,11 +54,10 @@ public class IJKHelper extends PlayerGestureHelper {
      */
     private boolean isHaveActionBar;
 
-    public IJKHelper(Context context, IJKVideoView playerView, OnIjkVideoTouchListener listener) {
+    public IJKHelper(Context context, IJKVideoView playerView) {
         super(context,
                 playerView,
                 new AppPreferences(context.getSharedPreferences("sp", MODE_PRIVATE)),
-                listener,
                 (AudioManager) context.getSystemService(Service.AUDIO_SERVICE));
         Log.i(TAG, "->IJKHelper INIT");
     }
