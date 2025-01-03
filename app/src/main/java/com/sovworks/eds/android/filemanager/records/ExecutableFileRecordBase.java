@@ -147,6 +147,7 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
                         .load(image.getPath())
                         .into(imageView))
                 .withStartPosition(index)
+                .withHiddenStatusBar(false)
                 .show(true);
     }
 }

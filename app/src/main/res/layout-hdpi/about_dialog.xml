@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
+    android:layout_width="match_parent"
     android:minWidth="@dimen/about_dialog_width"
     android:layout_height="match_parent">
 
@@ -23,15 +23,38 @@
             android:layout_marginBottom="1dp" />
 
         <TextView
-            android:id="@+id/activationIdTextView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:inputType="none"
-            android:textIsSelectable="true"
-            android:text="@string/activation_id"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="4dp"
-            android:textSize="12sp" />
+            android:text="@string/donation_notice"
+            android:textSize="14sp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp" />
+
+        <Button
+            android:id="@+id/donation_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/make_a_donation"
+            style="?android:attr/buttonStyle"
+            android:layout_marginTop="1dp" />
+
+        <Button
+            android:id="@+id/check_full_version_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/check_the_full_version"
+            style="?android:attr/buttonStyle"
+            android:layout_marginTop="1dp" />
+
+        <Button
+            android:id="@+id/check_source_code_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/check_source_code"
+            style="?android:attr/buttonStyle"
+            android:layout_marginTop="1dp" />
 
         <Button
             android:id="@+id/show_version_history_button"
@@ -56,6 +79,5 @@
             android:text="@string/get_program_log"
             style="?android:attr/buttonStyle"
             android:layout_marginTop="4dp" />
-
     </LinearLayout>
 </ScrollView>
