@@ -2,6 +2,7 @@ package com.sovworks.eds.android.fs;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -65,8 +66,8 @@ public class ContentResolverFs implements FileSystem {
         return null;
     }
 
-    public static ArrayList<com.sovworks.eds.fs.Path> fromSendIntent(Intent intent, ContentResolver contentResolver) {
-        ContentResolverFs fs = new ContentResolverFs(contentResolver);
+    public static ArrayList<com.sovworks.eds.fs.Path> fromSendIntent(Intent intent, Context context) {
+        ContentResolverFs fs = new ContentResolverFs(context);
         ArrayList<com.sovworks.eds.fs.Path> paths = new ArrayList<>();
         Bundle extras = intent.getExtras();
         if (extras.containsKey(Intent.EXTRA_STREAM)) {
@@ -84,8 +85,9 @@ public class ContentResolverFs implements FileSystem {
         return paths;
     }
 
-    public ContentResolverFs(ContentResolver contentResolver) {
-        _contentResolver = contentResolver;
+    public ContentResolverFs(Context context) {
+        _context = context;
+        _contentResolver = context.getContentResolver();
     }
 
     @Override
@@ -431,7 +433,7 @@ public class ContentResolverFs implements FileSystem {
         @Override
         public RandomAccessIO getRandomAccessIO(AccessMode accessMode)
                 throws IOException {
-            ParcelFileDescriptor pfd = getFileDescriptor(accessMode);
+            ParcelFileDescriptor pfd = getFileDescriptor(_context, accessMode);
             if (pfd == null) {
                 throw new UnsupportedOperationException();
             }
@@ -461,7 +463,7 @@ public class ContentResolverFs implements FileSystem {
         }
 
         @Override
-        public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) throws IOException {
+        public ParcelFileDescriptor getFileDescriptor(Context context, AccessMode accessMode) throws IOException {
             return _contentResolver.openFileDescriptor(_path.getUri(), com.sovworks.eds.fs.util.Util.getStringModeFromAccessMode(accessMode));
         }
 
@@ -479,7 +481,7 @@ public class ContentResolverFs implements FileSystem {
         private final Path _path;
     }
 
+    private final Context _context;
     private final ContentResolver _contentResolver;
 }
-
 

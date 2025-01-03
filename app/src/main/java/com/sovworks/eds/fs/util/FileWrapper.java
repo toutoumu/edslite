@@ -1,5 +1,6 @@
 package com.sovworks.eds.fs.util;
 
+import android.content.Context;
 import android.os.ParcelFileDescriptor;
 
 import com.sovworks.eds.fs.File;
@@ -36,8 +37,8 @@ public abstract class FileWrapper extends FSRecordWrapper implements File {
     }
 
     @Override
-    public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) throws IOException {
-        return getBase().getFileDescriptor(accessMode);
+    public ParcelFileDescriptor getFileDescriptor(Context context, AccessMode accessMode) throws IOException {
+        return getBase().getFileDescriptor(context, accessMode);
     }
 
     @Override

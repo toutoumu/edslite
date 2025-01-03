@@ -1146,7 +1146,7 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
                     false,
                     ContentResolverFs.fromSendIntent(
                             getActivity().getIntent(),
-                            getActivity().getContentResolver()
+                            getActivity()
                     )
             );
             FileOpsService.copyFiles(getActivity(), recs, false);

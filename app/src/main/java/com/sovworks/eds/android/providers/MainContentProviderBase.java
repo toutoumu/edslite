@@ -18,9 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
-
-import androidx.annotation.NonNull;
-
 import android.util.Base64;
 
 import com.sovworks.eds.android.Logger;
@@ -56,7 +53,6 @@ import java.util.Collections;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.sovworks.eds.android.providers.cursor.FSCursorBase.COLUMN_ID;
@@ -66,6 +62,8 @@ import static com.sovworks.eds.android.providers.cursor.FSCursorBase.COLUMN_NAME
 import static com.sovworks.eds.android.providers.cursor.FSCursorBase.COLUMN_PATH;
 import static com.sovworks.eds.android.providers.cursor.FSCursorBase.COLUMN_SIZE;
 import static com.sovworks.eds.android.providers.cursor.FSCursorBase.COLUMN_TITLE;
+
+import androidx.annotation.NonNull;
 
 public abstract class MainContentProviderBase extends ContentProvider {
     public static final String COLUMN_LOCATION = "location";
@@ -130,7 +128,7 @@ public abstract class MainContentProviderBase extends ContentProvider {
                 throw new FileNotFoundException();
             }
             final File f = loc.getCurrentPath().getFile();
-            ParcelFileDescriptor fd = f.getFileDescriptor(am);
+            ParcelFileDescriptor fd = f.getFileDescriptor(cp.getContext(), am);
             if (fd != null) {
                 return fd;
             }
@@ -176,7 +174,7 @@ public abstract class MainContentProviderBase extends ContentProvider {
                         );
 
             }
-            return tmpLocation.getCurrentPath().getFile().getFileDescriptor(am);
+            return tmpLocation.getCurrentPath().getFile().getFileDescriptor(cp.getContext(), am);
         } catch (IOException e) {
             Logger.log(e);
             throw new RuntimeException(e);
@@ -233,7 +231,7 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
     private static ParcelFileDescriptor readFromPipe(final File targetFile, final Bundle opts) throws IOException {
         final ParcelFileDescriptor[] pfds = ParcelFileDescriptor.createPipe();
-        Disposable d = Completable.create(s -> {
+        Completable.create(s -> {
                     FileInputStream fin = new FileInputStream(pfds[0].getFileDescriptor());
                     try {
                         Util.CancellableProgressInfo pi = new Util.CancellableProgressInfo();
@@ -259,7 +257,7 @@ public abstract class MainContentProviderBase extends ContentProvider {
 
     private static ParcelFileDescriptor writeToPipe(final File srcFile, final Bundle opts) throws IOException {
         final ParcelFileDescriptor[] pfds = ParcelFileDescriptor.createPipe();
-        Disposable d = Completable.create(s ->
+        Completable.create(s ->
                 {
                     FileOutputStream fout = new FileOutputStream(pfds[1].getFileDescriptor());
                     try {

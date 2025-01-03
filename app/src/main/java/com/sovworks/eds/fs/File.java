@@ -1,5 +1,6 @@
 package com.sovworks.eds.fs;
 
+import android.content.Context;
 import android.os.ParcelFileDescriptor;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public interface File extends FSRecord {
 
     long getSize() throws IOException;
 
-    ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) throws IOException;
+    ParcelFileDescriptor getFileDescriptor(Context context, AccessMode accessMode) throws IOException;
 
     void copyToOutputStream(OutputStream output, long offset, long count, ProgressInfo progressInfo) throws IOException;
 

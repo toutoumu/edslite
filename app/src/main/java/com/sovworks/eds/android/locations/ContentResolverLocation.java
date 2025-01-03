@@ -52,7 +52,7 @@ public class ContentResolverLocation extends LocationBase {
     @Override
     public synchronized ContentResolverFs getFS() throws IOException {
         if (getSharedData().fs == null) {
-            getSharedData().fs = new ContentResolverFs(getContext().getContentResolver());
+            getSharedData().fs = new ContentResolverFs(getContext());
         }
 
         return (ContentResolverFs) getSharedData().fs;

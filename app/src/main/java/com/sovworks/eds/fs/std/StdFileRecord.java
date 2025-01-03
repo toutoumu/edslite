@@ -1,5 +1,6 @@
 package com.sovworks.eds.fs.std;
 
+import android.content.Context;
 import android.os.ParcelFileDescriptor;
 
 import com.sovworks.eds.fs.RandomAccessIO;
@@ -25,7 +26,7 @@ public class StdFileRecord extends StdFsRecord implements com.sovworks.eds.fs.Fi
     }
 
     @Override
-    public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) throws IOException {
+    public ParcelFileDescriptor getFileDescriptor(Context context, AccessMode accessMode) throws IOException {
         return ParcelFileDescriptor.open(_path.getJavaFile(), Util.getParcelFileDescriptorModeFromAccessMode(accessMode));
     }
 

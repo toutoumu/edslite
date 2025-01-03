@@ -9,10 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
 import android.provider.DocumentsContract;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-
-import android.text.TextUtils;
 
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.service.FileOpsService;
@@ -130,7 +129,7 @@ public class DocumentTreeFS implements FileSystem {
 
         @Override
         public RandomAccessIO getRandomAccessIO(File.AccessMode accessMode) throws IOException {
-            ParcelFileDescriptor pfd = getFileDescriptor(accessMode);
+            ParcelFileDescriptor pfd = getFileDescriptor(_context, accessMode);
             if (pfd == null) {
                 throw new UnsupportedOperationException();
             }
@@ -143,8 +142,8 @@ public class DocumentTreeFS implements FileSystem {
         }
 
         @Override
-        public ParcelFileDescriptor getFileDescriptor(File.AccessMode accessMode) throws IOException {
-            return _context.getContentResolver().openFileDescriptor(
+        public ParcelFileDescriptor getFileDescriptor(Context context, File.AccessMode accessMode) throws IOException {
+            return context.getContentResolver().openFileDescriptor(
                     _path.getDocumentUri(),
                     Util.getStringModeFromAccessMode(accessMode)
             );
@@ -657,5 +656,4 @@ public class DocumentTreeFS implements FileSystem {
         }
     }
 }
-
 

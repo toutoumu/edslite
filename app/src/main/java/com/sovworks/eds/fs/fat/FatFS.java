@@ -1,5 +1,6 @@
 package com.sovworks.eds.fs.fat;
 
+import android.content.Context;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
@@ -840,8 +841,8 @@ public class FatFS implements FileSystem {
         }
 
         @Override
-        public ParcelFileDescriptor getFileDescriptor(AccessMode accessMode) {
-            return null;
+        public ParcelFileDescriptor getFileDescriptor(Context context, AccessMode accessMode) throws IOException {
+            return Util.toParcelFileDescriptor(context, this, accessMode);
         }
 
         @Override

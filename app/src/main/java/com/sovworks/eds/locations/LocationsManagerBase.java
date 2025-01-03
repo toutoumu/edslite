@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
 
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.helpers.StorageOptions;
@@ -887,5 +889,23 @@ public abstract class LocationsManagerBase {
 
     private final Context _context;
     private MediaMountedReceiver _mediaChangedReceiver;
+
+    private Handler _IOHandler;
+    private HandlerThread _IOHandlerThread;
+
+    public void initIOHandler() {
+        _IOHandlerThread = new HandlerThread("locations_manager");
+        _IOHandlerThread.start();
+        _IOHandler = new Handler(_IOHandlerThread.getLooper());
+    }
+
+    public void stopIOHandler() {
+        _IOHandlerThread.quitSafely();
+        _IOHandler = null;
+    }
+
+    public Handler getIOHandler() {
+        return _IOHandler;
+    }
 
 }

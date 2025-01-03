@@ -1,7 +1,11 @@
 package com.sovworks.eds.fs.util;
 
+import android.content.Context;
+import android.os.Handler;
 import android.os.ParcelFileDescriptor;
+import android.os.storage.StorageManager;
 
+import com.sovworks.eds.android.helpers.RAIOProxyFileDescriptorCallback;
 import com.sovworks.eds.fs.DataInput;
 import com.sovworks.eds.fs.DataOutput;
 import com.sovworks.eds.fs.Directory;
@@ -9,6 +13,7 @@ import com.sovworks.eds.fs.File.AccessMode;
 import com.sovworks.eds.fs.FileSystem;
 import com.sovworks.eds.fs.Path;
 import com.sovworks.eds.fs.RandomAccessIO;
+import com.sovworks.eds.locations.LocationsManager;
 
 import java.io.BufferedReader;
 import java.io.EOFException;
@@ -91,6 +96,20 @@ public class Util {
 
         }
         return bytesRead;
+    }
+
+    public static ParcelFileDescriptor toParcelFileDescriptor(
+            Context context,
+            com.sovworks.eds.fs.File file,
+            AccessMode accessMode) throws IOException {
+        StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        Handler ioHandler = LocationsManager.getLocationsManager(context)
+                .getIOHandler();
+        return storageManager.openProxyFileDescriptor(
+                getParcelFileDescriptorModeFromAccessMode(accessMode),
+                new RAIOProxyFileDescriptorCallback(file.getRandomAccessIO(accessMode)),
+                ioHandler
+        );
     }
 
     public static int getParcelFileDescriptorModeFromAccessMode(AccessMode mode) {

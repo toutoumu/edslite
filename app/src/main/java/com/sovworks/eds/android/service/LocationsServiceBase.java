@@ -97,7 +97,7 @@ public class LocationsServiceBase extends Service {
                 context,
                 loc.getId().hashCode(),
                 i,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_ONE_SHOT
         );
         LocationsService.setCheckTimer(context, pi, triggerTime);
     }
@@ -128,6 +128,7 @@ public class LocationsServiceBase extends Service {
             registerReceiver(_shutdownReceiver, new IntentFilter("android.intent.action.QUICKBOOT_POWEROFF"));
             _inactivityCheckReceiver = new InactivityCheckReceiver();
             registerReceiver(_inactivityCheckReceiver, new IntentFilter(ACTION_CHECK_INACTIVE_LOCATION));
+            _locationsManager.initIOHandler();
         } catch (Exception e) {
             Logger.showAndLog(this, e);
         }
@@ -167,6 +168,7 @@ public class LocationsServiceBase extends Service {
         }
         TempFilesMonitor.getMonitor(this).stopChangesMonitor();
         _locationsManager.closeAllLocations(true, true);
+        _locationsManager.stopIOHandler();
         deleteMirror();
         _settings = null;
         _locationsManager = null;
@@ -198,9 +200,9 @@ public class LocationsServiceBase extends Service {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CompatHelper.getServiceRunningNotificationsChannelId(this))
                 .setContentTitle(getString(R.string.eds_service_is_running))
-                .setSmallIcon(R.drawable.ic_notification_new)
+                .setSmallIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? R.drawable.ic_notification_new : R.drawable.ic_notification)
                 .setContentText("")
-                .setContentIntent(PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_IMMUTABLE))
+                .setContentIntent(PendingIntent.getActivity(this, 0, i, 0))
                 .setOngoing(true)
                 .addAction(
                         R.drawable.ic_action_cancel,
@@ -209,7 +211,7 @@ public class LocationsServiceBase extends Service {
                                 this,
                                 0,
                                 new Intent(this, CloseLocationsActivity.class),
-                                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                PendingIntent.FLAG_UPDATE_CURRENT
                         )
                 );
         Notification n = builder.build();
