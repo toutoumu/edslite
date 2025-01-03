@@ -154,11 +154,12 @@
         <service
             android:name=".service.FileOpsService"
             android:exported="true"
-            android:foregroundServiceType="dataSync" />
+            android:permission="android.permission.MANAGE_DOCUMENTS" />
+
         <service
             android:name=".service.LocationsService"
             android:exported="true"
-            android:foregroundServiceType="dataSync" />
+            android:permission="android.permission.MANAGE_DOCUMENTS" />
 
         <receiver
             android:name=".widgets.LocationShortcutWidget"
@@ -198,14 +199,15 @@
             android:name=".providers.MainContentProvider"
             android:authorities="com.sovworks.eds.android.providers.main.lite"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS">
             <grant-uri-permission android:path="selection" />
             <grant-uri-permission android:path="/" />
         </provider>
         <provider
             android:name=".providers.ContainersDocumentProvider"
             android:authorities="com.sovworks.eds.android.providers.documents.lite"
-            android:enabled="@bool/atLeastKitKat"
+            android:enabled="true"
             android:exported="true"
             android:grantUriPermissions="true"
             android:permission="android.permission.MANAGE_DOCUMENTS">

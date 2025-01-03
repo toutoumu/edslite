@@ -11,6 +11,7 @@ import com.sovworks.eds.android.filemanager.activities.rar.RarFileActivity;
 import com.sovworks.eds.android.filemanager.activities.video.VideoActivity;
 import com.sovworks.eds.android.helpers.CachedPathInfo;
 import com.sovworks.eds.android.helpers.TempFilesMonitor;
+import com.sovworks.eds.android.providers.MainContentProvider;
 import com.sovworks.eds.android.service.FileOpsService;
 import com.sovworks.eds.android.settings.UserSettings;
 import com.sovworks.eds.exceptions.ApplicationException;
@@ -53,7 +54,8 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
                 mime.startsWith("video/") || mime.startsWith("audio/")
         ) {
             // 视频使用内置播放器打开
-            Uri devUri = _loc.getDeviceAccessibleUri(this.getPath());
+            // Uri devUri = _loc.getDeviceAccessibleUri(this.getPath()); 不受配置影响强制使用 content provide
+            Uri devUri = MainContentProvider.getContentUriFromLocation(_loc, this.getPath());
             Intent intent = new Intent();
             intent.putExtra("uri", devUri);
             intent.setClass(_host.getBaseContext(), VideoActivity.class);
@@ -61,7 +63,8 @@ public abstract class ExecutableFileRecordBase extends FileRecord {
         } else if (mime.startsWith("application/x-rar-compressed")) {
             // 压缩文件处理
             Timber.e("点击压缩文件");
-            Uri devUri = _loc.getDeviceAccessibleUri(this.getPath());
+            // Uri devUri = _loc.getDeviceAccessibleUri(this.getPath()); 不受配置影响强制使用 content provide
+            Uri devUri = MainContentProvider.getContentUriFromLocation(_loc, this.getPath());
             Intent intent = new Intent();
             intent.putExtra("uri", devUri);
             intent.setClass(_host.getBaseContext(), RarFileActivity.class);
