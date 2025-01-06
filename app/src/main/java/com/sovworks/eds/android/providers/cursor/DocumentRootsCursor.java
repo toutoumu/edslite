@@ -1,6 +1,7 @@
 package com.sovworks.eds.android.providers.cursor;
 
-import android.annotation.TargetApi;
+import static com.sovworks.eds.android.providers.ContainersDocumentProviderBase.getDocumentIdFromLocation;
+
 import android.content.Context;
 import android.database.AbstractCursor;
 import android.os.Build;
@@ -21,9 +22,6 @@ import java.util.List;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.sovworks.eds.android.providers.ContainersDocumentProviderBase.getDocumentIdFromLocation;
-
-@TargetApi(Build.VERSION_CODES.KITKAT)
 public class DocumentRootsCursor extends AbstractCursor {
     public DocumentRootsCursor(Context context, LocationsManager lm, @NotNull String[] projection) {
         _context = context;

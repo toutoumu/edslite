@@ -1,5 +1,6 @@
 package com.sovworks.eds.android.service;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -97,7 +98,7 @@ public class LocationsServiceBase extends Service {
                 context,
                 loc.getId().hashCode(),
                 i,
-                PendingIntent.FLAG_ONE_SHOT
+                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE
         );
         LocationsService.setCheckTimer(context, pi, triggerTime);
     }
@@ -111,6 +112,7 @@ public class LocationsServiceBase extends Service {
         );
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     public void onCreate() {
         super.onCreate();
@@ -124,10 +126,17 @@ public class LocationsServiceBase extends Service {
                     _locationsManager.closeAllLocations(true, false);
                 }
             };
-            registerReceiver(_shutdownReceiver, new IntentFilter(Intent.ACTION_SHUTDOWN));
-            registerReceiver(_shutdownReceiver, new IntentFilter("android.intent.action.QUICKBOOT_POWEROFF"));
-            _inactivityCheckReceiver = new InactivityCheckReceiver();
-            registerReceiver(_inactivityCheckReceiver, new IntentFilter(ACTION_CHECK_INACTIVE_LOCATION));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(_shutdownReceiver, new IntentFilter(Intent.ACTION_SHUTDOWN));
+                registerReceiver(_shutdownReceiver, new IntentFilter("android.intent.action.QUICKBOOT_POWEROFF"), Context.RECEIVER_EXPORTED);
+                _inactivityCheckReceiver = new InactivityCheckReceiver();
+                registerReceiver(_inactivityCheckReceiver, new IntentFilter(ACTION_CHECK_INACTIVE_LOCATION), Context.RECEIVER_EXPORTED);
+            } else {
+                registerReceiver(_shutdownReceiver, new IntentFilter(Intent.ACTION_SHUTDOWN));
+                registerReceiver(_shutdownReceiver, new IntentFilter("android.intent.action.QUICKBOOT_POWEROFF"));
+                _inactivityCheckReceiver = new InactivityCheckReceiver();
+                registerReceiver(_inactivityCheckReceiver, new IntentFilter(ACTION_CHECK_INACTIVE_LOCATION));
+            }
             _locationsManager.initIOHandler();
         } catch (Exception e) {
             Logger.showAndLog(this, e);
@@ -200,9 +209,9 @@ public class LocationsServiceBase extends Service {
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CompatHelper.getServiceRunningNotificationsChannelId(this))
                 .setContentTitle(getString(R.string.eds_service_is_running))
-                .setSmallIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? R.drawable.ic_notification_new : R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_notification_new)
                 .setContentText("")
-                .setContentIntent(PendingIntent.getActivity(this, 0, i, 0))
+                .setContentIntent(PendingIntent.getActivity(this, 0, i, (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ? PendingIntent.FLAG_IMMUTABLE : 0))
                 .setOngoing(true)
                 .addAction(
                         R.drawable.ic_action_cancel,
@@ -211,7 +220,7 @@ public class LocationsServiceBase extends Service {
                                 this,
                                 0,
                                 new Intent(this, CloseLocationsActivity.class),
-                                PendingIntent.FLAG_UPDATE_CURRENT
+                                PendingIntent.FLAG_UPDATE_CURRENT | ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) ? PendingIntent.FLAG_IMMUTABLE : 0)
                         )
                 );
         Notification n = builder.build();

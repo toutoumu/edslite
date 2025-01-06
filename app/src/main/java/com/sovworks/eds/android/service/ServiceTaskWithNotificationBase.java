@@ -76,14 +76,14 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
             return;
         }
         NotificationCompat.Builder nb = new NotificationCompat.Builder(_context, CompatHelper.getFileOperationsNotificationsChannelId(_context))
-                .setSmallIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? R.drawable.ic_notification_new : R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_notification_new)
                 .setOngoing(false)
                 .setAutoCancel(true)
                 .setContentTitle(title)
                 .setContentText(message);
         // Gingerbread compatibility
         final Intent emptyIntent = new Intent();
-        PendingIntent pi = PendingIntent.getActivity(_context, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+        PendingIntent pi = PendingIntent.getActivity(_context, 0, emptyIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         nb.setContentIntent(pi);
 
         NotificationManager nm = (NotificationManager) _context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -98,7 +98,7 @@ public abstract class ServiceTaskWithNotificationBase implements Task {
     protected NotificationCompat.Builder initNotification() {
         NotificationCompat.Builder nb = new NotificationCompat.Builder(_context, CompatHelper.getFileOperationsNotificationsChannelId(_context))
                 .setContentTitle(_context.getString(R.string.eds))
-                .setSmallIcon(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? R.drawable.ic_notification_new : R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_notification_new)
                 .setOngoing(true)
                 .setAutoCancel(false)
                 .addAction(

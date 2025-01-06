@@ -676,6 +676,7 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
         lv.setEmptyView(getView().findViewById(android.R.id.empty));
         lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
         lv.setItemsCanFocus(true);
+        lv.setDivider(null);
 
         lv.setOnItemLongClickListener((adapterView, view, pos, itemId) ->
         {

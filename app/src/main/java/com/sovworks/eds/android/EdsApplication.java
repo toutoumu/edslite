@@ -4,11 +4,14 @@ import android.content.Context;
 
 import androidx.ijk.IJK;
 
+import com.google.android.material.color.DynamicColors;
+
 public class EdsApplication extends EdsApplicationBase {
     @Override
     public void onCreate() {
         super.onCreate();
         initIJK();
+        DynamicColors.applyToActivitiesIfAvailable(this);
     }
 
     public static void stopProgram(Context context, boolean exitProcess) {

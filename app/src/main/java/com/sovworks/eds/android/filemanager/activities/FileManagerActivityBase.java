@@ -40,7 +40,6 @@ import com.sovworks.eds.android.helpers.AppInitHelper;
 import com.sovworks.eds.android.helpers.CachedPathInfo;
 import com.sovworks.eds.android.helpers.CompatHelper;
 import com.sovworks.eds.android.helpers.ProgressDialogTaskFragmentCallbacks;
-import com.sovworks.eds.android.helpers.Util;
 import com.sovworks.eds.android.navigdrawer.DrawerController;
 import com.sovworks.eds.android.service.FileOpsService;
 import com.sovworks.eds.android.settings.UserSettings;
@@ -288,7 +287,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         }
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint({"CheckResult", "UnspecifiedRegisterReceiverFlag"})
     @Override
     public void onCreate(Bundle savedInstanceState) {
         if (GlobalConfig.isTest()) {
@@ -316,10 +315,17 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
             }
         }
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(_exitBroadcastReceiver, new IntentFilter(EdsApplication.BROADCAST_EXIT));
-        registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationAddedIntentFilter());
-        registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationRemovedIntentFilter());
-        registerReceiver(_locationChangedReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED));
-        registerReceiver(_locationAddedOrRemovedReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationAddedIntentFilter(), Context.RECEIVER_EXPORTED);
+            registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationRemovedIntentFilter(), Context.RECEIVER_EXPORTED);
+            registerReceiver(_locationChangedReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED), Context.RECEIVER_EXPORTED);
+            registerReceiver(_locationAddedOrRemovedReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED), Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationAddedIntentFilter());
+            registerReceiver(_locationAddedOrRemovedReceiver, LocationsManager.getLocationRemovedIntentFilter());
+            registerReceiver(_locationChangedReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED));
+            registerReceiver(_locationAddedOrRemovedReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED));
+        }
 
         _drawer.init(savedInstanceState);
         AppInitHelper.
