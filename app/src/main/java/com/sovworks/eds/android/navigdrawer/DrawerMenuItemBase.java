@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
 
 public abstract class DrawerMenuItemBase {
@@ -46,6 +48,8 @@ public abstract class DrawerMenuItemBase {
 
     }
 
+    abstract void initMenu(NavigationView navigationView, SubMenu subMenu);
+
     public View createView(int position, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) getDrawerController().getMainActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams") View v = inflater.inflate(getLayoutId(), parent, false);
@@ -71,6 +75,9 @@ public abstract class DrawerMenuItemBase {
 
     public View updateView() {
         ListView list = getDrawerController().getDrawerListView();
+        if (list == null) {
+            return null;
+        }
         int start = list.getFirstVisiblePosition();
         for (int i = start, j = list.getLastVisiblePosition(); i <= j; i++)
             if (this == list.getItemAtPosition(i)) {
@@ -94,7 +101,11 @@ public abstract class DrawerMenuItemBase {
 
     protected ArrayAdapter<DrawerMenuItemBase> getAdapter() {
         // noinspection unchecked
-        return (ArrayAdapter<DrawerMenuItemBase>) getDrawerController().getDrawerListView().getAdapter();
+        final ListView drawerListView = getDrawerController().getDrawerListView();
+        if (drawerListView == null) {
+            return null;
+        }
+        return (ArrayAdapter<DrawerMenuItemBase>) drawerListView.getAdapter();
     }
 
     protected int getPositionInAdapter() {

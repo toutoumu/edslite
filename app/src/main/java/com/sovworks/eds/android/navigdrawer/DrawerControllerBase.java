@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.activities.FileManagerActivity;
 
@@ -30,6 +31,7 @@ public abstract class DrawerControllerBase {
     public void init(Bundle savedState) {
         _drawerLayout = _activity.findViewById(R.id.drawer_layout);
         _drawerListView = _activity.findViewById(R.id.left_drawer);
+        _navigationView = _activity.findViewById(R.id.navigation_view_end);
 
         // noinspection deprecation
         _drawerToggle = new ActionBarDrawerToggle(
@@ -52,25 +54,28 @@ public abstract class DrawerControllerBase {
 
         List<DrawerMenuItemBase> list = fillDrawer();
 
-        _drawerListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
-
         if (savedState != null) {
             ArrayList<DrawerMenuItemBase> copy = new ArrayList<>(list);
             for (DrawerMenuItemBase item : copy)
                 item.restoreState(savedState);
         }
-        _drawerListView.setOnItemClickListener((adapterView, view, i, l) ->
-        {
-            DrawerMenuItemBase item = (DrawerMenuItemBase) _drawerListView.getItemAtPosition(i);
-            if (item != null) {
-                item.onClick(view, i);
-            }
-        });
-        _drawerListView.setOnItemLongClickListener((parent, view, position, id) ->
-        {
-            DrawerMenuItemBase item = (DrawerMenuItemBase) _drawerListView.getItemAtPosition(position);
-            return item != null && item.onLongClick(view, position);
-        });
+
+        if (_drawerListView != null) {
+            _drawerListView.setChoiceMode(ListView.CHOICE_MODE_NONE);
+
+            _drawerListView.setOnItemClickListener((adapterView, view, i, l) ->
+            {
+                DrawerMenuItemBase item = (DrawerMenuItemBase) _drawerListView.getItemAtPosition(i);
+                if (item != null) {
+                    item.onClick(view, i);
+                }
+            });
+            _drawerListView.setOnItemLongClickListener((parent, view, position, id) ->
+            {
+                DrawerMenuItemBase item = (DrawerMenuItemBase) _drawerListView.getItemAtPosition(position);
+                return item != null && item.onLongClick(view, position);
+            });
+        }
     }
 
     public void onPostCreate() {
@@ -90,23 +95,42 @@ public abstract class DrawerControllerBase {
             return false;
         }
 
-        if (item.getItemId() == android.R.id.home) {
-            if (_drawerLayout.isDrawerOpen(_drawerListView)) {
-                _drawerLayout.closeDrawer(_drawerListView);
-            } else {
-                _drawerLayout.openDrawer(_drawerListView);
+        if (_drawerListView != null) {
+            if (item.getItemId() == android.R.id.home) {
+                if (_drawerLayout.isDrawerOpen(_drawerListView)) {
+                    _drawerLayout.closeDrawer(_drawerListView);
+                } else {
+                    _drawerLayout.openDrawer(_drawerListView);
+                }
+                return true;
             }
-            return true;
+        } else {
+            if (item.getItemId() == android.R.id.home) {
+                if (_drawerLayout.isDrawerOpen(_navigationView)) {
+                    _drawerLayout.closeDrawer(_navigationView);
+                } else {
+                    _drawerLayout.openDrawer(_navigationView);
+                }
+                return true;
+            }
         }
         return false;
     }
 
     void closeDrawer() {
-        _drawerLayout.closeDrawer(_drawerListView);
+        if (_drawerListView != null) {
+            _drawerLayout.closeDrawer(_drawerListView);
+        } else if (_navigationView != null) {
+            _drawerLayout.closeDrawer(_navigationView);
+        }
     }
 
     public void openDrawer() {
-        _drawerLayout.openDrawer(_drawerListView);
+        if (_drawerListView != null) {
+            _drawerLayout.openDrawer(_drawerListView);
+        } else if (_navigationView != null) {
+            _drawerLayout.openDrawer(_navigationView);
+        }
     }
 
     public FileManagerActivity getMainActivity() {
@@ -123,8 +147,14 @@ public abstract class DrawerControllerBase {
     }
 
     public boolean onBackPressed() {
-        if (_drawerListView == null || !_drawerLayout.isDrawerOpen(_drawerListView)) {
-            return false;
+        if (_drawerLayout != null && _navigationView != null && _drawerLayout.isDrawerOpen(_navigationView)) {
+            _drawerLayout.closeDrawer(_navigationView);
+            return true;
+        }
+
+        if (_drawerLayout != null && _drawerListView != null && _drawerLayout.isDrawerOpen(_drawerListView)) {
+            _drawerLayout.closeDrawer(_drawerListView);
+            return true;
         }
         // 去掉左侧菜单,返回按钮折叠选项功能
         /* for (int i = 0; i < _drawerListView.getCount(); i++) {
@@ -132,8 +162,8 @@ public abstract class DrawerControllerBase {
             if (item != null && item.onBackPressed())
                 return true;
         } */
-        _drawerLayout.closeDrawer(_drawerListView);
-        return true;
+
+        return false;
     }
 
     public void onSaveInstanceState(Bundle outState) {
@@ -152,7 +182,7 @@ public abstract class DrawerControllerBase {
     }
 
     public void reloadItems() {
-        if (_drawerListView == null) {
+        if (_drawerListView == null && _navigationView == null) {
             return;
         }
         Bundle b = new Bundle();
@@ -165,6 +195,9 @@ public abstract class DrawerControllerBase {
 
     public void showContainers() {
         openDrawer();
+        if (_drawerListView == null) {
+            return;
+        }
         DrawerAdapter da = (DrawerAdapter) _drawerListView.getAdapter();
         for (int i = 0, l = da.getCount(); i < l; i++) {
             DrawerMenuItemBase item = da.getItem(i);
@@ -195,7 +228,9 @@ public abstract class DrawerControllerBase {
             adapter.add(new DrawerAboutMenuItem(this));
             adapter.add(new DrawerExitMenuItem(this));
         }
-        _drawerListView.setAdapter(adapter);
+        if (_drawerListView != null) {
+            _drawerListView.setAdapter(adapter);
+        }
         return list;
     }
 
@@ -235,12 +270,16 @@ public abstract class DrawerControllerBase {
 
     private final FileManagerActivity _activity;
     private ListView _drawerListView;
+    private NavigationView _navigationView;
     private DrawerLayout _drawerLayout;
 
     @SuppressWarnings("deprecation")
     private ActionBarDrawerToggle _drawerToggle;
 
     private void saveState(Bundle outState) {
+        if (_drawerListView == null) {
+            return;
+        }
         for (int i = 0; i < _drawerListView.getCount(); i++) {
             DrawerMenuItemBase item = (DrawerMenuItemBase) _drawerListView.getItemAtPosition(i);
             if (item != null) {

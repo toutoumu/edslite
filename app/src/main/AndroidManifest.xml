@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name="com.sovworks.eds.android.EdsApplication"
@@ -61,7 +61,8 @@
         <activity
             android:name=".filemanager.activities.FileManagerActivity"
             android:exported="true"
-            android:label="@string/eds">
+            android:label="@string/eds"
+            android:theme="@style/Theme.Material3.Default.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

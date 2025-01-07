@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 
+import androidx.appcompat.widget.Toolbar;
+
+import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.navigdrawer.DrawerController;
 import com.sovworks.eds.locations.Location;
 

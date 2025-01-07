@@ -1,11 +1,17 @@
 package com.sovworks.eds.android.navigdrawer;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.activities.FileManagerActivity;
 import com.sovworks.eds.android.filemanager.fragments.FileListDataFragment;
@@ -50,6 +56,20 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
     @Override
     public int getViewType() {
         return 2;
+    }
+
+    @Override
+    void initMenu(NavigationView navigationView, SubMenu subMenu) {
+        MenuItem newMenuItem = subMenu.add(Menu.FIRST, 0, Menu.NONE, getTitle());
+        newMenuItem.setIcon(getIcon());
+        newMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                navigationView.setCheckedItem(newMenuItem);
+                onClick(item.getActionView(), 0);
+                return false;
+            }
+        });
     }
 
     @Override

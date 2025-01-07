@@ -189,6 +189,9 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
 
     private void rotateExpandedIcons() {
         ListView lv = getDrawerController().getDrawerListView();
+        if (lv == null) {
+            return;
+        }
         for (int i = 0; i < lv.getCount(); i++) {
             Object di = lv.getItemAtPosition(i);
             if (di instanceof DrawerSubMenuBase && ((DrawerSubMenuBase) di).isExpanded()) {
@@ -202,6 +205,9 @@ public abstract class DrawerSubMenuBase extends DrawerMenuItemBase {
 
     private void collapseAll() {
         ListView lv = getDrawerController().getDrawerListView();
+        if (lv == null) {
+            return;
+        }
         for (int i = 0; i < lv.getCount(); i++) {
             Object di = lv.getItemAtPosition(i);
             if (di instanceof DrawerSubMenuBase && ((DrawerSubMenuBase) di).isExpanded()) {

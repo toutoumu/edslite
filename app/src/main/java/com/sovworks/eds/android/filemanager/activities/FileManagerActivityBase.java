@@ -3,6 +3,7 @@ package com.sovworks.eds.android.filemanager.activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -11,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +24,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.sovworks.eds.android.EdsApplication;
 import com.sovworks.eds.android.Logger;
@@ -290,12 +294,12 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     @SuppressLint({"CheckResult", "UnspecifiedRegisterReceiverFlag"})
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setTransparentForWindow();
         if (GlobalConfig.isTest()) {
             TEST_INIT_OBSERVABLE.onNext(false);
         }
         // Util.setTheme(this);
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Logger.debug("fm start intent: " + getIntent());
         _settings = UserSettings.getSettings(this);
         if (_settings.isFlagSecureEnabled()) {
@@ -303,6 +307,19 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         }
         _isLargeScreenLayout = UserSettings.isWideScreenLayout(_settings, this);
         setContentView(R.layout.main_activity);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom > oldBottom) {
+                    findViewById(R.id.container).setPadding(0, bottom, 0, 0);
+                }
+            }
+        });
+
         Fragment f = getSupportFragmentManager().findFragmentById(R.id.fragment2);
         if (f != null) {
             View panel = findViewById(R.id.fragment2);
@@ -751,6 +768,37 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     private void closeIntegratedViewer() {
         Logger.debug(TAG + ": closeIntegratedViewer");
         hideSecondaryFragment();
+    }
+
+    /**
+     * 这里不会隐藏底部导航栏
+     * <p>
+     * 设置内容显示到状态栏下层,并使状态栏透明
+     * {@link Build.VERSION_CODES#KITKAT}以上系统调用此方法,可以是状态栏透明,
+     * 并使得Activity内容显示在状态栏下层,内容被状态栏覆盖
+     */
+    public void setTransparentForWindow() {
+        final Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            // Activity全屏显示，但状态栏不会被隐藏覆盖，状态栏依然可见，Activity顶端布局部分会被状态遮住。
+            // 如果需要隐藏底部导航栏加上这个 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            window.getDecorView()
+                    .setSystemUiVisibility(window.getDecorView().getSystemUiVisibility()
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN /*|View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION*/);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            // getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
+            // todo 白色状态栏图标用这个 并在 setContentView 之前调用 setStatusBarTransparent 方法
+            // UiUtils.requestStatusBarLight(this, true);
+
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            // Activity全屏显示，但状态栏不会被隐藏覆盖，状态栏依然可见，Activity顶端布局部分会被状态遮住。
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
     }
 }
 

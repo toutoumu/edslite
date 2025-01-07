@@ -4,9 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.fragments.FileListViewFragment;
 
@@ -24,11 +30,7 @@ public class DrawerSelectContentProviderMenuItem extends DrawerMenuItemBase {
     public void onClick(View view, int position) {
         super.onClick(view, position);
         Intent i;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        } else {
-            i = new Intent(Intent.ACTION_GET_CONTENT);
-        }
+        i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         i.setType("*/*");
         i.addCategory(Intent.CATEGORY_OPENABLE);
         // if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && !getDrawerController().getMainActivity().isSingleSelectionMode())
@@ -43,6 +45,20 @@ public class DrawerSelectContentProviderMenuItem extends DrawerMenuItemBase {
     @Override
     public int getViewType() {
         return 2;
+    }
+
+    @Override
+    void initMenu(NavigationView navigationView, SubMenu subMenu) {
+        MenuItem newMenuItem = subMenu.add(Menu.FIRST, 0, Menu.NONE, getTitle());
+        newMenuItem.setIcon(getIcon());
+        newMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                navigationView.setCheckedItem(newMenuItem);
+                onClick(item.getActionView(), 0);
+                return false;
+            }
+        });
     }
 
     @Override
