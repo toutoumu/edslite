@@ -1,69 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="60dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="4dp">
+    style="@style/FileListRow">
 
     <ImageView
         android:id="@android:id/icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        style="@style/FileIcon"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:scaleType="center"
-        android:src="@drawable/ic_storage_dark"
+        android:src="@drawable/ic_file"
         tools:ignore="ContentDescription" />
 
     <ImageView
         android:id="@android:id/icon1"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
+        style="@style/MiniIcon"
         android:layout_alignBottom="@android:id/icon"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
         android:layout_toEndOf="@android:id/icon"
-        android:layout_toRightOf="@android:id/icon"
         tools:ignore="ContentDescription" />
 
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@android:id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/RowButton.Check"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        tools:visibility="visible" />
 
-    <RadioButton
+    <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/radio"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/RowButton.Radio"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        tools:visibility="visible" />
 
     <LinearLayout
-        android:id="@+id/message"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@android:id/checkbox"
         android:layout_toEndOf="@android:id/icon1"
         android:orientation="vertical">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@android:id/text1"
+            style="@style/FileName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="middle"
-            android:maxLines="2"
-            android:textSize="14sp" />
+            tools:text="这个文件名会很长很长,长到你无法想象,不过没关系中间会有省略号,可以看到文件后缀,可以看到文件后缀可以看到文件后缀" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@android:id/text2"
+            style="@style/FileDesc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="10sp" />
+            android:layout_marginTop="4dp"
+            tools:text="2024/12/13 18:12 22.4MB" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="5dp"
+        android:background="#666666" />
 </RelativeLayout>

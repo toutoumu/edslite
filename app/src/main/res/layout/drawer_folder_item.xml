@@ -16,16 +16,14 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:contentDescription="@string/location_type"
-        tools:src="@drawable/ic_folder"
-        app:tint="?attr/colorPrimary" />
+        tools:src="@drawable/ic_folder" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@android:id/text1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@android:id/icon"
-        android:layout_toRightOf="@android:id/icon"
         tools:text="文本" />
 </RelativeLayout>
