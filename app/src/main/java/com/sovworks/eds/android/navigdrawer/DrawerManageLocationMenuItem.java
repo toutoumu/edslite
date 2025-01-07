@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.View;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.locations.activities.LocationListActivity;
 
@@ -46,7 +48,7 @@ public abstract class DrawerManageLocationMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.manageLocationsIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_manage_locations_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_manage_locations_dark);
         }
         return _icon;
     }

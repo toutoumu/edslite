@@ -11,6 +11,7 @@ import android.view.SubMenu;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
@@ -57,7 +58,7 @@ public class DrawerHelpMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.helpIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_help_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_help_dark);
         }
         return _icon;
     }

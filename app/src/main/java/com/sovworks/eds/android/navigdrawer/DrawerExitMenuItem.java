@@ -1,6 +1,7 @@
 package com.sovworks.eds.android.navigdrawer;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import android.content.Context;
@@ -112,7 +113,7 @@ public class DrawerExitMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.exitIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_exit_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_exit_dark);
         }
         return _icon;
     }

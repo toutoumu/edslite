@@ -58,6 +58,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
+        <!--首页-->
         <activity
             android:name=".filemanager.activities.FileManagerActivity"
             android:exported="true"
@@ -108,17 +109,21 @@
         </activity>
         <activity
             android:name=".locations.activities.LocationListActivity"
+            android:theme="@style/Theme.Material3.Default"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".locations.activities.CreateLocationActivity"
+            android:theme="@style/Theme.Material3.Default"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".locations.activities.LocationSettingsActivity"
             android:label="@string/settings"
+            android:theme="@style/Theme.Material3.Default"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".activities.LocationShortcutWidgetConfigActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.Material3.Default">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
@@ -127,31 +132,38 @@
             android:name=".activities.CancelTaskActivity"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:label="@string/eds">
+            android:label="@string/eds"
+            android:theme="@style/Theme.Material3.Default">
             <intent-filter>
                 <action android:name="com.sovworks.eds.android.ACTION_CANCEL_TASK" />
             </intent-filter>
         </activity>
         <activity
             android:name=".filemanager.activities.ImageViewerActivity"
-            android:label="@string/image_viewer" />
+            android:label="@string/image_viewer"
+            android:theme="@style/Theme.Material3.Default" />
         <activity
             android:name=".locations.activities.CloseLocationsActivity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Material3.Default" />
         <activity
             android:name=".locations.activities.OpenLocationsActivity"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Material3.Default" />
         <activity
             android:name=".activities.VersionHistory"
-            android:label="@string/version_history" />
+            android:label="@string/version_history"
+            android:theme="@style/Theme.Material3.Default" />
         <activity
             android:name=".settings.activities.ProgramSettingsActivity"
             android:label="@string/settings"
             android:launchMode="singleTop"
+            android:theme="@style/Theme.Material3.Default"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".settings.activities.OpeningOptionsActivity"
             android:label="@string/settings"
+            android:theme="@style/Theme.Material3.Default"
             android:windowSoftInputMode="adjustPan" />
 
         <service

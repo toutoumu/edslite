@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
@@ -85,7 +86,7 @@ public class DrawerSelectContentProviderMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.storageIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_storage_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_storage_dark);
         }
         return _icon;
     }

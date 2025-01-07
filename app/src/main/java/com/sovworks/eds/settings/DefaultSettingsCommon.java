@@ -35,7 +35,7 @@ public class DefaultSettingsCommon implements SettingsCommon {
 
     @Override
     public boolean wipeTempFiles() {
-        return true;
+        return false;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class DefaultSettingsCommon implements SettingsCommon {
 
     @Override
     public boolean forceTempFiles() {
-        return true;
+        return false;
     }
 
     @Override

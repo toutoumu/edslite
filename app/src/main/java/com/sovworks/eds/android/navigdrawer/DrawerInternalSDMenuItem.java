@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.locations.Location;
 
@@ -23,7 +25,7 @@ public class DrawerInternalSDMenuItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.deviceMemoryIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_device_memory_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_device_memory_dark);
         }
         return _icon;
     }

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.activities.FileManagerActivity;
 import com.sovworks.eds.android.locations.opener.fragments.ExternalStorageOpenerFragment;
@@ -39,7 +41,7 @@ public class DrawerExternalSDMenuItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.extStorageIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_ext_storage_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_ext_storage_dark);
         }
         return _icon;
     }

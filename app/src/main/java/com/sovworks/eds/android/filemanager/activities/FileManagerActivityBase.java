@@ -3,6 +3,7 @@ package com.sovworks.eds.android.filemanager.activities;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -294,6 +295,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     @SuppressLint({"CheckResult", "UnspecifiedRegisterReceiverFlag"})
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        EdgeToEdge.enable(this);
         setTransparentForWindow();
         if (GlobalConfig.isTest()) {
             TEST_INIT_OBSERVABLE.onNext(false);

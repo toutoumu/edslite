@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.fragments.FileListDataFragment;
 
@@ -57,7 +59,7 @@ public class DummyUpDirRecord extends FolderRecord {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.folderUpIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_folder_up_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_folder_up_dark);
         }
         return _icon;
     }

@@ -16,6 +16,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.helpers.ExtendedFileInfoLoader;
@@ -209,10 +211,7 @@ class FileRecord extends FsBrowserRecord {
 
     private static synchronized Drawable getFileIcon(Context context) {
         if (_fileIcon == null && context != null) {
-            // TypedValue typedValue = new TypedValue();
-            // context.getTheme().resolveAttribute(R.attr.fileIcon, typedValue, true);
-            // noinspection deprecation
-            _fileIcon = context.getResources().getDrawable(R.drawable.ic_file_dark);
+            _fileIcon = AppCompatResources.getDrawable(context, R.drawable.ic_file);
         }
         return _fileIcon;
     }

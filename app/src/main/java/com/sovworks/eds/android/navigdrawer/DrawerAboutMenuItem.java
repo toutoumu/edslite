@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
@@ -56,7 +57,7 @@ public class DrawerAboutMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.aboutIcon, typedValue, true);
             // noinspection deprecation
-            _icon = context.getResources().getDrawable(R.drawable.ic_about_dark);
+            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_about_dark);
         }
         return _icon;
     }

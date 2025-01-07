@@ -5,6 +5,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.activities.FileManagerActivity;
 import com.sovworks.eds.android.filemanager.fragments.FileListViewFragment;
@@ -67,7 +69,7 @@ public class DrawerEncFsMenuItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.lockOpenIcon, typedValue, true);
             // noinspection deprecation
-            _openedIcon = context.getResources().getDrawable(R.drawable.ic_lock_open_dark);
+            _openedIcon = AppCompatResources.getDrawable(context, R.drawable.ic_lock_open_dark);
         }
         return _openedIcon;
     }
@@ -77,7 +79,7 @@ public class DrawerEncFsMenuItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.lockIcon, typedValue, true);
             // noinspection deprecation
-            _closedIcon = context.getResources().getDrawable(R.drawable.ic_lock_dark);
+            _closedIcon = AppCompatResources.getDrawable(context, R.drawable.ic_lock_dark);
         }
         return _closedIcon;
     }

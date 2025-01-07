@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.res.ResourcesCompat;
+
 import com.sovworks.eds.android.R;
 
 import java.io.IOException;
@@ -65,10 +68,7 @@ public class FolderRecord extends FsBrowserRecord {
 
     private static synchronized Drawable getFolderIcon(Context context) {
         if (_folderIcon == null && context != null) {
-            // TypedValue typedValue = new TypedValue();
-            // context.getTheme().resolveAttribute(R.attr.folderIcon, typedValue, true);
-            // noinspection deprecation
-            _folderIcon = context.getResources().getDrawable(R.drawable.ic_folder_dark);
+            _folderIcon = AppCompatResources.getDrawable(context, R.drawable.ic_folder);
         }
         return _folderIcon;
     }
