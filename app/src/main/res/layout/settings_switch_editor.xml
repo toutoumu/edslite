@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:mode="twoLine"
+    style="@style/PropertyRow"
     android:descendantFocusability="blocksDescendants"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="64dp"
-    android:padding="5dp">
+    android:mode="twoLine">
 
     <LinearLayout
         android:id="@+id/title_layout"
@@ -14,27 +11,22 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title_edit"
+            style="@style/PropertyTitle"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginBottom="4dp"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            tools:text="TitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitle" />
 
-        <Switch
+        <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@android:id/button1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp" />
     </LinearLayout>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:textSize="13sp"
+        style="@style/PropertyDesc"
         android:layout_below="@id/title_layout" />
 </RelativeLayout>

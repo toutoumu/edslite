@@ -58,7 +58,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
-        <!--首页-->
+        <!--应用首页-->
         <activity
             android:name=".filemanager.activities.FileManagerActivity"
             android:exported="true"
@@ -107,27 +107,50 @@
                 <data android:host="*" />
             </intent-filter>
         </activity>
+        <!--容器列表-->
         <activity
             android:name=".locations.activities.LocationListActivity"
-            android:theme="@style/Theme.Material3.Default"
+            android:theme="@style/Theme.Material3.Default.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+        <!--添加容器-->
         <activity
             android:name=".locations.activities.CreateLocationActivity"
-            android:theme="@style/Theme.Material3.Default"
+            android:theme="@style/Theme.Material3.Default.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+        <!--点击容器,对话框左下角的容器设置,容器未打开-->
+        <activity
+            android:name=".settings.activities.OpeningOptionsActivity"
+            android:label="@string/settings"
+            android:theme="@style/Theme.Material3.Default.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <!--长按容器,右上角的容器设置,容器已打开-->
         <activity
             android:name=".locations.activities.LocationSettingsActivity"
             android:label="@string/settings"
-            android:theme="@style/Theme.Material3.Default"
+            android:theme="@style/Theme.Material3.Default.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
+        <!--app设置-->
+        <activity
+            android:name=".settings.activities.ProgramSettingsActivity"
+            android:label="@string/settings"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Material3.Default.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <!--版本历史-->
+        <activity
+            android:name=".activities.VersionHistory"
+            android:label="@string/version_history"
+            android:theme="@style/Theme.Material3.Default.NoActionBar" />
+        <!--桌面小挂件-->
         <activity
             android:name=".activities.LocationShortcutWidgetConfigActivity"
             android:exported="true"
-            android:theme="@style/Theme.Material3.Default">
+            android:theme="@style/Theme.Material3.Default.NoActionBar">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
+        <!--取消任务-->
         <activity
             android:name=".activities.CancelTaskActivity"
             android:excludeFromRecents="true"
@@ -138,6 +161,12 @@
                 <action android:name="com.sovworks.eds.android.ACTION_CANCEL_TASK" />
             </intent-filter>
         </activity>
+        <!--关于-->
+        <activity
+            android:name=".activities.AboutActivity"
+            android:label="@string/about"
+            android:theme="@style/Theme.Material3.Default.NoActionBar" />
+        <!--图片查看器-->
         <activity
             android:name=".filemanager.activities.ImageViewerActivity"
             android:label="@string/image_viewer"
@@ -149,22 +178,7 @@
         <activity
             android:name=".locations.activities.OpenLocationsActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/Theme.Material3.Default" />
-        <activity
-            android:name=".activities.VersionHistory"
-            android:label="@string/version_history"
-            android:theme="@style/Theme.Material3.Default" />
-        <activity
-            android:name=".settings.activities.ProgramSettingsActivity"
-            android:label="@string/settings"
-            android:launchMode="singleTop"
-            android:theme="@style/Theme.Material3.Default"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".settings.activities.OpeningOptionsActivity"
-            android:label="@string/settings"
-            android:theme="@style/Theme.Material3.Default"
-            android:windowSoftInputMode="adjustPan" />
+            android:theme="@style/Theme.Material3.Default.NoActionBar" />
 
         <service
             android:name=".service.FileOpsService"

@@ -1,7 +1,7 @@
 package com.sovworks.eds.android.dialogs;
 
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.TextView;
 
 import com.sovworks.eds.android.Logger;
@@ -28,19 +27,18 @@ import com.sovworks.eds.locations.DeviceBasedLocation;
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.sovworks.eds.util.exec.ExecuteExternalProgram;
+import com.trello.rxlifecycle3.components.support.RxFragment;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
-public abstract class AboutDialogBase extends DialogFragment {
-    public static void showDialog(FragmentManager fm) {
+public abstract class AboutDialogBase extends RxFragment {
+    /*public static void showDialog(FragmentManager fm) {
         DialogFragment newFragment = new AboutDialog();
         newFragment.show(fm, "AboutDialog");
-    }
+    }*/
 
     public static String getVersionName(Context context) {
         try {
@@ -54,12 +52,12 @@ public abstract class AboutDialogBase extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Util.setDialogStyle(this);
+        // Util.setDialogStyle(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.about_dialog, container);
+        View v = inflater.inflate(R.layout.about_dialog, null);
         String verName = getVersionName(getActivity());
         String aboutMessage = String.format(
                 "%s v%s\n%s",
@@ -101,14 +99,14 @@ public abstract class AboutDialogBase extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        setWidthHeight();
+        // setWidthHeight();
     }
 
     protected void setWidthHeight() {
-        Window w = getDialog().getWindow();
+        /*Window w = getDialog().getWindow();
         if (w != null) {
             w.setLayout(calcWidth(), calcHeight());
-        }
+        }*/
     }
 
     protected int calcWidth() {

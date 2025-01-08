@@ -1,20 +1,24 @@
 package com.sovworks.eds.android.filemanager.dialogs;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
-import android.widget.EditText;
-
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.fragments.FileListViewFragment;
 import com.sovworks.eds.fs.util.StringPathUtil;
+import com.trello.rxlifecycle3.components.support.RxDialogFragment;
 
-public class RenameFileDialog extends DialogFragment {
+public class RenameFileDialog extends RxDialogFragment {
     public static final String TAG = "RenameFileDialog";
 
     public static void showDialog(FragmentManager fm, String currentPath, String fileName) {
@@ -28,32 +32,35 @@ public class RenameFileDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setMessage(getString(R.string.enter_new_file_name));
-
+    public AppCompatDialog onCreateDialog(Bundle savedInstanceState) {
         // Set an EditText view to get user input
         final String filename = getArguments().getString(ARG_FILENAME);
-        final EditText input = new EditText(getActivity());
-        input.setId(android.R.id.edit);
+
+        LayoutInflater inflater = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (inflater == null) {
+            throw new RuntimeException("Inflater is null");
+        }
+        View v = inflater.inflate(R.layout.dialog_edit_text, null);
+        TextInputLayout inputLayout = v.findViewById(R.id.text_input_layout);
+        inputLayout.setHint(R.string.enter_new_file_name);
+
+        TextInputEditText input = v.findViewById(android.R.id.text1);
         input.setSingleLine();
         input.setText(filename);
+        input.setHint(R.string.enter_new_file_name);
         StringPathUtil spu = new StringPathUtil(filename);
         String fnWoExt = spu.getFileNameWithoutExtension();
-        if (fnWoExt.length() > 0) {
+        if (!fnWoExt.isEmpty()) {
             input.setSelection(0, fnWoExt.length());
         }
-        alert.setView(input);
 
-        alert.setPositiveButton(getString(android.R.string.ok),
-                (dialog, whichButton) -> renameFile(input.getText().toString()));
-
-        alert.setNegativeButton(android.R.string.cancel,
-                (dialog, whichButton) ->
-                {
-                    // Canceled.
-                });
-
+        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons);
+        alert.setTitle(getString(R.string.rename));
+        alert.setView(v);
+        alert.setPositiveButton(getString(android.R.string.ok), (dialog, whichButton) -> renameFile(input.getText().toString()));
+        alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
+            // Canceled.
+        });
         return alert.create();
     }
 

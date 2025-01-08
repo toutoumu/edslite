@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
     android:paddingStart="?attr/dialogPreferredPadding"
     android:paddingTop="?attr/dialogPreferredPadding"
     android:paddingEnd="?attr/dialogPreferredPadding"
+    android:paddingBottom="?attr/dialogPreferredPadding"
     tools:background="@drawable/ijk_overlay_background">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@android:id/progress"
-        style="@style/Widget.Material3.LinearProgressIndicator"
-        android:layout_width="match_parent"
+        style="@style/Widget.Material3.CircularProgressIndicator.Medium"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@android:id/text1"
-        android:layout_marginBottom="12dp"
-        android:max="100"
-        tools:progress="60" />
+        android:indeterminate="true" />
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@android:id/text2"
+        android:id="@android:id/text1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@android:id/progress"
+        android:layout_marginStart="12dp"
         tools:text="对话框内容" />
-</RelativeLayout>
+</LinearLayout>

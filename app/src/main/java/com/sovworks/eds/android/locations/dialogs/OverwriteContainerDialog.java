@@ -1,19 +1,20 @@
 package com.sovworks.eds.android.locations.dialogs;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.activities.SettingsBaseActivity;
 import com.sovworks.eds.android.locations.fragments.CreateEDSLocationFragment;
+import com.trello.rxlifecycle3.components.support.RxDialogFragment;
 
-public class OverwriteContainerDialog extends DialogFragment {
+public class OverwriteContainerDialog extends RxDialogFragment {
 
     public static void showDialog(FragmentManager fm) {
         showDialog(fm, 0);
@@ -34,7 +35,8 @@ public class OverwriteContainerDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Bundle args = getArguments();
         int resId = args != null ? args.getInt(ARG_REQUEST_RES_ID, R.string.do_you_want_to_overwrite_existing_file) : R.string.do_you_want_to_overwrite_existing_file;
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons);
+        builder.setTitle(R.string.tips);
         builder.setMessage(resId)
                 .setPositiveButton(R.string.yes,
                         new DialogInterface.OnClickListener() {

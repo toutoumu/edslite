@@ -1,5 +1,22 @@
 package com.sovworks.eds.android.settings.fragments;
 
+import static com.sovworks.eds.android.settings.UserSettingsCommon.DISABLE_DEBUG_LOG;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.DISABLE_MODIFIED_FILES_BACKUP;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.DISABLE_WIDE_SCREEN_LAYOUTS;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.DONT_USE_CONTENT_PROVIDER;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.EXTENSIONS_MIME;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.FORCE_TEMP_FILES;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.IS_FLAG_SECURE_ENABLED;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.MAX_FILE_SIZE_TO_OPEN;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.NEVER_SAVE_HISTORY;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.SHOW_PREVIEWS;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.THEME;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.USE_INTERNAL_IMAGE_VIEWER;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.WIPE_TEMP_FILES;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.WORK_DIR;
+import static com.sovworks.eds.settings.SettingsCommon.THEME_DARK;
+import static com.sovworks.eds.settings.SettingsCommon.THEME_DEFAULT;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -13,7 +30,6 @@ import com.sovworks.eds.android.dialogs.PasswordDialog;
 import com.sovworks.eds.android.filemanager.activities.FileManagerActivity;
 import com.sovworks.eds.android.fragments.PropertiesFragmentBase;
 import com.sovworks.eds.android.settings.ButtonPropertyEditor;
-import com.sovworks.eds.android.settings.CategoryPropertyEditor;
 import com.sovworks.eds.android.settings.ChoiceDialogPropertyEditor;
 import com.sovworks.eds.android.settings.IntPropertyEditor;
 import com.sovworks.eds.android.settings.MultilineTextPropertyEditor;
@@ -32,23 +48,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.sovworks.eds.android.settings.UserSettingsCommon.DISABLE_DEBUG_LOG;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.DISABLE_MODIFIED_FILES_BACKUP;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.DISABLE_WIDE_SCREEN_LAYOUTS;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.DONT_USE_CONTENT_PROVIDER;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.EXTENSIONS_MIME;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.FORCE_TEMP_FILES;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.IS_FLAG_SECURE_ENABLED;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.MAX_FILE_SIZE_TO_OPEN;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.NEVER_SAVE_HISTORY;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.SHOW_PREVIEWS;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.THEME;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.USE_INTERNAL_IMAGE_VIEWER;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.WIPE_TEMP_FILES;
-import static com.sovworks.eds.android.settings.UserSettingsCommon.WORK_DIR;
-import static com.sovworks.eds.settings.SettingsCommon.THEME_DARK;
-import static com.sovworks.eds.settings.SettingsCommon.THEME_DEFAULT;
 
 public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase implements MasterPasswordDialog.PasswordReceiver {
     @Override
@@ -92,18 +91,19 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
     protected void createProperties() {
         getPropertiesView().setInstantSave(true);
         createCategories();
-        _propertiesView.setPropertiesState(false);
-        _propertiesView.setPropertyState(R.string.main_settings, true);
+        // _propertiesView.setPropertiesState(false);
+        // _propertiesView.setPropertyState(R.string.main_settings, true);
     }
 
     protected void createCategories() {
         final List<Integer> commonPropertiesList = new ArrayList<>();
-        getPropertiesView().addProperty(new CategoryPropertyEditor(this, R.string.main_settings, 0) {
-            @Override
-            public void load() {
-                enableProperties(commonPropertiesList, isExpanded());
-            }
-        });
+        // getPropertiesView().addProperty(new CategoryPropertyEditor(this, R.string.main_settings, 0) {
+        //     @Override
+        //     public void load() {
+        //         enableProperties(commonPropertiesList, isExpanded());
+        //     }
+        // });
+        enableProperties(commonPropertiesList, true);
         createCommonProperties(commonPropertiesList);
     }
 

@@ -1,23 +1,23 @@
 package com.sovworks.eds.android.filemanager.dialogs;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 
-import com.sovworks.eds.android.R;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
-public class SortDialog extends DialogFragment {
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.sovworks.eds.android.R;
+import com.trello.rxlifecycle3.components.support.RxDialogFragment;
+
+public class SortDialog extends RxDialogFragment {
 
     public interface SortingReceiver {
         void applySort(int sortMode);
@@ -59,7 +59,7 @@ public class SortDialog extends DialogFragment {
         boolean asc = sortMode % 2 == 0;
         sortDirection.check(asc ? R.id.sort_asc : R.id.sort_desc);
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons);
         alert.setTitle(R.string.sort)
                 .setView(v)
                 .setPositiveButton(android.R.string.ok,

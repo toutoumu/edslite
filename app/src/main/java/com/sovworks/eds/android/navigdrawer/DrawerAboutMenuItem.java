@@ -1,20 +1,19 @@
 package com.sovworks.eds.android.navigdrawer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
-import com.sovworks.eds.android.dialogs.AboutDialog;
+import com.sovworks.eds.android.activities.AboutActivity;
 
 public class DrawerAboutMenuItem extends DrawerMenuItemBase {
 
@@ -30,7 +29,9 @@ public class DrawerAboutMenuItem extends DrawerMenuItemBase {
     @Override
     public void onClick(View view, int position) {
         super.onClick(view, position);
-        AboutDialog.showDialog(getDrawerController().getMainActivity().getSupportFragmentManager());
+        // AboutDialog.showDialog(getDrawerController().getMainActivity().getSupportFragmentManager());
+        Intent intent = new Intent(getDrawerController().getMainActivity(), AboutActivity.class);
+        getDrawerController().getMainActivity().startActivity(intent);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class DrawerAboutMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.aboutIcon, typedValue, true);
             // noinspection deprecation
-            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_about_dark);
+            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_about_dark);
         }
         return _icon;
     }

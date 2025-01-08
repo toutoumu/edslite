@@ -204,4 +204,5 @@
     <string name="add_rand_bytes_descr">To powoduje spadek wydajności, ale zapewnia, że bloki mają różne kody uwierzytelniające. Zauważ, że można mieć takie same korzyści, stosując wektory inicjujące dla każdego pliku, które nie obniżają aż tak wydajności. Wybór liczby bajtów od 1 do 8..</string>
     <string name="number_of_kdf_iterations">Liczba iteracji KDF</string>
     <string name="number_of_kdf_iterations_descr">Wprowadź liczbę iteracji dla funkcji pozyskania klucza. Im większą wartość wybierzesz, tym dłużej potrwa do otwarcie kontenera.</string>
+    <string name="tips">提示</string>
 </resources>

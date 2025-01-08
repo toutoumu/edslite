@@ -1,11 +1,13 @@
 package com.sovworks.eds.android.locations.activities;
 
-import android.app.Activity;
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
+import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.helpers.CompatHelper;
-import com.sovworks.eds.android.helpers.Util;
 import com.sovworks.eds.android.locations.ContainerBasedLocation;
 import com.sovworks.eds.android.locations.DocumentTreeLocation;
 import com.sovworks.eds.android.locations.fragments.ContainerListFragment;
@@ -19,16 +21,21 @@ public abstract class LocationListActivityBase extends RxAppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Util.setTheme(this);
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_location_list);
+
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if (UserSettings.getSettings(this).isFlagSecureEnabled()) {
             CompatHelper.setWindowFlagSecure(this);
         }
         if (savedInstanceState == null) {
             getSupportFragmentManager().
                     beginTransaction().
-                    add(android.R.id.content, getCreateLocationFragment(), LocationListBaseFragment.TAG).
+                    add(R.id.container, getCreateLocationFragment(), LocationListBaseFragment.TAG).
                     commit();
         }
     }

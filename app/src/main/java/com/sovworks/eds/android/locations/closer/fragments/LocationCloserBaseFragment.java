@@ -1,19 +1,18 @@
 package com.sovworks.eds.android.locations.closer.fragments;
 
 import android.app.Activity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PowerManager;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
+import com.sovworks.eds.android.dialogs.CloseContainerDialog;
 import com.sovworks.eds.android.fragments.TaskFragment;
 import com.sovworks.eds.android.helpers.ActivityResultHandler;
 import com.sovworks.eds.android.locations.dialogs.ForceCloseDialog;
@@ -138,21 +137,29 @@ public class LocationCloserBaseFragment extends Fragment {
 
         @Override
         public void onResumeUI(Bundle args) {
-            Activity activity = getActivity();
-            _dialog = new ProgressDialog(activity);
-            _dialog.setMessage(activity.getText(R.string.closing));
-            _dialog.setIndeterminate(true);
+            // Activity activity = getActivity();
+            // _dialog = new ProgressDialog(activity);
+            // _dialog.setMessage(activity.getText(R.string.closing));
+            // _dialog.setIndeterminate(true);
+            // _dialog.setCancelable(false);
+            // _dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            //     @Override
+            //     public void onCancel(DialogInterface dialog) {
+            //         CloseLocationTaskFragment f = (CloseLocationTaskFragment) getFragmentManager().findFragmentByTag(CloseLocationTaskFragment.TAG);
+            //         if (f != null) {
+            //             f.cancel();
+            //         }
+            //     }
+            // });
+            // _dialog.show();
+            _dialog = CloseContainerDialog.showDialog(getFragmentManager(), getString(R.string.closing));
             _dialog.setCancelable(false);
-            _dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    CloseLocationTaskFragment f = (CloseLocationTaskFragment) getFragmentManager().findFragmentByTag(CloseLocationTaskFragment.TAG);
-                    if (f != null) {
-                        f.cancel();
-                    }
+            _dialog.setOnCancelListener(dialog -> {
+                CloseLocationTaskFragment f = (CloseLocationTaskFragment) getFragmentManager().findFragmentByTag(CloseLocationTaskFragment.TAG);
+                if (f != null) {
+                    f.cancel();
                 }
             });
-            _dialog.show();
         }
 
         @Override
@@ -171,7 +178,7 @@ public class LocationCloserBaseFragment extends Fragment {
 
         }
 
-        private ProgressDialog _dialog;
+        private CloseContainerDialog _dialog;
     }
 
     protected final ActivityResultHandler _resHandler = new ActivityResultHandler();

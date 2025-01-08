@@ -214,4 +214,5 @@
     <string name="add_rand_bytes_descr">Esto añade una penalización de rendimiento, pero asegura que los bloques tengan códigos diferentes de autenticación. Tenga en cuenta que puede tener los mismos beneficios habilitando los vectores de inicialización por fichero, lo cual no incurre en una gran penalización de rendimiento. Seleccione un número de bytes, de 1 a 8.</string>
     <string name="number_of_kdf_iterations">Número de iteraciones KDF</string>
     <string name="number_of_kdf_iterations_descr">Introduzca el número de iteraciones para la función de derivación de clave. A mayor valor, mayor será el tiempo requerido para abrir el contenedor.</string>
+    <string name="tips">提示</string>
 </resources>

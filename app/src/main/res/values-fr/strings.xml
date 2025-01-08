@@ -136,4 +136,5 @@
     <string name="never_save_history_desc">Les liens vers les nouveaux containers vont être retirés après avoir fermé EDS</string>
     <string name="use_external_file_manager">Gestionnaire de fichier externe</string>
     <string name="use_external_file_manager_desc">Ouvrir le gestionnaire de fichier externe quand un container est monté.</string>
+    <string name="tips">提示</string>
 </resources>

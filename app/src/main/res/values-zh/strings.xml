@@ -99,7 +99,7 @@
         <item>依大小</item>
         <item>依文件名(数字)</item>
     </string-array>
-    <string name="sort">分类</string>
+    <string name="sort">排序</string>
     <string name="zoom_in">放大</string>
     <string name="zoom_out">缩小</string>
     <string name="next_image">下一张图片</string>
@@ -288,4 +288,5 @@
     <string name="make_a_donation">捐赠</string>
     <string name="check_the_full_version">查看完整版本</string>
     <string name="check_source_code">查看源代码</string>
+    <string name="tips">提示</string>
 </resources>

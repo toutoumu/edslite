@@ -74,4 +74,5 @@
     <string name="auto_close_container">Hiçbir veri okunmadığı veya yazılmadığı zaman konteyneri otomatik kapat.</string>
     <string name="extension_mime_override">Her bir satır için, dosya uzantısına bağlı dosya kimlik tanımlayıcısını (mime type) geçersiz kıl, örneğin \"txt text/plain\".</string>
     <string name="path_to_container">Konteynerın Kendisine Yol</string>
+    <string name="tips">提示</string>
 </resources>

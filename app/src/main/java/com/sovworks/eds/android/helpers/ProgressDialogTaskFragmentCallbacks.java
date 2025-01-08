@@ -1,19 +1,24 @@
 package com.sovworks.eds.android.helpers;
 
-import android.app.Activity;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.textview.MaterialTextView;
+import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.fragments.TaskFragment.Result;
 import com.sovworks.eds.android.fragments.TaskFragment.TaskCallbacks;
+import com.trello.rxlifecycle3.components.support.RxDialogFragment;
 
 public class ProgressDialogTaskFragmentCallbacks implements TaskCallbacks {
-    public static class Dialog extends DialogFragment {
+    public static class Dialog extends RxDialogFragment {
         public static final String TAG = "ProgressDialog";
         public static final String ARG_DIALOG_TEXT = "dialog_text";
 
@@ -28,11 +33,20 @@ public class ProgressDialogTaskFragmentCallbacks implements TaskCallbacks {
         @NonNull
         @Override
         public android.app.Dialog onCreateDialog(Bundle savedInstanceState) {
-            ProgressDialog dialog = new ProgressDialog(getActivity());
-            dialog.setMessage(getArguments().getString(ARG_DIALOG_TEXT));
-            dialog.setIndeterminate(true);
-            dialog.setCancelable(false);
-            return dialog;
+            LayoutInflater inflater = (LayoutInflater) requireActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (inflater == null) {
+                throw new RuntimeException("Inflater is null");
+            }
+            View v = inflater.inflate(R.layout.dialog_close, null);
+            CircularProgressIndicator indicator = v.findViewById(android.R.id.progress);
+            MaterialTextView statusTextView = v.findViewById(android.R.id.text1);
+            if (getArguments() != null) {
+                statusTextView.setText(getArguments().getString(ARG_DIALOG_TEXT));
+            }
+
+            MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons);
+            alert.setView(v);
+            return alert.create();
         }
     }
 

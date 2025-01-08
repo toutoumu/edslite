@@ -1,22 +1,23 @@
 package com.sovworks.eds.android.settings.dialogs;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.settings.ChoiceDialogPropertyEditor;
 import com.sovworks.eds.android.settings.PropertyEditor;
 import com.sovworks.eds.android.settings.views.PropertiesView;
+import com.trello.rxlifecycle3.components.support.RxDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChoiceDialog extends DialogFragment {
+public class ChoiceDialog extends RxDialogFragment {
     public static final String ARG_VARIANTS = "com.sovworks.eds.android.VARIANTS";
     public static final String ARG_TITLE = "com.sovworks.eds.android.TITLE";
 
@@ -37,21 +38,17 @@ public class ChoiceDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public AppCompatDialog onCreateDialog(Bundle savedInstanceState) {
         PropertyEditor.Host host = PropertiesView.getHost(ChoiceDialog.this);
         final ChoiceDialogPropertyEditor pe = (ChoiceDialogPropertyEditor) host.getPropertiesView().getPropertyById(getArguments().getInt(PropertyEditor.ARG_PROPERTY_ID));
         ArrayList<String> variants = getArguments().getStringArrayList(ARG_VARIANTS);
         final String[] strings = variants == null ? new String[0] : variants.toArray(new String[variants.size()]);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons)
                 .setTitle(getArguments().getString(ARG_TITLE))
-                .setSingleChoiceItems(strings, pe.getSelectedEntry(),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int item) {
-                                pe.setSelectedEntry(item);
-                                dialog.dismiss();
-                            }
-                        }
-                );
+                .setSingleChoiceItems(strings, pe.getSelectedEntry(), (dialog, item) -> {
+                    pe.setSelectedEntry(item);
+                    dialog.dismiss();
+                });
         return builder.create();
     }
 

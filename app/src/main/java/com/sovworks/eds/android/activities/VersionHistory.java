@@ -1,25 +1,32 @@
 package com.sovworks.eds.android.activities;
 
 
+import static com.sovworks.eds.android.settings.UserSettingsCommon.LAST_VIEWED_CHANGES;
+
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.webkit.WebView;
 
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.widget.Toolbar;
+
 import com.sovworks.eds.android.R;
-import com.sovworks.eds.android.helpers.Util;
 import com.sovworks.eds.android.settings.UserSettings;
+import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
 
-import static com.sovworks.eds.android.settings.UserSettingsCommon.LAST_VIEWED_CHANGES;
-
-public class VersionHistory extends Activity {
+public class VersionHistory extends RxAppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Util.setTheme(this);
+        EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.changes_dialog);
+
+        Toolbar toolbar = findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         // setStyle(STYLE_NO_TITLE, R.style.Dialog);
         markAsRead();
         WebView vw = findViewById(R.id.changesWebView);
@@ -46,4 +53,9 @@ public class VersionHistory extends Activity {
         edit.commit();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
 }

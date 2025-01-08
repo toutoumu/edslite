@@ -1,13 +1,10 @@
 package com.sovworks.eds.android.filemanager.fragments;
 
 import static android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.FILE_BROWSER_SORT_MODE;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -16,9 +13,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.ActionMode;
@@ -32,6 +26,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
@@ -71,7 +69,6 @@ import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.trello.rxlifecycle3.android.FragmentEvent;
 import com.trello.rxlifecycle3.components.support.RxAppCompatDialogFragment;
-import com.trello.rxlifecycle3.components.support.RxFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,8 +85,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
-
-import static com.sovworks.eds.android.settings.UserSettingsCommon.FILE_BROWSER_SORT_MODE;
 
 public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment implements
         SortDialog.SortingReceiver,
@@ -406,6 +401,7 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
 
     public TaskFragment.TaskCallbacks getOpenAsContainerTaskCallbacks() {
         return new ProgressDialogTaskFragmentCallbacks((AppCompatActivity) getActivity(), R.string.loading) {
+            @SuppressLint("CheckResult")
             @Override
             public void onCompleted(Bundle args, TaskFragment.Result result) {
                 try {

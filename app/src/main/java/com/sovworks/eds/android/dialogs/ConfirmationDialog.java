@@ -1,19 +1,19 @@
 package com.sovworks.eds.android.dialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDialog;
+import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.helpers.Util;
+import com.trello.rxlifecycle3.components.support.RxDialogFragment;
 
 
-public abstract class ConfirmationDialog extends DialogFragment {
+public abstract class ConfirmationDialog extends RxDialogFragment {
     public static final String ARG_RECEIVER_TAG = "com.sovworks.eds.android.RECEIVER_TAG";
 
     public interface Receiver {
@@ -30,23 +30,19 @@ public abstract class ConfirmationDialog extends DialogFragment {
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+    public AppCompatDialog onCreateDialog(Bundle savedInstanceState) {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons);
         builder.setMessage(getTitle())
+                .setTitle(R.string.tips)
                 .setCancelable(false)
-                .setPositiveButton(R.string.yes,
-                        (dialog, id) ->
-                        {
-                            onYes();
-                            dismiss();
-                        })
-                .setNegativeButton(R.string.no,
-                        (dialog, id) ->
-                        {
-                            onNo();
-                            dismiss();
-                        });
-
+                .setPositiveButton(R.string.yes, (dialog, id) -> {
+                    onYes();
+                    dismiss();
+                })
+                .setNegativeButton(R.string.no, (dialog, id) -> {
+                    onNo();
+                    dismiss();
+                });
         return builder.create();
     }
 

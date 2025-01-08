@@ -3,8 +3,6 @@ package com.sovworks.eds.android.locations.fragments;
 import static android.view.MenuItem.SHOW_AS_ACTION_IF_ROOM;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
@@ -17,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
+import com.sovworks.eds.android.dialogs.CloseContainerDialog;
 import com.sovworks.eds.android.fragments.PropertiesFragmentBase;
 import com.sovworks.eds.android.fragments.TaskFragment;
 import com.sovworks.eds.android.helpers.ActivityResultHandler;
@@ -205,21 +204,15 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
 
         @Override
         public void onResumeUI(Bundle args) {
-            _dialog = new ProgressDialog(getContext());
-            _dialog.setMessage(getText(R.string.creating_container));
-            _dialog.setIndeterminate(true);
+            _dialog = CloseContainerDialog.showDialog(getFragmentManager(), getString(R.string.creating_container));
             _dialog.setCancelable(true);
-            _dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    CreateEDSLocationTaskFragment f = (CreateEDSLocationTaskFragment) getFragmentManager()
-                            .findFragmentByTag(CreateContainerTaskFragmentBase.TAG);
-                    if (f != null) {
-                        f.cancel();
-                    }
+            _dialog.setOnCancelListener(dialog -> {
+                CreateEDSLocationTaskFragment f = (CreateEDSLocationTaskFragment) getFragmentManager()
+                        .findFragmentByTag(CreateContainerTaskFragmentBase.TAG);
+                if (f != null) {
+                    f.cancel();
                 }
             });
-            _dialog.show();
         }
 
         @Override
@@ -251,7 +244,7 @@ public abstract class CreateEDSLocationFragmentBase extends PropertiesFragmentBa
 
         }
 
-        private ProgressDialog _dialog;
+        private CloseContainerDialog _dialog;
     }
 
     @Override
