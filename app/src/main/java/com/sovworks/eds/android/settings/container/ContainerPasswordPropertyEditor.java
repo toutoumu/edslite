@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.dialogs.PasswordDialog;
+import com.sovworks.eds.android.dialogs.PasswordDialogBase;
 import com.sovworks.eds.android.locations.fragments.CreateEDSLocationFragment;
 import com.sovworks.eds.android.settings.ButtonPropertyEditor;
 import com.sovworks.eds.android.settings.PropertyEditor;
@@ -31,6 +32,7 @@ public class ContainerPasswordPropertyEditor extends ButtonPropertyEditor implem
     @Override
     protected void onButtonClick() {
         Bundle args = new Bundle();
+        args.putString(PasswordDialogBase.ARG_LABEL, getHostFragment().getString(R.string.container_password));
         args.putBoolean(PasswordDialog.ARG_HAS_PASSWORD, true);
         args.putBoolean(PasswordDialog.ARG_VERIFY_PASSWORD, true);
         args.putInt(PropertyEditor.ARG_PROPERTY_ID, getId());

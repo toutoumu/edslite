@@ -25,6 +25,7 @@ public class ChangePasswordPropertyEditor extends ButtonPropertyEditor implement
     @Override
     protected void onButtonClick() {
         Bundle args = new Bundle();
+        args.putString(PasswordDialog.ARG_LABEL, getHost().getString(R.string.change_container_password));
         args.putBoolean(PasswordDialog.ARG_HAS_PASSWORD, true);
         args.putBoolean(PasswordDialog.ARG_VERIFY_PASSWORD, true);
         args.putInt(PropertyEditor.ARG_PROPERTY_ID, getId());

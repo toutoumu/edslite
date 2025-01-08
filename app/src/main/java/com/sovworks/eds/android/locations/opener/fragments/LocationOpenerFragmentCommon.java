@@ -2,6 +2,7 @@ package com.sovworks.eds.android.locations.opener.fragments;
 
 import android.os.Bundle;
 
+import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.dialogs.PasswordDialog;
 import com.sovworks.eds.android.dialogs.PasswordDialogBase;
 import com.sovworks.eds.android.errors.WrongPasswordOrBadContainerException;
@@ -68,6 +69,7 @@ public class LocationOpenerFragmentCommon extends LocationOpenerBaseFragment imp
 
     protected Bundle getAskPasswordArgs() {
         Bundle args = new Bundle();
+        args.putString(PasswordDialogBase.ARG_LABEL, getResources().getString(R.string.opening_container));
         args.putString(PasswordDialogBase.ARG_RECEIVER_FRAGMENT_TAG, getTag());
         Openable loc = getTargetLocation();
         LocationsManager.storePathsInBundle(args, loc, null);

@@ -1,30 +1,33 @@
 package com.sovworks.eds.android.dialogs;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.helpers.Util;
 import com.sovworks.eds.android.settings.activities.OpeningOptionsActivity;
-import com.sovworks.eds.android.views.EditSB;
 import com.sovworks.eds.crypto.SecureBuffer;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.locations.Openable;
 import com.trello.rxlifecycle3.components.support.RxDialogFragment;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public abstract class PasswordDialogBase extends RxDialogFragment {
     public static final String TAG = "com.sovworks.eds.android.dialogs.PasswordDialog";
@@ -51,7 +54,7 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
         _options = savedInstanceState == null ? getArguments() : savedInstanceState;
     }
 
-    @Override
+    /*@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.password_dialog, container);
         _labelTextView = v.findViewById(R.id.label);
@@ -98,14 +101,14 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
             if (hasPassword()) {
                 passwordLayout.setVisibility(View.VISIBLE);
                 _passwordEditText.requestFocus();
-                /*lifecycle().
+                *//*lifecycle().
                         filter(event -> event == FragmentEvent.RESUME).
                         subscribe(event -> {
                             final InputMethodManager imm = (InputMethodManager) _passwordEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                             if(imm != null)
                                 imm.showSoftInput(_passwordEditText, InputMethodManager.SHOW_FORCED);
                             //_passwordEditText.requestFocus();
-                        });*/
+                        });*//*
             } else {
                 passwordLayout.setVisibility(hasPassword() ? View.VISIBLE : View.GONE);
             }
@@ -129,6 +132,64 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
             ib.setOnClickListener(v1 -> openOptions());
         }
         return v;
+    }*/
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        View v = requireActivity().getLayoutInflater().inflate(R.layout.dialog_password, null);
+        _passwordEditText = v.findViewById(R.id.password_et);
+        _repeatPasswordEditText = v.findViewById(R.id.repeat_password_et);
+        if (_passwordEditText != null) {
+            if (hasPassword()) {
+                _passwordEditText.setVisibility(View.VISIBLE);
+            } else {
+                _passwordResult = null;
+                _passwordEditText.setVisibility(View.GONE);
+            }
+        } else {
+            _passwordResult = null;
+        }
+        if (_repeatPasswordEditText != null) {
+            TextInputLayout _layout = v.findViewById(R.id.repeat_password_layout);
+            if (hasPassword() && isPasswordVerificationRequired()) {
+                _repeatPasswordEditText.setVisibility(View.VISIBLE);
+                _layout.setVisibility(View.VISIBLE);
+            } else {
+                _repeatPasswordSB = null;
+                _repeatPasswordEditText.setVisibility(View.GONE);
+                _layout.setVisibility(View.GONE);
+            }
+        } else {
+            _repeatPasswordSB = null;
+        }
+        View passwordLayout = v.findViewById(R.id.password_layout);
+        if (passwordLayout != null) {
+            if (hasPassword()) {
+                passwordLayout.setVisibility(View.VISIBLE);
+                _passwordEditText.requestFocus();
+                /*lifecycle().
+                        filter(event -> event == FragmentEvent.RESUME).
+                        subscribe(event -> {
+                            final InputMethodManager imm = (InputMethodManager) _passwordEditText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            if(imm != null)
+                                imm.showSoftInput(_passwordEditText, InputMethodManager.SHOW_FORCED);
+                            //_passwordEditText.requestFocus();
+                        });*/
+            } else {
+                passwordLayout.setVisibility(hasPassword() ? View.VISIBLE : View.GONE);
+            }
+        }
+
+        // 构建弹窗
+        MaterialAlertDialogBuilder alert = new MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_Catalog_MaterialAlertDialog_Centered_FullWidthButtons);
+        alert.setTitle(loadLabel());
+        alert.setView(v);
+        alert.setPositiveButton(R.string.ok, (dialog, whichButton) -> confirm());
+        if (_location != null) {
+            alert.setNegativeButton(R.string.settings, (dialog, whichButton) -> openOptions());
+        }
+        return alert.create();
     }
 
 
@@ -148,7 +209,7 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        setWidthHeight();
+        // setWidthHeight();
     }
 
     @Override
@@ -193,7 +254,7 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
 
     protected static final int REQUEST_OPTIONS = 1;
     protected TextView _labelTextView;
-    protected EditSB _passwordEditText, _repeatPasswordEditText;
+    protected TextInputEditText _passwordEditText, _repeatPasswordEditText;
     protected Openable _location;
     protected Bundle _options;
 

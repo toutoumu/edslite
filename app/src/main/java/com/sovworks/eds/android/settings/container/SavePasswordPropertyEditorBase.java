@@ -54,6 +54,7 @@ public class SavePasswordPropertyEditorBase extends SwitchPropertyEditor impleme
         Openable loc = getHost().getLocation();
         if (isChecked) {
             Bundle args = new Bundle();
+            args.putString(PasswordDialog.ARG_LABEL, getHost().getString(R.string.save_password));
             args.putBoolean(PasswordDialog.ARG_HAS_PASSWORD, loc.hasPassword());
             args.putString(PasswordDialog.ARG_RECEIVER_FRAGMENT_TAG, getHost().getTag());
             args.putInt(PropertyEditor.ARG_PROPERTY_ID, getId());
