@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,6 +28,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.FragmentManager;
 
 import com.sovworks.eds.android.Logger;
@@ -68,9 +68,10 @@ import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.settings.GlobalConfig;
 import com.trello.rxlifecycle3.android.FragmentEvent;
-import com.trello.rxlifecycle3.components.support.RxAppCompatDialogFragment;
+import com.trello.rxlifecycle3.components.support.RxFragment;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,8 +86,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.Subject;
+import timber.log.Timber;
 
-public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment implements
+public abstract class FileListViewFragmentBase extends RxFragment implements
         SortDialog.SortingReceiver,
         FileManagerFragment,
         LocationOpenerBaseFragment.LocationOpenerResultReceiver,
@@ -216,6 +218,19 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
         menuInflater.inflate(R.menu.file_list_menu, menu);
+
+        // 菜单图标和文字同时显示
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                try {
+                    Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                    method.setAccessible(true);
+                    method.invoke(menu, true);
+                } catch (Exception e) {
+                    Timber.e(e);
+                }
+            }
+        }
     }
 
     @Override
@@ -760,7 +775,7 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
     }
 
     protected void startSelectionMode() {
-        _actionMode = getListView().startActionMode(new ActionMode.Callback() {
+        _actionMode = ((AppCompatActivity) requireActivity()).startSupportActionMode(new androidx.appcompat.view.ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, Menu menu) {
                 if (isSendAction() || _isReadingLocation) {
@@ -768,6 +783,18 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
                 }
                 mode.getMenuInflater().inflate(R.menu.file_list_context_menu, menu);
                 ((FileListViewAdapter) getListView().getAdapter()).notifyDataSetChanged();
+                // 菜单图标和文字同时显示
+                if (menu != null) {
+                    if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                        try {
+                            Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                            method.setAccessible(true);
+                            method.invoke(menu, true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 return true;
             }
 
@@ -981,15 +1008,9 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newUri(cr, recs.size() + " files are in clipboard", MainContentProvider.getCurrentSelectionUri()));
         getActivity().invalidateOptionsMenu();*/
-        getFragmentManager().
+        getParentFragmentManager().
                 beginTransaction().
-                add(
-                        CopyToClipboardTask.newInstance(
-                                getRealLocation(),
-                                getSelectedPaths()
-                        ),
-                        CopyToClipboardTask.TAG
-                ).
+                add(CopyToClipboardTask.newInstance(getRealLocation(), getSelectedPaths()), CopyToClipboardTask.TAG).
                 commit();
     }
 
@@ -1316,3 +1337,4 @@ public abstract class FileListViewFragmentBase extends RxAppCompatDialogFragment
         }
     }
 }
+

@@ -41,34 +41,15 @@ public class CustomGlideModule extends AppGlideModule {
         RequestOptions options = new RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE)// 缓存策略
                 // .format(DecodeFormat.PREFER_RGB_565)//图片格式
                 //.placeholder(R.drawable.ic_default_image)//占位图
-                .dontAnimate()
+                // .dontAnimate() // 如果是gif那么不能使用这个
                 .dontTransform();
         builder.setDefaultRequestOptions(options);
     }
 
     @Override
     public void registerComponents(@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
-        // 指定Model类型为Picture的处理方式
+        // 指定Model类型为Path的处理方式
         registry.append(Path.class, InputStream.class, new MyModelLoader.LoaderFactory());
-
-        // 指定Model类型为File的处理方式
-    /*registry.append(File.class, InputStream.class,
-        new FileLoader.Factory<InputStream>(new FileLoader.FileOpener<InputStream>() {
-
-          @Override public InputStream open(File file) throws FileNotFoundException {
-            // 可以在这里进行文件处理,比如解密等.
-            Timber.e(file.getAbsolutePath());
-            return ConcealUtil.getCipherInputStream(file);
-          }
-
-          @Override public void close(InputStream inputStream) throws IOException {
-            inputStream.close();
-          }
-
-          @Override public Class<InputStream> getDataClass() {
-            return InputStream.class;
-          }
-        }));*/
     }
 
     /**
@@ -134,8 +115,12 @@ public class CustomGlideModule extends AppGlideModule {
 
             @Override
             public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
+                if (this == o) {
+                    return true;
+                }
+                if (o == null || getClass() != o.getClass()) {
+                    return false;
+                }
 
                 MyKey myKey = (MyKey) o;
                 return Objects.equals(path, myKey.path);
@@ -169,8 +154,9 @@ public class CustomGlideModule extends AppGlideModule {
                         // Timber.e(e);
                         callback.onLoadFailed(e);
                     }
+                } else {
+                    callback.onDataReady(null);
                 }
-                // callback.onDataReady(null);
             }
 
             @Override
@@ -202,29 +188,4 @@ public class CustomGlideModule extends AppGlideModule {
             }
         }
     }
-
-  /*public static class FileOpen implements FileLoader.FileOpener<InputStream> {
-
-    @Override
-    public InputStream open(File file) throws FileNotFoundException {
-      try {
-        return ConcealUtil.getCipherInputStream(file);
-      } catch (FileNotFoundException e) {
-        throw e;
-      } catch (IOException | KeyChainException | CryptoInitializationException e) {
-        Timber.e(e);
-        return null;
-      }
-    }
-
-    @Override
-    public void close(InputStream inputStream) throws IOException {
-      inputStream.close();
-    }
-
-    @Override
-    public Class<InputStream> getDataClass() {
-      return InputStream.class;
-    }
-  }*/
 }

@@ -19,7 +19,7 @@ import com.trello.rxlifecycle3.components.support.RxDialogFragment;
 
 public class CloseContainerDialog extends RxDialogFragment {
     public static final String TAG = "ProgressDialog";
-    public static final String ARG_TITLE = "com.igeltech.nevercrypt.android.TITLE";
+    public static final String ARG_TITLE = "com.sovworks.eds.android.TITLE";
     private DialogInterface.OnCancelListener _cancelListener;
 
     public static CloseContainerDialog showDialog(FragmentManager fm, String title) {

@@ -10,12 +10,6 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.ListFragment;
-
-import android.util.TypedValue;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +22,11 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.fragment.app.ListFragment;
+
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.locations.activities.CreateLocationActivity;
@@ -38,6 +37,7 @@ import com.sovworks.eds.android.settings.UserSettings;
 import com.sovworks.eds.locations.Location;
 import com.sovworks.eds.locations.LocationsManager;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,7 +169,7 @@ public abstract class LocationListBaseFragment extends ListFragment {
             getActivity().registerReceiver(_reloadLocationsReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED), Context.RECEIVER_EXPORTED);
             getActivity().registerReceiver(_reloadLocationsReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_REMOVED), Context.RECEIVER_EXPORTED);
             getActivity().registerReceiver(_reloadLocationsReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CREATED), Context.RECEIVER_EXPORTED);
-        }else {
+        } else {
             getActivity().registerReceiver(_reloadLocationsReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CHANGED));
             getActivity().registerReceiver(_reloadLocationsReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_REMOVED));
             getActivity().registerReceiver(_reloadLocationsReceiver, new IntentFilter(LocationsManager.BROADCAST_LOCATION_CREATED));
@@ -427,10 +427,22 @@ public abstract class LocationListBaseFragment extends ListFragment {
     }
 
     private void startSelectionMode() {
-        _actionMode = getListView().startActionMode(new ActionMode.Callback() {
+        _actionMode = ((AppCompatActivity) requireActivity()).startSupportActionMode(new androidx.appcompat.view.ActionMode.Callback() {
             @Override
             public boolean onCreateActionMode(ActionMode mode, android.view.Menu menu) {
                 mode.getMenuInflater().inflate(getContextMenuId(), menu);
+                // 菜单图标和文字同时显示
+                if (menu != null) {
+                    if (menu.getClass().getSimpleName().equalsIgnoreCase("MenuBuilder")) {
+                        try {
+                            Method method = menu.getClass().getDeclaredMethod("setOptionalIconsVisible", Boolean.TYPE);
+                            method.setAccessible(true);
+                            method.invoke(menu, true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
                 return true;
             }
 

@@ -10,15 +10,17 @@ import android.os.Bundle;
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.filemanager.fragments.FileListViewFragment;
 import com.sovworks.eds.android.fragments.TaskFragment;
-import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.android.providers.MainContentProvider;
 import com.sovworks.eds.fs.Path;
 import com.sovworks.eds.locations.Location;
+import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.settings.GlobalConfig;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+
+import timber.log.Timber;
 
 public class CopyToClipboardTask extends TaskFragment {
     public static final String TAG = "CopyToClipboardTask";
@@ -119,6 +121,7 @@ public class CopyToClipboardTask extends TaskFragment {
                         f.updateOptionsMenu();
                     }
                 } catch (Throwable e) {
+                    Timber.e(e);
                     Logger.showAndLog(activity, e);
                 }
             }

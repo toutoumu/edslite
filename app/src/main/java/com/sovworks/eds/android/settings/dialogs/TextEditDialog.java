@@ -20,9 +20,9 @@ import com.sovworks.eds.android.settings.views.PropertiesView;
 
 public class TextEditDialog extends AppCompatDialogFragment {
     public static final String TAG = "TextEditDialog";
-    public static final String ARG_TEXT = "com.igeltech.nevercrypt.android.ARG_TEXT";
-    public static final String ARG_MESSAGE_ID = "com.igeltech.nevercrypt.android.ARG_MESSAGE_ID";
-    public static final String ARG_EDIT_TEXT_RES_ID = "com.igeltech.nevercrypt.android.EDIT_TEXT_RES_ID";
+    public static final String ARG_TEXT = "com.sovworks.eds.android.ARG_TEXT";
+    public static final String ARG_MESSAGE_ID = "com.sovworks.eds.android.ARG_MESSAGE_ID";
+    public static final String ARG_EDIT_TEXT_RES_ID = "com.sovworks.eds.android.EDIT_TEXT_RES_ID";
     private EditText _input;
 
     @NonNull

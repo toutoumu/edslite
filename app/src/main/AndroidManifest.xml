@@ -225,12 +225,16 @@
                 android:resource="@xml/close_all_containers_widget_info" />
         </receiver>
 
+        <!--
+        这个属性会导致剪切板无法使用
+        android:permission="android.permission.MANAGE_DOCUMENTS"
+        -->
         <provider
             android:name=".providers.MainContentProvider"
             android:authorities="com.sovworks.eds.android.providers.main.lite"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.MANAGE_DOCUMENTS">
+            android:grantUriPermissions="true">
             <grant-uri-permission android:path="selection" />
             <grant-uri-permission android:path="/" />
         </provider>

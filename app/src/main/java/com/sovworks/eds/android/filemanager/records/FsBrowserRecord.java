@@ -6,12 +6,14 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RadioButton;
-import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatImageView;
+
+import com.google.android.material.radiobutton.MaterialRadioButton;
+import com.google.android.material.textview.MaterialTextView;
+import com.library.SizeUtils;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.activities.FileManagerActivity;
 import com.sovworks.eds.android.filemanager.fragments.FileListViewFragment;
@@ -101,16 +103,12 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
     @Override
     public void updateView(View view, final int position) {
         final FileListViewFragment hf = getHostFragment();
-        // if(isSelected())
-        //    //noinspection deprecation
-        //    view.setBackgroundDrawable(getSelectedBackgroundDrawable(_context));
-        CheckBox cb = view.findViewById(android.R.id.checkbox);
+        AppCompatCheckBox cb = view.findViewById(android.R.id.checkbox);
         if (cb != null) {
             if (allowSelect() && (_host.isSelectAction() || hf.isInSelectionMode()) && (!_host.isSelectAction() || !_host.isSingleSelectionMode())) {
                 cb.setOnCheckedChangeListener(null);
                 cb.setChecked(isSelected());
-                cb.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                {
+                cb.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                     if (isChecked) {
                         hf.selectFile(FsBrowserRecord.this);
                     } else {
@@ -122,13 +120,12 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
                 cb.setVisibility(View.INVISIBLE);
             }
         }
-        RadioButton rb = view.findViewById(R.id.radio);
+        MaterialRadioButton rb = view.findViewById(R.id.radio);
         if (rb != null) {
             if (allowSelect() && _host.isSelectAction() && _host.isSingleSelectionMode()) {
                 rb.setOnCheckedChangeListener(null);
                 rb.setChecked(isSelected());
-                rb.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                {
+                rb.setOnCheckedChangeListener((compoundButton, isChecked) -> {
                     if (isChecked) {
                         hf.selectFile(FsBrowserRecord.this);
                     } else {
@@ -140,32 +137,28 @@ public abstract class FsBrowserRecord extends CachedPathInfoBase implements Brow
                 rb.setVisibility(View.INVISIBLE);
             }
         }
-
-        TextView tv = view.findViewById(android.R.id.text1);
+        MaterialTextView tv = view.findViewById(android.R.id.text1);
         tv.setText(getName());
-
-        ImageView iv = view.findViewById(android.R.id.icon);
+        AppCompatImageView iv = view.findViewById(android.R.id.icon);
         iv.setImageDrawable(getDefaultIcon());
-        iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        iv.setScaleType(AppCompatImageView.ScaleType.CENTER_INSIDE);
+        final int padding = SizeUtils.dpToPx(_context, 5);
+        iv.setPadding(padding, padding, padding, padding);
         // todo 去掉点击图片显示选择
-        /* iv.setOnClickListener(view1 ->
-        {
-            if (allowSelect()) {
-                if (isSelected()) {
+        /* iv.setOnClickListener(view1 -> {
+            if (allowSelect())
+            {
+                if (isSelected())
+                {
                     if (!_host.isSelectAction() || !_host.isSingleSelectionMode())
                         hf.unselectFile(FsBrowserRecord.this);
-                } else
+                }
+                else
                     hf.selectFile(FsBrowserRecord.this);
             }
         }); */
-
         iv = view.findViewById(android.R.id.icon1);
-        if (_miniIcon == null) {
-            iv.setVisibility(View.INVISIBLE);
-        } else {
-            iv.setImageDrawable(_miniIcon);
-            iv.setVisibility(View.VISIBLE);
-        }
+        iv.setVisibility(View.INVISIBLE);
     }
 
     @Override

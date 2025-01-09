@@ -1,14 +1,21 @@
 package com.sovworks.eds.android.filemanager.activities.zip;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.sovworks.eds.android.R;
+import com.sovworks.eds.fs.Path;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 文件工具
@@ -30,11 +37,127 @@ public class FileUtils {
      **/
     public final static String DEFAULT_TEMP = "/.Temp/";
 
+    private static final Map<String, Integer> FILE_TYPE_ICON_MAP = new HashMap<>();
+
+    static {
+        // 初始化文件类型与图标资源的映射关系
+        FILE_TYPE_ICON_MAP.put("log", R.drawable.ic_file);
+        FILE_TYPE_ICON_MAP.put("txt", R.drawable.ic_file);
+        FILE_TYPE_ICON_MAP.put("config", R.drawable.ic_file);
+        // 代码
+        FILE_TYPE_ICON_MAP.put("json", R.drawable.ic_file_code);
+        FILE_TYPE_ICON_MAP.put("c", R.drawable.ic_file_code);
+        FILE_TYPE_ICON_MAP.put("java", R.drawable.ic_file_code);
+        FILE_TYPE_ICON_MAP.put("ts", R.drawable.ic_file_code);
+        FILE_TYPE_ICON_MAP.put("js", R.drawable.ic_file_code);
+        FILE_TYPE_ICON_MAP.put("kt", R.drawable.ic_file_code);
+        // 图片
+        FILE_TYPE_ICON_MAP.put("gif", R.drawable.ic_file_image);
+        FILE_TYPE_ICON_MAP.put("png", R.drawable.ic_file_image);
+        FILE_TYPE_ICON_MAP.put("jpg", R.drawable.ic_file_image);
+        FILE_TYPE_ICON_MAP.put("jpeg", R.drawable.ic_file_image);
+        FILE_TYPE_ICON_MAP.put("bmp", R.drawable.ic_file_image);
+        FILE_TYPE_ICON_MAP.put("heic", R.drawable.ic_file_image);
+        // 视频
+        FILE_TYPE_ICON_MAP.put("mp4", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("avi", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("wmv", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("mkv", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("mov", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("rm", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("rmvb", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("3gp", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("flv", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("mpg", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("swf", R.drawable.ic_file_video);
+        FILE_TYPE_ICON_MAP.put("vob", R.drawable.ic_file_video);
+        // 音频
+        FILE_TYPE_ICON_MAP.put("mp3", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("wav", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("aac", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("flac", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("ogg", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("wma", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("aiff", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("alac", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("m4a", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("m4r", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("m4b", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("mp2", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("mpeg", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("ra", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("ram", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("wv", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("ac3", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("dts", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("amr", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("caf", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("mid", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("midi", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("xmf", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("mxmf", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("imy", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("rtttl", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("ota", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("rtx", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("smf", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("mmf", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("cmx", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("mka", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("au", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("snd", R.drawable.ic_file_audio);
+        FILE_TYPE_ICON_MAP.put("sd2", R.drawable.ic_file_audio);
+        // 办公文档
+        FILE_TYPE_ICON_MAP.put("doc", R.mipmap.file_icon_doc);
+        FILE_TYPE_ICON_MAP.put("docx", R.mipmap.file_icon_docx);
+        FILE_TYPE_ICON_MAP.put("xls", R.drawable.ic_file_excel);
+        FILE_TYPE_ICON_MAP.put("xlsx", R.drawable.ic_file_excel);
+        FILE_TYPE_ICON_MAP.put("ppt", R.mipmap.file_icon_ppt);
+        FILE_TYPE_ICON_MAP.put("pptx", R.mipmap.file_icon_pptx);
+        FILE_TYPE_ICON_MAP.put("pdf", R.drawable.ic_file_pdf);
+        // 压缩文件
+        FILE_TYPE_ICON_MAP.put("zip", R.drawable.ic_file_zip);
+        FILE_TYPE_ICON_MAP.put("rar", R.mipmap.file_icon_rar);
+
+        FILE_TYPE_ICON_MAP.put("dwg", R.mipmap.file_icon_dwg);
+        FILE_TYPE_ICON_MAP.put("dws", R.mipmap.file_icon_dws);
+        FILE_TYPE_ICON_MAP.put("dwt", R.mipmap.file_icon_dwt);
+        FILE_TYPE_ICON_MAP.put("dxf", R.mipmap.file_icon_dxf);
+        FILE_TYPE_ICON_MAP.put("ocf", R.mipmap.file_icon_ocf);
+        FILE_TYPE_ICON_MAP.put("ttf", R.mipmap.file_icon_ttf);
+        FILE_TYPE_ICON_MAP.put("ttc", R.mipmap.file_icon_ttc);
+        FILE_TYPE_ICON_MAP.put("shx", R.mipmap.file_icon_shx);
+        FILE_TYPE_ICON_MAP.put("sht", R.mipmap.file_icon_sht);
+        FILE_TYPE_ICON_MAP.put("shp", R.mipmap.file_icon_shp);
+        FILE_TYPE_ICON_MAP.put("fon", R.mipmap.file_icon_fon);
+
+        FILE_TYPE_ICON_MAP.put("tif", R.mipmap.file_icon_tif);
+        FILE_TYPE_ICON_MAP.put("rtf", R.mipmap.file_icon_rtf);
+        FILE_TYPE_ICON_MAP.put("jww", R.mipmap.file_icon_jww);
+
+
+    }
+
+    /**
+     * 根据文件扩展名,获取文件图标
+     */
+    public static Drawable getFileIcon(Context context, Path path) {
+        if (path == null || path.getPathString() == null) {
+            return ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_file_unknown, null);
+        }
+
+        String fileType = getFileExtensionNoPoint(path.getPathString()).toLowerCase();
+        Integer resId = FILE_TYPE_ICON_MAP.getOrDefault(fileType, R.drawable.ic_file_unknown);
+        if (resId != null) {
+            return AppCompatResources.getDrawable(context, resId);
+        }
+        return AppCompatResources.getDrawable(context, R.drawable.ic_file_unknown);
+    }
+
     /**
      * 转换文件大小单位(KB/MB/GB)
      *
      * @param fileSize 转换文件大小
-     * @return
      */
     public static String formatFileSize(long fileSize) {
         DecimalFormat df = new DecimalFormat("0.00");
@@ -54,21 +177,28 @@ public class FileUtils {
     /**
      * 获取文件扩展名(不包含前面那个点 ‘.’)
      *
-     * @param path
-     * @return
+     * @param filePath .
      */
-    public static String getFileExtensionNoPoint(String path) {
-        if (TextUtils.isEmpty(path)) {
+    private static String getFileExtensionNoPoint(String filePath) {
+        if (TextUtils.isEmpty(filePath)) {
             return "";
         }
-        return getFileExtensionNoPoint(new File(path));
+        int lastDotIndex = filePath.lastIndexOf('.');
+        if (lastDotIndex == -1) {
+            return "";
+        }
+        // 处理多点文件扩展名
+        int lastSlashIndex = filePath.lastIndexOf('/');
+        if (lastSlashIndex != -1 && lastDotIndex < lastSlashIndex) {
+            return "";
+        }
+        return filePath.substring(lastDotIndex + 1);
     }
 
     /**
      * 获取文件扩展名(不包含前面那个点 ‘.’)
      *
-     * @param file
-     * @return
+     * @param file .
      */
     private static String getFileExtensionNoPoint(File file) {
         if (file == null || file.isDirectory()) {
@@ -84,104 +214,9 @@ public class FileUtils {
         return "";
     }
 
-    /**
-     * 本地文件数组排序功能
-     *
-     * @param list    排序数据
-     * @param sortKey 排序字段或者说是种类名称（如：日期，文件名，文件大小，文件类型）
-     * @param order   排序方式 true 升序 false 降序
-     */
-    /*public static void sortFileModelList(List<FileModel> list, final String sortKey, final boolean order) {
-        if (list == null || list.size() < 1 || TextUtils.isEmpty(sortKey)) {
-            return;
-        }
-        try {
-            Collections.sort(list, new Comparator<FileModel>() {
-                @Override
-                public int compare(FileModel o1, FileModel o2) {
-                    if (TextUtils.isEmpty(sortKey)) {
-                        return 0;
-                    }
-                    if (sortKey.equalsIgnoreCase("fileName")) {
-                        String str1 = o1.getFileName();
-                        String str2 = o2.getFileName();
-                        if (order) {
-                            return str1.compareToIgnoreCase(str2);
-                        } else {
-                            return str2.compareToIgnoreCase(str1);
-                        }
-                    } else if (sortKey.equalsIgnoreCase("fileType")) {
-                        String str1 = o1.getFileType();
-                        String str2 = o2.getFileType();
-                        if (order) {
-                            return str1.compareToIgnoreCase(str2);
-                        } else {
-                            return str2.compareToIgnoreCase(str1);
-                        }
-                    } else if (sortKey.equalsIgnoreCase("fileDate")) {
-                        Long lng1 = o1.getFileDate();
-                        Long lng2 = o2.getFileDate();
-                        if (order) {
-                            return lng1.compareTo(lng2);
-                        } else {
-                            return lng2.compareTo(lng1);
-                        }
-                    } else if (sortKey.equalsIgnoreCase("fileSize")) {
-                        Long lng1 = o1.getFileSize();
-                        Long lng2 = o2.getFileSize();
-                        if (order) {
-                            return lng1.compareTo(lng2);
-                        } else {
-                            return lng2.compareTo(lng1);
-                        }
-                    }
-                    return 0;
-                }
-            });
-            if (!sortKey.equalsIgnoreCase("fileType")) {
-                sortFileMode_FolderToTop(list);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
-
-    /**
-     * 按照文件夹在上，文件在下的顺序排列
-     *
-     * @param list 排序数据
-     */
-    /*private static void sortFileMode_FolderToTop(List<FileModel> list) {
-        if (list == null || list.size() < 1) {
-            return;
-        }
-        try {
-            Collections.sort(list, new Comparator<FileModel>() {
-                @Override
-                public int compare(FileModel o1, FileModel o2) {
-                    boolean bool1 = o1.isDir();
-                    boolean bool2 = o2.isDir();
-                    if (bool1 != bool2) {
-                        if (bool1) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    }
-                    return 0;
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
 
     /**
      * 获取文件icon
-     *
-     * @param filePath
-     * @return
      */
     public static int getFileIcon(boolean isDir, String filePath) {
         if (!TextUtils.isEmpty(filePath)) {
@@ -195,8 +230,6 @@ public class FileUtils {
     /**
      * 比较两个文件是否相同
      *
-     * @param path1
-     * @param path2
      * @return true 相同,false 不同
      */
     private static boolean isCompareFiles(String path1, String path2) {
@@ -213,8 +246,6 @@ public class FileUtils {
     /**
      * 比较两个文件是否相同
      *
-     * @param file1
-     * @param file2
      * @return true 相同,false 不同
      */
     private static boolean isCompareFiles(File file1, File file2) {
@@ -229,9 +260,6 @@ public class FileUtils {
 
     /**
      * 获取文件icon
-     *
-     * @param file
-     * @return
      */
     private static int getFileIcon(boolean isDir, File file) {
         int resId = 0;
@@ -525,31 +553,4 @@ public class FileUtils {
         }
         return "*/*";
     }
-
-    /**
-     * 临时文件夹
-     */
-    /*public static String getAppTempPath() {
-        return getAvailableFilesPathAndroidData(true) + DEFAULT_TEMP;
-    }*/
-
-    /**
-     * 获取缓存路径
-     *
-     * @param boolToCache
-     * @return
-     */
-    /*private static String getAvailableFilesPathAndroidData(boolean boolToCache) {
-        if (!isSDExist()) {
-            if (boolToCache) {
-                return MyApplication.getContext().getCacheDir().getAbsolutePath();
-            }
-            return MyApplication.getContext().getFilesDir().getAbsolutePath();
-        } else {
-            if (boolToCache) {
-                return MyApplication.getContext().getExternalCacheDir().getAbsolutePath();
-            }
-            return MyApplication.getContext().getExternalFilesDir("").getAbsolutePath();
-        }
-    }*/
 }

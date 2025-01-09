@@ -116,6 +116,11 @@ android {
     lint {
         abortOnError false
     }
+
+    buildFeatures {
+        viewBinding true
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -137,6 +142,7 @@ dependencies {
     implementation 'com.trello.rxlifecycle3:rxlifecycle-components:3.1.0'
 
     implementation project(':library')
+    implementation project(':photoview')
 
     // 日志
     api "com.jakewharton.timber:timber:4.7.1"
@@ -154,6 +160,16 @@ dependencies {
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.31'
     implementation "net.lingala.zip4j:zip4j:2.11.5"
     implementation("com.github.junrar:junrar:7.5.5")
+
+    // 状态栏
+    // implementation "com.gyf.immersionbar:immersionbar:3.0.0"
+    // implementation "com.gyf.immersionbar:immersionbar-components:3.0.0"
+    // 基础依赖包，必须要依赖
+    implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
+    // kotlin扩展（可选）
+    implementation 'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2'
+    // fragment快速实现（可选）已废弃
+    implementation 'com.geyifeng.immersionbar:immersionbar-components:3.2.2'
 }
 
 
