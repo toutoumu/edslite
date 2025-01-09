@@ -15,6 +15,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.ImageView;
@@ -35,7 +36,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.gyf.immersionbar.BarHide;
 import com.gyf.immersionbar.ImmersionBar;
-import com.library.SizeUtils;
 import com.library.widget.SmoothImageView;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.databinding.FileListViewFragmentBinding;
@@ -85,7 +85,6 @@ public class FileListViewFragment extends FileListViewFragmentBase {
         setTransparentForWindow();
 
         mGlideRequests = Glide.with(this);
-        // mGlideRequests = Glide.with(this);
         mThumbnailRequestOptions = RequestOptions
                 .fitCenterTransform()
                 .override(500, 900)
@@ -97,8 +96,6 @@ public class FileListViewFragment extends FileListViewFragmentBase {
                 .dontAnimate()
                 .dontTransform()
                 .encodeQuality(80);
-
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, _backPressedCallback);
     }
 
     @Nullable
@@ -107,7 +104,6 @@ public class FileListViewFragment extends FileListViewFragmentBase {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         assert view != null;
         bind = FileListViewFragmentBinding.bind(view);
-
         return view;
     }
 
@@ -115,12 +111,16 @@ public class FileListViewFragment extends FileListViewFragmentBase {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        bind.dragLayout.setContainer(bind.pager);
-        bind.dragLayout.setImageView(bind.smoothImageView);
-        bind.include.toolBar.setPadding(0, SizeUtils.getStatusBarHeight(requireActivity()), 0, 0);
+        // 监听返回键
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), _backPressedCallback);
+
         initViewPage();
         initListeners();
 
+        bind.dragLayout.setContainer(bind.pager);
+        bind.dragLayout.setImageView(bind.smoothImageView);
+
+        // bind.include.toolBar.setPadding(0, SizeUtils.getStatusBarHeight(requireActivity()), 0, 0);
         // 状态栏布局变化后, 更新列表位置
         bind.include.toolBar.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             if (bottom != oldBottom) {
@@ -131,12 +131,13 @@ public class FileListViewFragment extends FileListViewFragmentBase {
                         ImmersionBar.getNavigationBarHeight(FileListViewFragment.this));
             }
         });
+    }
 
-        /*// 设置文件列表区域
-        bind.listContainer.setPadding(0,
-                ImmersionBar.getStatusBarHeight(this) + ImmersionBar.getActionBarHeight(this),
-                0,
-                ImmersionBar.getNavigationBarHeight(this));*/
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 监听返回键
+        _backPressedCallback.remove();
     }
 
     public RequestOptions getmThumbnailRequestOptions() {
@@ -148,6 +149,7 @@ public class FileListViewFragment extends FileListViewFragmentBase {
         if (!gridClickable) {
             return;
         }
+        bind.browserContainer.setVisibility(View.VISIBLE);
         // 拦截返回按钮点击事件
         _backPressedCallback.setEnabled(true);
         // 所有数据
@@ -228,6 +230,7 @@ public class FileListViewFragment extends FileListViewFragmentBase {
                 case SmoothImageView.STATE_TRANSFORM_OUT: { // 显示网格列表
                     Timber.e("------------显示网格列表------------");
                     bind.pager.setVisibility(View.INVISIBLE);
+                    bind.browserContainer.setVisibility(View.INVISIBLE);
                     break;
                 }
                 case SmoothImageView.STATE_TRANSFORM_RESTORE: { // 恢复到原来昨天
@@ -357,33 +360,8 @@ public class FileListViewFragment extends FileListViewFragmentBase {
         return super.onBackPressed();
     }
 
-    @SuppressLint("SetTextI18n")
-    private void renderView() {
-        if (viewType == 0) {// 网格
-            /*if (isSelectMode) { // 网格才有选择模式
-                bind.sum.setText("已选" + selectedCount + "张");
-            } else {
-                bind.sum.setText("共" + mPictures.size() + "张");
-            }*/
-            // bind.include.toolBar.getMenu().findItem(R.id.new_file).setVisible(true);
-            // bind.include.toolBar.getMenu().findItem(R.id.new_dir).setVisible(true);
-            // bind.include.toolBar.getMenu().findItem(R.id.select_all).setVisible(true);
-            // bind.include.toolBar.getMenu().findItem(R.id.sort).setVisible(true);
-            // bind.include.toolBar.setTitle(R.string.app_name);
-            bind.include.sum.setVisibility(View.GONE);
-        } else { // 图片浏览模式
-            // bind.include.toolBar.getMenu().findItem(R.id.new_file).setVisible(false);
-            // bind.include.toolBar.getMenu().findItem(R.id.new_dir).setVisible(false);
-            // bind.include.toolBar.getMenu().findItem(R.id.select_all).setVisible(false);
-            // bind.include.toolBar.getMenu().findItem(R.id.sort).setVisible(false);
-            // bind.include.toolBar.setTitle("");
-            bind.include.sum.setVisibility(View.VISIBLE);
-            bind.include.sum.setText((mPageIndex + 1) + "/" + mPictures.size());
-        }
-    }
-
     /**
-     * 切换底部,顶部操作按钮是否显示
+     * 底部操作按钮,标题栏 显示&隐藏
      */
     public void toggleUI() {
         if (bind.footer.getVisibility() != View.VISIBLE) {// 显示
@@ -395,7 +373,19 @@ public class FileListViewFragment extends FileListViewFragmentBase {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private void renderView() {
+        if (viewType == 0) {// 网格|列表
+            bind.include.sum.setVisibility(View.GONE);
+        } else { // 图片浏览模式
+            bind.include.sum.setVisibility(View.VISIBLE);
+            bind.include.sum.setText((mPageIndex + 1) + "/" + mPictures.size());
+        }
+    }
 
+    /**
+     * 标题栏进入动画
+     */
     private void toolbarInAnimation() {
         if (bind.include.toolBar.getVisibility() == View.VISIBLE) {
             return;
@@ -406,26 +396,29 @@ public class FileListViewFragment extends FileListViewFragmentBase {
                 .init();
         setTransparentForWindow();
 
-        // TranslateAnimation translateAnimation =
-        //         new TranslateAnimation(0, 0, -bind.include.toolBar.getHeight() + ImmersionBar.getStatusBarHeight(this), 0);
-        // AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
-        // AnimationSet animationSet = new AnimationSet(true);
-        // animationSet.addAnimation(translateAnimation);
-        // animationSet.addAnimation(alphaAnimation);
-        // animationSet.setInterpolator(new DecelerateInterpolator());
-        // animationSet.setDuration(ANIMATION_DURATION);
-        // animationSet.setAnimationListener(new SimpleAnimationListener() {
-        //     @Override
-        //     public void onAnimationEnd(Animation animation) {
-        //         super.onAnimationEnd(animationSet);
-        //         bind.include.toolBar.clearAnimation();
-        //     }
-        // });
-        // bind.include.toolBar.clearAnimation();
+        TranslateAnimation translateAnimation =
+                new TranslateAnimation(0, 0, -bind.include.toolBar.getHeight() + ImmersionBar.getStatusBarHeight(this), 0);
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0, 1);
+        AnimationSet animationSet = new AnimationSet(true);
+        animationSet.addAnimation(translateAnimation);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.setInterpolator(new DecelerateInterpolator());
+        animationSet.setDuration(ANIMATION_DURATION);
+        animationSet.setAnimationListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                super.onAnimationEnd(animationSet);
+                bind.include.toolBar.clearAnimation();
+            }
+        });
+        bind.include.toolBar.clearAnimation();
         bind.include.toolBar.setVisibility(View.VISIBLE);
-        // bind.include.toolBar.startAnimation(animationSet);
+        bind.include.toolBar.startAnimation(animationSet);
     }
 
+    /**
+     * 标题栏退出动画
+     */
     private void toolBarOutAnimation() {
         if (bind.include.toolBar.getVisibility() != View.VISIBLE) {
             Timber.e("toolbar当前为不可见状态不执行动画");
@@ -436,26 +429,29 @@ public class FileListViewFragment extends FileListViewFragmentBase {
                 .hideBar(BarHide.FLAG_HIDE_STATUS_BAR)
                 .init();
 
-        // TranslateAnimation translateAnimation =
-        //         new TranslateAnimation(0, 0, 0, -bind.include.toolBar.getHeight() + ImmersionBar.getStatusBarHeight(this));
-        // AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
-        // AnimationSet animationSet = new AnimationSet(true);
-        // animationSet.addAnimation(translateAnimation);
-        // animationSet.addAnimation(alphaAnimation);
-        // animationSet.setInterpolator(new AccelerateInterpolator());
-        // animationSet.setDuration(ANIMATION_DURATION);
-        // animationSet.setAnimationListener(new SimpleAnimationListener() {
-        //     @Override
-        //     public void onAnimationEnd(Animation animation) {
-        //         super.onAnimationEnd(animationSet);
-        //         bind.include.toolBar.clearAnimation();
-        //     }
-        // });
-        // bind.include.toolBar.clearAnimation();
+        TranslateAnimation translateAnimation =
+                new TranslateAnimation(0, 0, 0, -bind.include.toolBar.getHeight() + ImmersionBar.getStatusBarHeight(this));
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1, 0);
+        AnimationSet animationSet = new AnimationSet(true);
+        animationSet.addAnimation(translateAnimation);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.setInterpolator(new AccelerateInterpolator());
+        animationSet.setDuration(ANIMATION_DURATION);
+        animationSet.setAnimationListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                super.onAnimationEnd(animationSet);
+                bind.include.toolBar.clearAnimation();
+            }
+        });
+        bind.include.toolBar.clearAnimation();
         bind.include.toolBar.setVisibility(View.INVISIBLE);
-        // bind.include.toolBar.startAnimation(animationSet);
+        bind.include.toolBar.startAnimation(animationSet);
     }
 
+    /**
+     * 底部进入动画
+     */
     private void footerInAnimation() {
         if (bind.footer.getVisibility() == View.VISIBLE) {
             Timber.e("footer当前为可见状态不执行动画");
@@ -481,6 +477,9 @@ public class FileListViewFragment extends FileListViewFragmentBase {
         bind.footer.startAnimation(animationSet);
     }
 
+    /**
+     * 底部退出动画
+     */
     private void footerOutAnimation() {
         if (bind.footer.getVisibility() != View.VISIBLE) {
             return;

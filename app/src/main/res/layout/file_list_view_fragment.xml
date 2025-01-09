@@ -56,8 +56,10 @@
 
     <!--图片浏览器区域-->
     <FrameLayout
+        android:id="@+id/browser_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="invisible">
 
         <!--图片区域-->
         <com.library.widget.DragFrameLayout
@@ -83,8 +85,8 @@
 
         <!--标题栏-->
         <include
-            layout="@layout/tool_bar"
-            android:id="@+id/include" />
+            android:id="@+id/include"
+            layout="@layout/tool_bar" />
 
         <!--图片浏览器底部操作按钮-->
         <LinearLayout
