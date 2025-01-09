@@ -1,0 +1,13 @@
+apply plugin: 'com.android.library'
+android {
+    compileSdk 34
+    namespace 'com.github.chrisbanes.photoview'
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 34
+    }
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.7.0"
+}
