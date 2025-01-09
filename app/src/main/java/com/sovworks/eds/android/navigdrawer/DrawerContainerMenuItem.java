@@ -3,7 +3,6 @@ package com.sovworks.eds.android.navigdrawer;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -27,6 +26,9 @@ public class DrawerContainerMenuItem extends DrawerLocationMenuItem {
                         (FileManagerActivity) getActivity(),
                         location, args != null ?
                                 args.getInt(FileListViewFragment.ARG_SCROLL_POSITION, 0)
+                                : 0,
+                        args != null ?
+                                args.getInt(FileListViewFragment.ARG_SCROLL_OFFSET, 0)
                                 : 0
                 );
             }

@@ -1,6 +1,15 @@
 package com.sovworks.eds.android.filemanager.fragments;
 
 
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_DATE_ASC;
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_DATE_DESC;
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_ASC;
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_DESC;
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_NUM_ASC;
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_NUM_DESC;
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_SIZE_ASC;
+import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_SIZE_DESC;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,7 +43,6 @@ import com.sovworks.eds.settings.Settings;
 import com.trello.rxlifecycle3.android.FragmentEvent;
 import com.trello.rxlifecycle3.components.support.RxFragment;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,15 +61,6 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
-
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_DATE_ASC;
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_DATE_DESC;
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_ASC;
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_DESC;
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_NUM_ASC;
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_FILENAME_NUM_DESC;
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_SIZE_ASC;
-import static com.sovworks.eds.settings.SettingsCommon.FB_SORT_SIZE_DESC;
 
 public class FileListDataFragment extends RxFragment {
     public static FileListDataFragment newInstance() {
@@ -501,6 +500,7 @@ public class FileListDataFragment extends RxFragment {
         public void writeToParcel(Parcel parcel, int flags) {
             parcel.writeParcelable(locationUri, flags);
             parcel.writeInt(scrollPosition);
+            parcel.writeInt(scrollOffset);
             parcel.writeString(locationId);
         }
 
@@ -508,12 +508,14 @@ public class FileListDataFragment extends RxFragment {
         }
 
         public Uri locationUri;
-        public int scrollPosition;
+        public int scrollPosition;// 第一个可见项
+        public int scrollOffset; // 第一个可见项的偏移量
         public String locationId;
 
         HistoryItem(Parcel p) {
             locationUri = p.readParcelable(ClassLoader.getSystemClassLoader());
             scrollPosition = p.readInt();
+            scrollOffset = p.readInt();
             locationId = p.readString();
         }
     }

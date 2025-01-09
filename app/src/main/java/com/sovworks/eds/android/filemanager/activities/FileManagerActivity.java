@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 
-import androidx.appcompat.widget.Toolbar;
-
-import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.navigdrawer.DrawerController;
 import com.sovworks.eds.locations.Location;
 
@@ -30,8 +27,8 @@ public class FileManagerActivity extends FileManagerActivityBase {
         }
     }
 
-    public static void openFileManager(FileManagerActivity fm, Location location, int scrollPosition) {
-        fm.goTo(location, scrollPosition);
+    public static void openFileManager(FileManagerActivity fm, Location location, int scrollPosition, int scrollOffset) {
+        fm.goTo(location, scrollPosition, scrollOffset);
     }
 
     @Override
@@ -41,7 +38,8 @@ public class FileManagerActivity extends FileManagerActivityBase {
 
     @Override
     protected void showPromoDialogIfNeeded() {
-        if (_settings.getLastViewedPromoVersion() < 211)
+        if (_settings.getLastViewedPromoVersion() < 211) {
             super.showPromoDialogIfNeeded();
+        }
     }
 }

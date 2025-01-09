@@ -1,8 +1,5 @@
 package com.sovworks.eds.android.navigdrawer;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +7,9 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
@@ -34,6 +34,9 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
                     (FileManagerActivity) getActivity(),
                     location, args != null ?
                             args.getInt(FileListViewFragment.ARG_SCROLL_POSITION, 0)
+                            : 0,
+                    args != null ?
+                            args.getInt(FileListViewFragment.ARG_SCROLL_OFFSET, 0)
                             : 0
             );
         }
@@ -142,6 +145,7 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
         } else {
             b.putParcelable(LocationsManager.PARAM_LOCATION_URI, hi.locationUri);
             b.putInt(FileListViewFragmentBase.ARG_SCROLL_POSITION, hi.scrollPosition);
+            b.putInt(FileListViewFragmentBase.ARG_SCROLL_OFFSET, hi.scrollOffset);
         }
         return b;
     }

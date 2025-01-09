@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -97,6 +98,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
 
     public static final int REQUEST_CODE_SELECT_FROM_CONTENT_PROVIDER = Activity.RESULT_FIRST_USER;
     public static final String ARG_SCROLL_POSITION = "com.sovworks.eds.android.SCROLL_POSITION";
+    public static final String ARG_SCROLL_OFFSET = "com.sovworks.eds.android.SCROLL_OFFSET";
 
     public static ArrayList<Path> getPathsFromRecords(List<? extends BrowserRecord> records) {
         ArrayList<Path> res = new ArrayList<>();
@@ -114,6 +116,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         initListView();
         if (savedInstanceState != null) {
             _scrollPosition = savedInstanceState.getInt(ARG_SCROLL_POSITION, 0);
+            _scrollOffset = savedInstanceState.getInt(ARG_SCROLL_OFFSET, 0);
         }
     }
 
@@ -211,7 +214,8 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(ARG_SCROLL_POSITION, getListView().getFirstVisiblePosition());
+        outState.putInt(ARG_SCROLL_POSITION, _scrollPosition/*getListView().getFirstVisiblePosition()*/);
+        outState.putInt(ARG_SCROLL_OFFSET, _scrollOffset);
     }
 
     @Override
@@ -459,6 +463,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     private ListView _listView;
     private Disposable _locationLoadingObserver, _loadingRecordObserver;
     private int _scrollPosition;
+    private int _scrollOffset;
 
     protected boolean _isReadingLocation, _changingSelectedFileText, _cleanSelectionOnModeFinish;
 
@@ -479,7 +484,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
             try {
                 Location loc = _locationsManager.getLocation(uri);
                 if (loc != null && LocationsManager.isOpen(loc)) {
-                    readLocation(getFileListDataFragment(), loc, hi.scrollPosition);
+                    readLocation(getFileListDataFragment(), loc, hi.scrollPosition, hi.scrollOffset);
                     return true;
                 }
             } catch (Exception e) {
@@ -489,11 +494,12 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         return false;
     }
 
-    public void goTo(Location location, int scrollPosition, boolean addToHistory) {
+    public void goTo(Location location, int scrollPosition, int scrollOffset, boolean addToHistory) {
         Location prevLocation = addToHistory ? getLocation() : null;
-        int prevScrollPosition = getListView().getLastVisiblePosition();
+        int prevScrollPosition = getListView().getFirstVisiblePosition();
+        int prevScrollOffset = getListView().getChildAt(0).getTop();
         FileListDataFragment df = getFileListDataFragment();
-        readLocation(df, location, scrollPosition);
+        readLocation(df, location, scrollPosition, scrollOffset);
         if (prevLocation != null) {
             Uri uri = prevLocation.getLocationUri();
             Stack<FileListDataFragment.HistoryItem> nh = df.getNavigHistory();
@@ -501,6 +507,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 FileListDataFragment.HistoryItem hi = new FileListDataFragment.HistoryItem();
                 hi.locationUri = uri;
                 hi.scrollPosition = prevScrollPosition;
+                hi.scrollOffset = prevScrollOffset;
                 hi.locationId = prevLocation.getId();
                 nh.push(hi);
             }
@@ -510,8 +517,8 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     // call from main thread
     public void rereadCurrentLocation() {
         Logger.debug(TAG + "rereadCurrentLocation");
-        int scrollPosition = getListView().getLastVisiblePosition();
-        goTo(getLocation(), scrollPosition, false);
+        int scrollPosition = getListView().getFirstVisiblePosition();
+        goTo(getLocation(), scrollPosition, _scrollOffset, false);
 
     }
 
@@ -587,14 +594,16 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         } else {
             updateSelectionMode();
         }
-        if (_scrollPosition > 0) {
+        if (_scrollPosition > 0 || _scrollOffset > 0) {
             int sp = _scrollPosition;
+            int of = _scrollOffset;
             _scrollPosition = 0;
+            _scrollOffset = 0;
             Completable.
                     timer(50, TimeUnit.MILLISECONDS, Schedulers.computation()).
                     observeOn(AndroidSchedulers.mainThread()).
                     compose(bindToLifecycle()).
-                    subscribe(() -> scrollList(sp), err -> {
+                    subscribe(() -> scrollList(sp, of), err -> {
                     });
         }
         if (TEST_READING_OBSERVABLE != null) {
@@ -602,8 +611,8 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         }
     }
 
-    private void readLocation(FileListDataFragment df, Location loc, int scrollPosition) {
-        readLocationAndScroll(df, loc, scrollPosition);
+    private void readLocation(FileListDataFragment df, Location loc, int scrollPosition, int scrollOffset) {
+        readLocationAndScroll(df, loc, scrollPosition, scrollOffset);
     }
 
     private void updateCurrentFolderLabel(CachedPathInfo currentFolder) {
@@ -625,14 +634,15 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         }
     }
 
-    private void readLocationAndScroll(FileListDataFragment df, Location loc, int scrollPosition) {
+    private void readLocationAndScroll(FileListDataFragment df, Location loc, int scrollPosition, int scrollOffset) {
         _scrollPosition = scrollPosition;
+        _scrollOffset = scrollOffset;
         df.readLocation(loc, null);
     }
 
 
-    private void scrollList(int scrollPosition) {
-        if (scrollPosition > 0) {
+    private void scrollList(int scrollPosition, int offset) {
+        if (scrollPosition > 0 || offset > 0) {
             ListView lv = getListView();
             if (lv.getFirstVisiblePosition() == 0) {
                 int num = lv.getCount();
@@ -643,7 +653,9 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
                 if (sp >= 0)
                 // lv.setSelection(sp);
                 {
-                    lv.smoothScrollToPosition(sp);
+                    // lv.smoothScrollToPosition(sp);
+                    lv.setSelectionFromTop(scrollPosition, offset);
+
                 }
             }
         }
@@ -660,7 +672,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
 
     @Override
     public void onTargetLocationOpened(Bundle openerArgs, Location location) {
-        FileManagerActivity.openFileManager((FileManagerActivity) getActivity(), location, 0);
+        FileManagerActivity.openFileManager((FileManagerActivity) getActivity(), location, 0, 0);
     }
 
     @Override
@@ -688,9 +700,28 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
         lv.setChoiceMode(ListView.CHOICE_MODE_NONE);
         lv.setItemsCanFocus(true);
         lv.setDivider(null);
+        // 滚动监听
+        lv.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                // 保存当前第一个可见的item的索引和偏移量
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    // scrollPos记录当前可见的List顶端的一行的位置
+                    _scrollPosition = lv.getFirstVisiblePosition();
+                }
+                View v = lv.getChildAt(0);
+                _scrollOffset = (v == null) ? 0 : v.getTop();
+                Timber.e("滚动位置：" + _scrollPosition + "，偏移量：" + _scrollOffset);
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+            }
+        });
 
         lv.setOnItemLongClickListener((adapterView, view, pos, itemId) ->
         {
+            Timber.e("长按事件");
             BrowserRecord rec = (BrowserRecord) adapterView.getItemAtPosition(pos);
             if (rec != null && rec.allowSelect()) {
                 selectFile(rec);

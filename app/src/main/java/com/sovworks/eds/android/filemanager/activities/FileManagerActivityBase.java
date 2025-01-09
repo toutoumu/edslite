@@ -209,15 +209,15 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
     }
 
     public void goTo(Location location) {
-        goTo(location, 0);
+        goTo(location, 0, 0);
     }
 
-    public void goTo(Location location, int scrollPosition) {
+    public void goTo(Location location, int scrollPosition, int scrollOffset) {
         Logger.debug(TAG + ": goTo");
         closeIntegratedViewer();
         FileListViewFragment f = getFileListViewFragment();
         if (f != null) {
-            f.goTo(location, scrollPosition, true);
+            f.goTo(location, scrollPosition, scrollOffset, true);
         }
     }
 
@@ -226,7 +226,7 @@ public abstract class FileManagerActivityBase extends RxAppCompatActivity implem
         if (prevLocation != null) {
             Location newLocation = prevLocation.copy();
             newLocation.setCurrentPath(path);
-            goTo(newLocation, 0);
+            goTo(newLocation, 0, 0);
         }
     }
 
