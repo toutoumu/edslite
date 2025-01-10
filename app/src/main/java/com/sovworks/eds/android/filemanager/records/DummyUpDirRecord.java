@@ -2,7 +2,6 @@ package com.sovworks.eds.android.filemanager.records;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -59,7 +58,7 @@ public class DummyUpDirRecord extends FolderRecord {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.folderUpIcon, typedValue, true);
             // noinspection deprecation
-            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_folder_up_dark);
+            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_folder_up);
         }
         return _icon;
     }

@@ -82,7 +82,7 @@ public class DrawerContainerMenuItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.lockIcon, typedValue, true);
             // noinspection deprecation
-            _closedIcon = AppCompatResources.getDrawable(context,R.drawable.ic_lock_dark);
+            _closedIcon = AppCompatResources.getDrawable(context, R.drawable.ic_lock);
         }
         return _closedIcon;
     }

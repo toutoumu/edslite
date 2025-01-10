@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.res.ResourcesCompat;
 
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.fs.Path;
@@ -143,7 +142,7 @@ public class FileUtils {
      */
     public static Drawable getFileIcon(Context context, Path path) {
         if (path == null || path.getPathString() == null) {
-            return ResourcesCompat.getDrawable(context.getResources(), R.drawable.ic_file_unknown, null);
+            return AppCompatResources.getDrawable(context, R.drawable.ic_file_unknown);
         }
 
         String fileType = getFileExtensionNoPoint(path.getPathString()).toLowerCase();

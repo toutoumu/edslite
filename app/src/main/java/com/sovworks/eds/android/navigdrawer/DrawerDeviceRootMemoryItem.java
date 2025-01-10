@@ -3,7 +3,6 @@ package com.sovworks.eds.android.navigdrawer;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -25,7 +24,7 @@ public class DrawerDeviceRootMemoryItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.deviceRootIcon, typedValue, true);
             // noinspection deprecation
-            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_device_root_memory_dark);
+            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_device_root_memory);
         }
         return _icon;
     }

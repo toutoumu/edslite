@@ -1,17 +1,16 @@
 package com.sovworks.eds.android.navigdrawer;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.fragment.app.Fragment;
-
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
@@ -113,7 +112,7 @@ public class DrawerExitMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.exitIcon, typedValue, true);
             // noinspection deprecation
-            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_exit_dark);
+            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_exit);
         }
         return _icon;
     }

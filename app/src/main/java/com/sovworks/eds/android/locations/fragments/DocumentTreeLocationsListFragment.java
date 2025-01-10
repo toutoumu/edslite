@@ -6,14 +6,15 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.util.TypedValue;
+
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sovworks.eds.android.Logger;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.fs.DocumentTreeFS;
 import com.sovworks.eds.android.locations.DocumentTreeLocation;
-import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.locations.Location;
+import com.sovworks.eds.locations.LocationsManager;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class DocumentTreeLocationsListFragment extends LocationListBaseFragment {
@@ -96,7 +97,7 @@ public class DocumentTreeLocationsListFragment extends LocationListBaseFragment 
             // TypedValue typedValue = new TypedValue();
             // getActivity().getTheme().resolveAttribute(R.attr.storageIcon, typedValue, true);
             // noinspection deprecation
-            _icon = getActivity().getResources().getDrawable(R.drawable.ic_storage_dark);
+            _icon = AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_storage);
         }
         return _icon;
     }

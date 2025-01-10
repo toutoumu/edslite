@@ -58,7 +58,7 @@ public class DrawerAboutMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.aboutIcon, typedValue, true);
             // noinspection deprecation
-            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_about_dark);
+            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_about);
         }
         return _icon;
     }

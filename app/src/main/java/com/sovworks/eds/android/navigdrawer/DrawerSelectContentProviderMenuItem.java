@@ -3,7 +3,6 @@ package com.sovworks.eds.android.navigdrawer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -86,7 +85,7 @@ public class DrawerSelectContentProviderMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.storageIcon, typedValue, true);
             // noinspection deprecation
-            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_storage_dark);
+            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_storage);
         }
         return _icon;
     }

@@ -3,7 +3,6 @@ package com.sovworks.eds.android.navigdrawer;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 import android.view.View;
 
 import androidx.appcompat.content.res.AppCompatResources;
@@ -48,7 +47,7 @@ public abstract class DrawerManageLocationMenuItem extends DrawerMenuItemBase {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.manageLocationsIcon, typedValue, true);
             // noinspection deprecation
-            _icon = AppCompatResources.getDrawable(context,R.drawable.ic_manage_locations_dark);
+            _icon = AppCompatResources.getDrawable(context, R.drawable.ic_manage_locations);
         }
         return _icon;
     }

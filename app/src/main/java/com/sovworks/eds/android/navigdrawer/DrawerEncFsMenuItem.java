@@ -71,7 +71,7 @@ public class DrawerEncFsMenuItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.lockOpenIcon, typedValue, true);
             // noinspection deprecation
-            _openedIcon = AppCompatResources.getDrawable(context, R.drawable.ic_lock_open_dark);
+            _openedIcon = AppCompatResources.getDrawable(context, R.drawable.ic_lock_open);
         }
         return _openedIcon;
     }
@@ -81,7 +81,7 @@ public class DrawerEncFsMenuItem extends DrawerLocationMenuItem {
             // TypedValue typedValue = new TypedValue();
             // context.getTheme().resolveAttribute(R.attr.lockIcon, typedValue, true);
             // noinspection deprecation
-            _closedIcon = AppCompatResources.getDrawable(context, R.drawable.ic_lock_dark);
+            _closedIcon = AppCompatResources.getDrawable(context, R.drawable.ic_lock);
         }
         return _closedIcon;
     }
