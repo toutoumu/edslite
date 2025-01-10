@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/FileListRow"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:minHeight="60dp">
 
     <ImageView
         android:id="@android:id/icon"
@@ -15,9 +16,8 @@
     <TextView
         android:id="@android:id/text1"
         style="@style/FileName"
-        android:layout_weight="1"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="12dp"
-        android:textSize="14sp"
+        android:layout_weight="1"
         tools:text="这里是内容" />
 </LinearLayout>

@@ -39,7 +39,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="EDSxxx"
+        android:text="@string/eds"
         android:textAppearance="?attr/textAppearanceTitleLarge" />
 
     <TextView

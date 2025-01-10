@@ -179,7 +179,7 @@ public class DocumentRootsCursor extends AbstractCursor {
             case DocumentsContract.Root.COLUMN_AVAILABLE_BYTES:
                 return li.freeSpace;
             case DocumentsContract.Root.COLUMN_ICON:
-                return R.drawable.ic_lock_open;
+                return R.drawable.ic_lock_open_content_provider;
             default:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     return getMoreColumns(li, columnName);
