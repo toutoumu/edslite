@@ -43,7 +43,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules-lite.pro'
             externalNativeBuild {
                 cmake {
-                    targets "edsxts", "edsctr", "edsaes", "edsserpent", "edstwofish", "edsripemd160", "edswhirlpool", "fdraio", "localxts", "edscfb", "edscbc", "edsctr", "edsgost"
+                    targets "edsxts", "edsctr", "edsaes", "edsserpent", "edstwofish", "edsripemd160", "edswhirlpool", "fdraio", "localxts", "edscfb", "edscbc", "edsctr", "edsgost", "edsexfat"
                 }
             }
         }

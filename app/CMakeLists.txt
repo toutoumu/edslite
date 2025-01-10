@@ -99,3 +99,35 @@ add_library( edsgost
 
 include(CMakeLists-full.txt)
 include(CMakeLists-fsm.txt)
+
+add_library(edsexfat
+		SHARED
+		src/main/native/util/jniutil.c
+		src/main/native/edsexfat/raio.c
+		src/main/native/edsexfat/edsexfat.c
+		src/main/native/edsexfat/libexfat/cluster.c
+		src/main/native/edsexfat/libexfat/io.c
+		src/main/native/edsexfat/libexfat/log.c
+		src/main/native/edsexfat/libexfat/lookup.c
+		src/main/native/edsexfat/libexfat/mount.c
+		src/main/native/edsexfat/libexfat/node.c
+		src/main/native/edsexfat/libexfat/time.c
+		src/main/native/edsexfat/libexfat/utf.c
+		src/main/native/edsexfat/libexfat/utils.c
+		src/main/native/edsexfat/mkfs/cbm.c
+		src/main/native/edsexfat/mkfs/fat.c
+		src/main/native/edsexfat/mkfs/main.c
+		src/main/native/edsexfat/mkfs/mkexfat.c
+		src/main/native/edsexfat/mkfs/rootdir.c
+		src/main/native/edsexfat/mkfs/uct.c
+		src/main/native/edsexfat/mkfs/uctc.c
+		src/main/native/edsexfat/mkfs/vbr.c)
+
+target_compile_definitions(edsexfat
+		PRIVATE _FILE_OFFSET_BITS=64)
+
+target_include_directories(edsexfat
+		PRIVATE src/main/native/edsexfat/libexfat/)
+
+target_link_libraries(edsexfat
+		${log-lib})
