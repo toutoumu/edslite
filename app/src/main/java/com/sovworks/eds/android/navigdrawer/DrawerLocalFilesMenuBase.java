@@ -1,7 +1,6 @@
 package com.sovworks.eds.android.navigdrawer;
 
 import android.content.Intent;
-import android.os.Build;
 
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.filemanager.activities.FileManagerActivity;
@@ -25,8 +24,7 @@ public abstract class DrawerLocalFilesMenuBase extends DrawerSubMenuBase {
         super(drawerController);
         Intent i = getDrawerController().getMainActivity().getIntent();
         _allowDeviceLocations = i.getBooleanExtra(FileManagerActivity.EXTRA_ALLOW_BROWSE_DEVICE, true);
-        _allowDocumentTree = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && i.getBooleanExtra(FileManagerActivity.EXTRA_ALLOW_BROWSE_DOCUMENT_PROVIDERS, true);
+        _allowDocumentTree = i.getBooleanExtra(FileManagerActivity.EXTRA_ALLOW_BROWSE_DOCUMENT_PROVIDERS, true);
     }
 
     @Override

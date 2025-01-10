@@ -68,6 +68,11 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
         newMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
+                final MenuItem checkedItem = navigationView.getCheckedItem();
+                if (checkedItem != null) {
+                    checkedItem.setCheckable(false);
+                }
+                newMenuItem.setCheckable(true);
                 navigationView.setCheckedItem(newMenuItem);
                 onClick(item.getActionView(), 0);
                 return false;

@@ -497,7 +497,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
     public void goTo(Location location, int scrollPosition, int scrollOffset, boolean addToHistory) {
         Location prevLocation = addToHistory ? getLocation() : null;
         int prevScrollPosition = getListView().getFirstVisiblePosition();
-        int prevScrollOffset = getListView().getChildAt(0).getTop();
+        int prevScrollOffset = (getListView().getChildAt(0) != null) ? getListView().getChildAt(0).getTop() : 0;
         FileListDataFragment df = getFileListDataFragment();
         readLocation(df, location, scrollPosition, scrollOffset);
         if (prevLocation != null) {

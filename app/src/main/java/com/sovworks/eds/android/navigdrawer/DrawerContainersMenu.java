@@ -11,9 +11,9 @@ import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
 import com.sovworks.eds.android.R;
 import com.sovworks.eds.android.locations.EncFsLocationBase;
-import com.sovworks.eds.locations.LocationsManager;
 import com.sovworks.eds.locations.ContainerLocation;
 import com.sovworks.eds.locations.EDSLocation;
+import com.sovworks.eds.locations.LocationsManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,16 +31,25 @@ public class DrawerContainersMenu extends DrawerSubMenuBase {
     @Override
     void initMenu(NavigationView navigationView, SubMenu subMenu1) {
         final SubMenu subMenu = navigationView.getMenu().addSubMenu(getTitle());
-
+        final int[] baseId = {200};
         getSubItems().forEach(new Consumer<DrawerMenuItemBase>() {
             @Override
             public void accept(DrawerMenuItemBase drawerMenuItemBase) {
-                MenuItem newMenuItem = subMenu.add(Menu.FIRST, 0, Menu.NONE, drawerMenuItemBase.getTitle());
+                baseId[0]++;
+                MenuItem newMenuItem = subMenu.add(Menu.FIRST, baseId[0], Menu.NONE, drawerMenuItemBase.getTitle());
                 newMenuItem.setIcon(drawerMenuItemBase.getIcon());
                 newMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(@NonNull MenuItem item) {
-                        navigationView.setCheckedItem(newMenuItem);
+                        if (drawerMenuItemBase instanceof DrawerManageContainersMenuItem) {
+                            final MenuItem checkedItem = navigationView.getCheckedItem();
+                            if (checkedItem != null) {
+                                checkedItem.setCheckable(false);
+                            }
+                        } else {
+                            newMenuItem.setCheckable(true);
+                            navigationView.setCheckedItem(newMenuItem);
+                        }
                         drawerMenuItemBase.onClick(item.getActionView(), 0);
                         return false;
                     }

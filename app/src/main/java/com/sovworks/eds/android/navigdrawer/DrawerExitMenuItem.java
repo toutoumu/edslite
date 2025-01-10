@@ -100,7 +100,11 @@ public class DrawerExitMenuItem extends DrawerMenuItemBase {
         newMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
-                navigationView.setCheckedItem(newMenuItem);
+                // navigationView.setCheckedItem(newMenuItem);
+                final MenuItem checkedItem = navigationView.getCheckedItem();
+                if (checkedItem != null) {
+                    checkedItem.setCheckable(false);
+                }
                 onClick(item.getActionView(), 0);
                 return false;
             }

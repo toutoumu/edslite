@@ -39,8 +39,7 @@ public class DocumentTreeLocation extends LocationBase {
     public static boolean isDocumentTreeUri(Context context, Uri uri) {
         try {
             // noinspection ConstantConditions
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-                    DocumentsContract.getTreeDocumentId(uri) != null && DocumentFile.isDocumentUri(context, uri);
+            return DocumentsContract.getTreeDocumentId(uri) != null && DocumentFile.isDocumentUri(context, uri);
         } catch (IllegalArgumentException e) {
             return false;
         }
