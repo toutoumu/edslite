@@ -672,7 +672,7 @@ public abstract class FileListViewFragmentBase extends RxFragment implements
 
     @Override
     public void onTargetLocationOpened(Bundle openerArgs, Location location) {
-        FileManagerActivity.openFileManager((FileManagerActivity) getActivity(), location, 0, 0);
+        FileManagerActivity.openFileManager((FileManagerActivity) getActivity(), location, 0, 0, false);
     }
 
     @Override

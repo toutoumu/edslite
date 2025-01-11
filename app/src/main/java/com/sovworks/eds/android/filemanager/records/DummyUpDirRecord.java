@@ -6,10 +6,8 @@ import android.graphics.drawable.Drawable;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.sovworks.eds.android.R;
-import com.sovworks.eds.android.filemanager.fragments.FileListDataFragment;
 
 import java.io.IOException;
-import java.util.Stack;
 
 public class DummyUpDirRecord extends FolderRecord {
     public DummyUpDirRecord(Context context) throws IOException {
@@ -38,12 +36,14 @@ public class DummyUpDirRecord extends FolderRecord {
 
     @Override
     public boolean open() throws Exception {
-        super.open();
-        Stack<FileListDataFragment.HistoryItem> nh = _host.getFileListDataFragment().getNavigHistory();
-        if (!nh.empty()) {
-            nh.pop();
-        }
-        return true;
+        // super.open();
+        // Stack<FileListDataFragment.HistoryItem> nh = _host.getFileListDataFragment().getNavigHistory();
+        // if (!nh.empty()) {
+        //     nh.pop();
+        // }
+        // return true;
+        // 返回上级按钮触发当前页面的返回事件
+        return _host.getFileListViewFragment().onBackPressed();
     }
 
     @Override

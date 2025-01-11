@@ -37,7 +37,8 @@ public class DrawerLocationMenuItem extends DrawerMenuItemBase {
                             : 0,
                     args != null ?
                             args.getInt(FileListViewFragment.ARG_SCROLL_OFFSET, 0)
-                            : 0
+                            : 0,
+                    true
             );
         }
     }

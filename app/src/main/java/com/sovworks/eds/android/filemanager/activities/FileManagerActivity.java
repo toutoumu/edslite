@@ -27,8 +27,11 @@ public class FileManagerActivity extends FileManagerActivityBase {
         }
     }
 
-    public static void openFileManager(FileManagerActivity fm, Location location, int scrollPosition, int scrollOffset) {
-        fm.goTo(location, scrollPosition, scrollOffset);
+    /**
+     * @param clearHistory 是否情况导航堆栈,侧边栏点击的时候清空
+     */
+    public static void openFileManager(FileManagerActivity fm, Location location, int scrollPosition, int scrollOffset, boolean clearHistory) {
+        fm.goTo(location, scrollPosition, scrollOffset, clearHistory);
     }
 
     @Override
