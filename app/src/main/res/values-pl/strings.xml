@@ -205,4 +205,9 @@
     <string name="number_of_kdf_iterations">Liczba iteracji KDF</string>
     <string name="number_of_kdf_iterations_descr">Wprowadź liczbę iteracji dla funkcji pozyskania klucza. Im większą wartość wybierzesz, tym dłużej potrwa do otwarcie kontenera.</string>
     <string name="tips">提示</string>
+    <string name="show_previews_desc">在列表中显示缩略图</string>
+    <string name="master_password_desc">应用每次启动时需要输入该密码</string>
+    <string name="hide_eds_screen_from_other_apps_desc">是否允许截屏</string>
+    <string name="show_hidden_files">是否显示隐藏文件</string>
+    <string name="show_hidden_files_desc">是否显示隐藏文件</string>
 </resources>

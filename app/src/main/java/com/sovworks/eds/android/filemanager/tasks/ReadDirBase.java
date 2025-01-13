@@ -7,6 +7,7 @@ import com.sovworks.eds.android.filemanager.DirectorySettings;
 import com.sovworks.eds.android.filemanager.records.BrowserRecord;
 import com.sovworks.eds.android.filemanager.records.DummyUpDirRecord;
 import com.sovworks.eds.android.filemanager.records.LocRootDirRecord;
+import com.sovworks.eds.android.settings.UserSettings;
 import com.sovworks.eds.exceptions.ApplicationException;
 import com.sovworks.eds.fs.Directory;
 import com.sovworks.eds.fs.Path;
@@ -132,6 +133,7 @@ public abstract class ReadDirBase {
             return;
         }
         try {
+            final boolean showHiddenFiles = UserSettings.getSettings(_context).isHideFilesVisible();
             em.setCancellable(dirReader::close);
             for (Path path : dirReader) {
                 if (em.isDisposed()) {
@@ -139,8 +141,9 @@ public abstract class ReadDirBase {
                 }
 
                 BrowserRecord record = getBrowserRecordFromFsRecord(_targetLocation, path, _directorySettings);
-                // todo 过滤掉隐藏文件
-                if (record == null || record.getName().startsWith(".")) {
+                if (record == null) {
+                    continue;
+                } else if (!showHiddenFiles && record.getName().startsWith(".")) {
                     continue;
                 }
                 procRecord(record, count++);

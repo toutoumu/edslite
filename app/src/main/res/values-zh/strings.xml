@@ -289,4 +289,9 @@
     <string name="check_the_full_version">查看完整版本</string>
     <string name="check_source_code">查看源代码</string>
     <string name="tips">提示</string>
+    <string name="show_previews_desc">在列表中显示缩略图</string>
+    <string name="master_password_desc">应用每次启动时需要输入该密码</string>
+    <string name="hide_eds_screen_from_other_apps_desc">是否允许截屏</string>
+    <string name="show_hidden_files">是否显示隐藏文件</string>
+    <string name="show_hidden_files_desc">是否显示隐藏文件</string>
 </resources>

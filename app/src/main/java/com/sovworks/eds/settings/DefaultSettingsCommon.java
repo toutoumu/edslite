@@ -90,6 +90,11 @@ public class DefaultSettingsCommon implements SettingsCommon {
     }
 
     @Override
+    public boolean isHideFilesVisible() {
+        return true;
+    }
+
+    @Override
     public String getExtensionsMimeMapString() {
         return "";
     }

@@ -9,6 +9,7 @@ import static com.sovworks.eds.android.settings.UserSettingsCommon.FORCE_TEMP_FI
 import static com.sovworks.eds.android.settings.UserSettingsCommon.IS_FLAG_SECURE_ENABLED;
 import static com.sovworks.eds.android.settings.UserSettingsCommon.MAX_FILE_SIZE_TO_OPEN;
 import static com.sovworks.eds.android.settings.UserSettingsCommon.NEVER_SAVE_HISTORY;
+import static com.sovworks.eds.android.settings.UserSettingsCommon.SHOW_HIDDEN_FILES;
 import static com.sovworks.eds.android.settings.UserSettingsCommon.SHOW_PREVIEWS;
 import static com.sovworks.eds.android.settings.UserSettingsCommon.THEME;
 import static com.sovworks.eds.android.settings.UserSettingsCommon.USE_INTERNAL_IMAGE_VIEWER;
@@ -125,7 +126,7 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
                         return Arrays.asList(getString(R.string.default_theme), getString(R.string.dark_theme));
                     }
                 }));
-        commonPropertiesIds.add(getPropertiesView().addProperty(new ButtonPropertyEditor(this, R.string.master_password, 0, R.string.enter_master_password) {
+        commonPropertiesIds.add(getPropertiesView().addProperty(new ButtonPropertyEditor(this, R.string.master_password, R.string.master_password_desc, R.string.enter_master_password) {
             @Override
             protected void onButtonClick() {
                 Bundle args = new Bundle();
@@ -137,7 +138,18 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
                 mpd.show(getFragmentManager(), MasterPasswordDialog.TAG);
             }
         }));
-        commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.show_previews, 0) {
+        commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.show_hidden_files, R.string.show_hidden_files_desc) {
+            @Override
+            protected boolean loadValue() {
+                return _settings.isHideFilesVisible();
+            }
+
+            @Override
+            protected void saveValue(boolean value) {
+                editSettings().putBoolean(SHOW_HIDDEN_FILES, value).commit();
+            }
+        }));
+        commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.show_previews, R.string.show_previews_desc) {
             @Override
             protected boolean loadValue() {
                 return _settings.showPreviews();
@@ -308,7 +320,7 @@ public abstract class ProgramSettingsFragmentBase extends PropertiesFragmentBase
                 editSettings().putBoolean(DISABLE_MODIFIED_FILES_BACKUP, value).commit();
             }
         }));
-        commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.hide_eds_screen_from_other_apps, 0) {
+        commonPropertiesIds.add(getPropertiesView().addProperty(new SwitchPropertyEditor(this, R.string.hide_eds_screen_from_other_apps, R.string.hide_eds_screen_from_other_apps_desc) {
             @Override
             protected boolean loadValue() {
                 return _settings.isFlagSecureEnabled();

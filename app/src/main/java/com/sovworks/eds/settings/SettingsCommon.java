@@ -118,6 +118,8 @@ public interface SettingsCommon {
 
     boolean showPreviews();
 
+    boolean isHideFilesVisible();
+
     String getWorkDir();
 
     String getExtensionsMimeMapString();
