@@ -341,7 +341,7 @@ public abstract class PasswordDialogBase extends RxDialogFragment {
     }
 
     protected boolean checkPasswordsMatch() {
-        return _passwordEditText.getText().equals(_repeatPasswordEditText.getText());
+        return _passwordEditText.getText().toString().equals(_repeatPasswordEditText.getText().toString());
     }
 
     protected void onPasswordEntered() {
